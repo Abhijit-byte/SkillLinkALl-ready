@@ -24,7 +24,8 @@ RENDER = os.environ.get('RENDER', None)
 
 if RENDER:
     DEBUG = False
-    ALLOWED_HOSTS = ['your-app-name.onrender.com']
+    ALLOWED_HOSTS = ['skilllinkall-ready.onrender.com']
+
 else:
     DEBUG = True
     ALLOWED_HOSTS = []
