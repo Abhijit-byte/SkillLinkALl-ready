@@ -1,0 +1,1038 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkillLink Meet - Video Call</title>
+    <!-- PeerJS Library for WebRTC signaling -->
+    <script src="https://unpkg.com/peerjs@1.5.1/dist/peerjs.min.js"></script>
+    <style>
+        /* Design System Variables */
+        :root {
+            --color-primary: #0EA5E9;
+            --color-accent: #FF6B6B;
+            --color-bg-dark: #0F172A;
+            --color-bg-secondary: #1E293B;
+            --color-text-light: #F1F5F9;
+            --color-text-gray: #94A3B8;
+            --color-success: #10B981;
+            --color-error: #EF4444;
+            --color-camera-off: #EF4444;
+            --color-mic-off: #EF4444;
+            
+            --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', sans-serif;
+            --transition-speed: 0.3s;
+            --border-radius: 12px;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background: var(--color-bg-dark);
+            color: var(--color-text-light);
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        /* Main Container */
+        .container {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header */
+        .header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 10;
+            padding: 20px 30px;
+            background: linear-gradient(180deg, rgba(15, 23, 42, 0.95) 0%, rgba(15, 23, 42, 0) 100%);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--color-primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .meeting-info {
+            text-align: right;
+        }
+
+        .meeting-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .meeting-status {
+            font-size: 14px;
+            color: var(--color-text-gray);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            justify-content: flex-end;
+        }
+
+        .status-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--color-success);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Video Container */
+        .video-container {
+            flex: 1;
+            position: relative;
+            background: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #localVideo {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        #videoPlaceholder {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            background: var(--color-bg-secondary);
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        #videoPlaceholder.active {
+            display: flex;
+        }
+
+        .placeholder-icon {
+            font-size: 64px;
+            opacity: 0.5;
+        }
+
+        .placeholder-text {
+            font-size: 18px;
+            color: var(--color-text-gray);
+        }
+
+        /* Loading Overlay */
+        #loadingOverlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--color-bg-dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 20px;
+            z-index: 100;
+        }
+
+        #loadingOverlay.hidden {
+            display: none;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid var(--color-bg-secondary);
+            border-top-color: var(--color-primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            font-size: 16px;
+            color: var(--color-text-gray);
+        }
+
+        /* Error Container */
+        #errorContainer {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--color-bg-secondary);
+            padding: 30px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            max-width: 400px;
+            width: 90%;
+            z-index: 101;
+            display: none;
+        }
+
+        #errorContainer.active {
+            display: block;
+        }
+
+        .error-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        #errorTitle {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--color-error);
+        }
+
+        #closeError {
+            background: none;
+            border: none;
+            color: var(--color-text-gray);
+            font-size: 24px;
+            cursor: pointer;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            transition: background var(--transition-speed);
+        }
+
+        #closeError:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        #errorMessage {
+            font-size: 14px;
+            line-height: 1.6;
+            color: var(--color-text-gray);
+        }
+
+        /* Controls Bar */
+        .controls-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 30px;
+            background: linear-gradient(0deg, rgba(15, 23, 42, 0.95) 0%, rgba(15, 23, 42, 0) 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 16px;
+            z-index: 10;
+        }
+
+        /* Control Buttons */
+        .control-btn {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            transition: all var(--transition-speed);
+            box-shadow: var(--shadow);
+            position: relative;
+        }
+
+        .control-btn:focus-visible {
+            outline: 3px solid var(--color-primary);
+            outline-offset: 3px;
+        }
+
+        .control-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .control-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* Camera Button */
+        #toggleCamera {
+            background: var(--color-primary);
+            color: white;
+        }
+
+        #toggleCamera.off {
+            background: var(--color-camera-off);
+        }
+
+        /* Mic Button */
+        #toggleMic {
+            background: var(--color-primary);
+            color: white;
+        }
+
+        #toggleMic.off {
+            background: var(--color-mic-off);
+        }
+
+        /* End Call Button */
+        #endCall {
+            background: var(--color-error);
+            color: white;
+            width: 64px;
+            height: 64px;
+            font-size: 28px;
+        }
+
+        /* Copy Link Button */
+        #copyLink {
+            background: var(--color-accent);
+            color: white;
+        }
+
+        /* Button Tooltip */
+        .control-btn::after {
+            content: attr(aria-label);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.9);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity var(--transition-speed);
+            margin-bottom: 8px;
+        }
+
+        .control-btn:hover::after {
+            opacity: 1;
+        }
+
+        /* Toast Notification */
+        #toast {
+            position: fixed;
+            bottom: 120px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.9);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            z-index: 102;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity var(--transition-speed);
+        }
+
+        #toast.show {
+            opacity: 1;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header {
+                padding: 15px 20px;
+            }
+
+            .logo {
+                font-size: 20px;
+            }
+
+            .meeting-title {
+                font-size: 16px;
+            }
+
+            .meeting-status {
+                font-size: 12px;
+            }
+
+            .controls-bar {
+                padding: 20px;
+                gap: 12px;
+            }
+
+            .control-btn {
+                width: 50px;
+                height: 50px;
+                font-size: 20px;
+            }
+
+            #endCall {
+                width: 56px;
+                height: 56px;
+                font-size: 24px;
+            }
+
+            .control-btn::after {
+                display: none;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .meeting-info {
+                display: none;
+            }
+
+            .controls-bar {
+                gap: 8px;
+                padding: 15px;
+            }
+
+            .control-btn {
+                width: 44px;
+                height: 44px;
+                font-size: 18px;
+            }
+
+            #endCall {
+                width: 50px;
+                height: 50px;
+                font-size: 22px;
+            }
+        }
+
+        /* Accessibility */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                📹 SkillLink Meet
+            </div>
+            <div class="meeting-info">
+                <div class="meeting-title">Quick Meet</div>
+                <div class="meeting-status" id="meetingStatus">
+                    <span class="status-indicator"></span>
+                    Connected
+                </div>
+            </div>
+        </header>
+
+        <!-- Video Container -->
+        <div class="video-container">
+            <video id="localVideo" autoplay muted playsinline></video>
+            <video id="remoteVideo" autoplay playsinline style="position: absolute; top: 20px; right: 20px; width: 200px; height: 150px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.5); object-fit: cover; z-index: 5; border: 2px solid var(--color-primary);"></video>
+            <div id="videoPlaceholder">
+                <div class="placeholder-icon">📹</div>
+                <div class="placeholder-text">Camera Off</div>
+            </div>
+        </div>
+
+        <!-- Loading Overlay -->
+        <div id="loadingOverlay">
+            <div class="spinner"></div>
+            <div class="loading-text">Connecting to camera and microphone...</div>
+        </div>
+
+        <!-- Error Container -->
+        <div id="errorContainer">
+            <div class="error-header">
+                <h2 id="errorTitle">Permission Denied</h2>
+                <button id="closeError" aria-label="Close error">&times;</button>
+            </div>
+            <p id="errorMessage">Unable to access camera or microphone. Please check your browser settings and grant permissions.</p>
+        </div>
+
+        <!-- Peer ID Display/Input Modal -->
+        <div id="peerModal" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--color-bg-secondary); padding: 30px; border-radius: var(--border-radius); box-shadow: var(--shadow); max-width: 500px; width: 90%; z-index: 103; display: none;">
+            <h2 style="margin-bottom: 20px; color: var(--color-primary);">Connect to Another User</h2>
+            
+            <div style="margin-bottom: 20px; padding: 15px; background: var(--color-bg-dark); border-radius: 8px; border: 2px dashed var(--color-primary);">
+                <label style="display: block; font-size: 14px; color: var(--color-text-gray); margin-bottom: 8px;">Your Peer ID (share this):</label>
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <input type="text" id="myPeerId" readonly style="flex: 1; padding: 10px; background: var(--color-bg-secondary); border: 1px solid var(--color-border, #444); border-radius: 6px; color: var(--color-text-light); font-family: monospace; font-size: 14px;" value="Connecting...">
+                    <button id="copyMyId" style="padding: 10px 16px; background: var(--color-primary); color: white; border: none; border-radius: 6px; cursor: pointer; white-space: nowrap;">Copy</button>
+                </div>
+            </div>
+
+            <div style="margin-bottom: 20px;">
+                <label style="display: block; font-size: 14px; color: var(--color-text-gray); margin-bottom: 8px;">Enter Remote Peer ID:</label>
+                <input type="text" id="remotePeerId" placeholder="paste-peer-id-here" style="width: 100%; padding: 10px; background: var(--color-bg-dark); border: 1px solid var(--color-border, #444); border-radius: 6px; color: var(--color-text-light); font-family: monospace; font-size: 14px;">
+            </div>
+
+            <div style="display: flex; gap: 10px;">
+                <button id="callPeer" style="flex: 1; padding: 12px; background: var(--color-success); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 16px;">Start Call</button>
+                <button id="closePeerModal" style="padding: 12px 20px; background: var(--color-error); color: white; border: none; border-radius: 8px; cursor: pointer;">Cancel</button>
+            </div>
+
+            <div style="margin-top: 15px; padding: 12px; background: rgba(14, 165, 233, 0.1); border-radius: 6px; border-left: 3px solid var(--color-primary);">
+                <p style="font-size: 12px; color: var(--color-text-gray); margin: 0;">
+                    <strong>Instructions:</strong><br>
+                    1. Copy your Peer ID and send it to your other laptop<br>
+                    2. On the other laptop, paste this ID and click "Start Call"<br>
+                    3. Both laptops will connect automatically!
+                </p>
+            </div>
+        </div>
+
+        <!-- Controls Bar -->
+        <div class="controls-bar">
+            <button id="toggleCamera" class="control-btn" aria-label="Toggle Camera">
+                <span id="cameraIcon">📹</span>
+            </button>
+            <button id="toggleMic" class="control-btn" aria-label="Toggle Microphone">
+                <span id="micIcon">🎤</span>
+            </button>
+            <button id="endCall" class="control-btn" aria-label="End Call">
+                📞
+            </button>
+            <button id="copyLink" class="control-btn" aria-label="Copy Invite Link">
+                🔗
+            </button>
+            <button id="showPeerModal" class="control-btn" aria-label="Connect to Peer" style="background: var(--color-success);">
+                ➕
+            </button>
+        </div>
+
+        <!-- Toast Notification -->
+        <div id="toast">
+            <span id="toastMessage">Link copied!</span>
+        </div>
+    </div>
+
+    <script>
+        // SkillLink Meet - Video Call Application
+        // Frontend-only video calling with WebRTC preparation
+
+        // Global state
+        let localStream = null;
+        let isCameraOn = true;
+        let isMicOn = true;
+        const MOCK_INVITE_URL = 'https://skilllink.app/meet/abc-def-ghi';
+        
+        // WebRTC PeerJS state
+        let peer = null;
+        let currentCall = null;
+        let myPeerId = null;
+
+        // DOM Elements
+        const elements = {
+            localVideo: document.getElementById('localVideo'),
+            loadingOverlay: document.getElementById('loadingOverlay'),
+            errorContainer: document.getElementById('errorContainer'),
+            errorTitle: document.getElementById('errorTitle'),
+            errorMessage: document.getElementById('errorMessage'),
+            closeError: document.getElementById('closeError'),
+            videoPlaceholder: document.getElementById('videoPlaceholder'),
+            toggleCamera: document.getElementById('toggleCamera'),
+            toggleMic: document.getElementById('toggleMic'),
+            endCall: document.getElementById('endCall'),
+            copyLink: document.getElementById('copyLink'),
+            cameraIcon: document.getElementById('cameraIcon'),
+            micIcon: document.getElementById('micIcon'),
+            toast: document.getElementById('toast'),
+            toastMessage: document.getElementById('toastMessage'),
+            meetingStatus: document.getElementById('meetingStatus')
+        };
+
+        // Initialize media on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            initializeMedia();
+            setupEventListeners();
+            initializePeerJS();
+        });
+
+        /**
+         * Initialize camera and microphone access
+         * Requests getUserMedia and handles the stream
+         */
+        async function initializeMedia() {
+            try {
+                // Request both video and audio
+                const constraints = {
+                    video: {
+                        width: { ideal: 1280 },
+                        height: { ideal: 720 },
+                        facingMode: 'user'
+                    },
+                    audio: {
+                        echoCancellation: true,
+                        noiseSuppression: true,
+                        autoGainControl: true
+                    }
+                };
+
+                console.log('Requesting media devices...');
+                localStream = await navigator.mediaDevices.getUserMedia(constraints);
+                
+                // Attach stream to video element
+                elements.localVideo.srcObject = localStream;
+                
+                // Hide loading overlay
+                elements.loadingOverlay.classList.add('hidden');
+                
+                console.log('Media devices initialized successfully');
+                
+                // WebRTC Integration Point #1: Add local stream to peer connection
+                // Example:
+                // localStream.getTracks().forEach(track => {
+                //     peerConnection.addTrack(track, localStream);
+                // });
+                
+            } catch (error) {
+                console.error('Error accessing media devices:', error);
+                handleMediaError(error);
+            }
+        }
+
+        /**
+         * Handle media access errors
+         * @param {Error} error - The error object from getUserMedia
+         */
+        function handleMediaError(error) {
+            elements.loadingOverlay.classList.add('hidden');
+            elements.errorContainer.classList.add('active');
+            
+            let errorTitle = 'Permission Denied';
+            let errorMessage = 'Unable to access camera or microphone. Please check your browser settings and grant permissions.';
+            
+            if (error.name === 'NotAllowedError' || error.name === 'PermissionDeniedError') {
+                errorTitle = 'Permission Denied';
+                errorMessage = 'You denied access to camera/microphone. Please click the camera icon in your browser\'s address bar and allow access, then refresh the page.';
+            } else if (error.name === 'NotFoundError' || error.name === 'DevicesNotFoundError') {
+                errorTitle = 'No Devices Found';
+                errorMessage = 'No camera or microphone detected. Please connect a device and try again.';
+            } else if (error.name === 'NotReadableError' || error.name === 'TrackStartError') {
+                errorTitle = 'Device In Use';
+                errorMessage = 'Your camera or microphone is already in use by another application. Please close other apps and try again.';
+            } else if (error.name === 'OverconstrainedError') {
+                errorTitle = 'Device Constraints Error';
+                errorMessage = 'Your device doesn\'t support the requested video/audio quality. Please try again.';
+            }
+            
+            elements.errorTitle.textContent = errorTitle;
+            elements.errorMessage.textContent = errorMessage;
+        }
+
+        /**
+         * Setup event listeners for all controls
+         */
+        function setupEventListeners() {
+            elements.toggleCamera.addEventListener('click', toggleCamera);
+            elements.toggleMic.addEventListener('click', toggleMic);
+            elements.endCall.addEventListener('click', endCall);
+            elements.copyLink.addEventListener('click', copyInviteLink);
+            elements.closeError.addEventListener('click', () => {
+                elements.errorContainer.classList.remove('active');
+            });
+            
+            // Peer connection controls
+            document.getElementById('showPeerModal').addEventListener('click', showPeerModal);
+            document.getElementById('closePeerModal').addEventListener('click', closePeerModal);
+            document.getElementById('callPeer').addEventListener('click', callPeer);
+            document.getElementById('copyMyId').addEventListener('click', copyMyPeerId);
+        }
+
+        /**
+         * Toggle camera on/off
+         */
+        function toggleCamera() {
+            if (!localStream) return;
+            
+            const videoTrack = localStream.getVideoTracks()[0];
+            if (!videoTrack) return;
+            
+            isCameraOn = !isCameraOn;
+            videoTrack.enabled = isCameraOn;
+            
+            // Update UI
+            elements.toggleCamera.classList.toggle('off', !isCameraOn);
+            elements.cameraIcon.textContent = isCameraOn ? '📹' : '🚫';
+            elements.videoPlaceholder.classList.toggle('active', !isCameraOn);
+            
+            // Update button label
+            elements.toggleCamera.setAttribute('aria-label', 
+                isCameraOn ? 'Turn Camera Off' : 'Turn Camera On'
+            );
+            
+            console.log(`Camera ${isCameraOn ? 'enabled' : 'disabled'}`);
+            
+            // WebRTC Integration Point #2: Renegotiate when toggling tracks
+            // Example:
+            // if (peerConnection) {
+            //     peerConnection.getSenders().forEach(sender => {
+            //         if (sender.track && sender.track.kind === 'video') {
+            //             sender.track.enabled = isCameraOn;
+            //         }
+            //     });
+            // }
+        }
+
+        /**
+         * Toggle microphone on/off
+         */
+        function toggleMic() {
+            if (!localStream) return;
+            
+            const audioTrack = localStream.getAudioTracks()[0];
+            if (!audioTrack) return;
+            
+            isMicOn = !isMicOn;
+            audioTrack.enabled = isMicOn;
+            
+            // Update UI
+            elements.toggleMic.classList.toggle('off', !isMicOn);
+            elements.micIcon.textContent = isMicOn ? '🎤' : '🔇';
+            
+            // Update button label
+            elements.toggleMic.setAttribute('aria-label', 
+                isMicOn ? 'Mute Microphone' : 'Unmute Microphone'
+            );
+            
+            console.log(`Microphone ${isMicOn ? 'unmuted' : 'muted'}`);
+            
+            // WebRTC Integration Point #3: Update audio track state
+            // Example:
+            // if (peerConnection) {
+            //     peerConnection.getSenders().forEach(sender => {
+            //         if (sender.track && sender.track.kind === 'audio') {
+            //             sender.track.enabled = isMicOn;
+            //         }
+            //     });
+            // }
+        }
+
+        /**
+         * End the call and redirect to dashboard
+         */
+        function endCall() {
+            // Stop all media tracks
+            if (localStream) {
+                localStream.getTracks().forEach(track => {
+                    track.stop();
+                    console.log(`Stopped ${track.kind} track`);
+                });
+            }
+            
+            // WebRTC Integration Point #4: Close peer connection and cleanup
+            // Example:
+            // if (peerConnection) {
+            //     peerConnection.close();
+            //     peerConnection = null;
+            // }
+            // 
+            // // Disconnect from signaling server
+            // if (signalingChannel) {
+            //     signalingChannel.unsubscribe();
+            //     signalingChannel = null;
+            // }
+            
+            // In production, redirect to dashboard
+            // window.location.href = '/dashboard';
+            
+            // For demo, show alert
+            alert('Call ended. In production, you would be redirected to /dashboard');
+            console.log('Call ended - would redirect to /dashboard');
+        }
+
+        /**
+         * Copy invite link to clipboard
+         */
+        async function copyInviteLink() {
+            try {
+                await navigator.clipboard.writeText(MOCK_INVITE_URL);
+                showToast('Invite link copied!');
+                console.log('Invite link copied:', MOCK_INVITE_URL);
+            } catch (error) {
+                console.error('Failed to copy link:', error);
+                showToast('Failed to copy link');
+            }
+        }
+
+        /**
+         * Show toast notification
+         * @param {string} message - Message to display
+         */
+        function showToast(message) {
+            elements.toastMessage.textContent = message;
+            elements.toast.classList.add('show');
+            
+            setTimeout(() => {
+                elements.toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // WebRTC Integration Point #5: Setup signaling connection
+        // Example using Supabase Realtime:
+        // 
+        // const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+        // const roomId = 'abc-def-ghi'; // Get from URL params
+        // 
+        // const signalingChannel = supabase.channel(`room:${roomId}`)
+        //     .on('broadcast', { event: 'offer' }, ({ payload }) => {
+        //         handleOffer(payload);
+        //     })
+        //     .on('broadcast', { event: 'answer' }, ({ payload }) => {
+        //         handleAnswer(payload);
+        //     })
+        //     .on('broadcast', { event: 'ice-candidate' }, ({ payload }) => {
+        //         handleIceCandidate(payload);
+        //     })
+        //     .subscribe();
+
+        // WebRTC Integration Point #6: Create peer connection
+        // Example:
+        // 
+        // const configuration = {
+        //     iceServers: [
+        //         { urls: 'stun:stun.l.google.com:19302' },
+        //         { urls: 'stun:stun1.l.google.com:19302' }
+        //     ]
+        // };
+        // 
+        // let peerConnection = new RTCPeerConnection(configuration);
+        // 
+        // // Handle ICE candidates
+        // peerConnection.onicecandidate = (event) => {
+        //     if (event.candidate) {
+        //         signalingChannel.send({
+        //             type: 'broadcast',
+        //             event: 'ice-candidate',
+        //             payload: { candidate: event.candidate }
+        //         });
+        //     }
+        // };
+        // 
+        // // Handle remote stream
+        // peerConnection.ontrack = (event) => {
+        //     const remoteVideo = document.getElementById('remoteVideo');
+        //     remoteVideo.srcObject = event.streams[0];
+        // };
+
+        // WebRTC Integration Point #7: Create and send offer
+        // Example:
+        // 
+        // async function createOffer() {
+        //     const offer = await peerConnection.createOffer();
+        //     await peerConnection.setLocalDescription(offer);
+        //     
+        //     signalingChannel.send({
+        //         type: 'broadcast',
+        //         event: 'offer',
+        //         payload: { sdp: offer }
+        //     });
+        // }
+
+        // WebRTC Integration Point #8: Handle incoming offer and create answer
+        // Example:
+        // 
+        // async function handleOffer(offer) {
+        //     await peerConnection.setRemoteDescription(new RTCSessionDescription(offer.sdp));
+        //     const answer = await peerConnection.createAnswer();
+        //     await peerConnection.setLocalDescription(answer);
+        //     
+        //     signalingChannel.send({
+        //         type: 'broadcast',
+        //         event: 'answer',
+        //         payload: { sdp: answer }
+        //     });
+        // }
+
+        // WebRTC Integration Point #9: Handle incoming answer
+        // Example:
+        // 
+        // async function handleAnswer(answer) {
+        //     await peerConnection.setRemoteDescription(new RTCSessionDescription(answer.sdp));
+        // }
+
+        // WebRTC Integration Point #10: Handle ICE candidates
+        // Example:
+        // 
+        // async function handleIceCandidate(data) {
+        //     try {
+        //         await peerConnection.addIceCandidate(new RTCIceCandidate(data.candidate));
+        //     } catch (error) {
+        //         console.error('Error adding ICE candidate:', error);
+        //     }
+        // }
+
+        /**
+         * Initialize PeerJS for WebRTC signaling
+         */
+        function initializePeerJS() {
+            // Create a new Peer with random ID
+            peer = new Peer({
+                config: {
+                    iceServers: [
+                        { urls: 'stun:stun.l.google.com:19302' },
+                        { urls: 'stun:stun1.l.google.com:19302' }
+                    ]
+                }
+            });
+
+            peer.on('open', (id) => {
+                myPeerId = id;
+                document.getElementById('myPeerId').value = id;
+                console.log('My peer ID:', id);
+                showToast('Connected! Ready to call');
+            });
+
+            peer.on('error', (error) => {
+                console.error('PeerJS error:', error);
+                showToast('Connection error: ' + error.type);
+            });
+
+            // Handle incoming calls
+            peer.on('call', (call) => {
+                console.log('Receiving call from:', call.peer);
+                
+                // Answer the call with our stream
+                call.answer(localStream);
+                currentCall = call;
+
+                // Handle remote stream
+                call.on('stream', (remoteStream) => {
+                    console.log('Received remote stream');
+                    const remoteVideo = document.getElementById('remoteVideo');
+                    remoteVideo.srcObject = remoteStream;
+                    remoteVideo.style.display = 'block';
+                    showToast('Connected to peer!');
+                    
+                    // Update meeting status
+                    elements.meetingStatus.innerHTML = '<span class="status-indicator"></span> Connected - 2 participants';
+                });
+
+                call.on('close', () => {
+                    console.log('Call closed');
+                    const remoteVideo = document.getElementById('remoteVideo');
+                    remoteVideo.srcObject = null;
+                    remoteVideo.style.display = 'none';
+                    showToast('Peer disconnected');
+                    elements.meetingStatus.innerHTML = '<span class="status-indicator"></span> Connected';
+                });
+            });
+        }
+
+        /**
+         * Show peer connection modal
+         */
+        function showPeerModal() {
+            document.getElementById('peerModal').style.display = 'block';
+        }
+
+        /**
+         * Close peer connection modal
+         */
+        function closePeerModal() {
+            document.getElementById('peerModal').style.display = 'none';
+        }
+
+        /**
+         * Call a peer by their ID
+         */
+        function callPeer() {
+            const remotePeerId = document.getElementById('remotePeerId').value.trim();
+            
+            if (!remotePeerId) {
+                showToast('Please enter a peer ID');
+                return;
+            }
+
+            if (!localStream) {
+                showToast('Camera not ready yet');
+                return;
+            }
+
+            console.log('Calling peer:', remotePeerId);
+            
+            // Make the call
+            const call = peer.call(remotePeerId, localStream);
+            currentCall = call;
+
+            // Handle remote stream
+            call.on('stream', (remoteStream) => {
+                console.log('Received remote stream');
+                const remoteVideo = document.getElementById('remoteVideo');
+                remoteVideo.srcObject = remoteStream;
+                remoteVideo.style.display = 'block';
+                showToast('Connected to peer!');
+                closePeerModal();
+                
+                // Update meeting status
+                elements.meetingStatus.innerHTML = '<span class="status-indicator"></span> Connected - 2 participants';
+            });
+
+            call.on('close', () => {
+                console.log('Call closed');
+                const remoteVideo = document.getElementById('remoteVideo');
+                remoteVideo.srcObject = null;
+                remoteVideo.style.display = 'none';
+                showToast('Peer disconnected');
+                elements.meetingStatus.innerHTML = '<span class="status-indicator"></span> Connected';
+            });
+
+            call.on('error', (error) => {
+                console.error('Call error:', error);
+                showToast('Failed to connect: ' + error);
+            });
+        }
+
+        /**
+         * Copy my peer ID to clipboard
+         */
+        async function copyMyPeerId() {
+            const myId = document.getElementById('myPeerId').value;
+            try {
+                await navigator.clipboard.writeText(myId);
+                showToast('Your Peer ID copied!');
+            } catch (error) {
+                console.error('Failed to copy:', error);
+                showToast('Failed to copy ID');
+            }
+        }
+    </script>
+</body>
+</html>

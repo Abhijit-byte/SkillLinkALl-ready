@@ -1,0 +1,1261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SkillLink SkillCredits - Rewarding Learning, Empowering Sharing</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* Design System Variables */
+    :root {
+      --color-white: rgba(255, 255, 255, 1);
+      --color-black: rgba(0, 0, 0, 1);
+      --color-cream-50: rgba(252, 252, 249, 1);
+      --color-cream-100: rgba(255, 255, 253, 1);
+      --color-gray-200: rgba(245, 245, 245, 1);
+      --color-gray-300: rgba(167, 169, 169, 1);
+      --color-gray-400: rgba(119, 124, 124, 1);
+      --color-slate-500: rgba(98, 108, 113, 1);
+      --color-charcoal-700: rgba(31, 33, 33, 1);
+      --color-charcoal-800: rgba(38, 40, 40, 1);
+      --color-slate-900: rgba(19, 52, 59, 1);
+      --color-teal-300: rgba(50, 184, 198, 1);
+      --color-teal-500: rgba(33, 128, 141, 1);
+      --color-teal-600: rgba(29, 116, 128, 1);
+      --color-background: var(--color-cream-50);
+      --color-surface: var(--color-cream-100);
+      --color-text: var(--color-slate-900);
+      --color-text-secondary: var(--color-slate-500);
+      --color-primary: var(--color-teal-500);
+      --color-primary-hover: var(--color-teal-600);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --color-background: var(--color-charcoal-700);
+        --color-surface: var(--color-charcoal-800);
+        --color-text: var(--color-gray-200);
+        --color-text-secondary: rgba(167, 169, 169, 0.7);
+        --color-primary: var(--color-teal-300);
+      }
+    }
+
+    [data-theme="dark"] {
+      --color-background: var(--color-charcoal-700);
+      --color-surface: var(--color-charcoal-800);
+      --color-text: var(--color-gray-200);
+      --color-text-secondary: rgba(167, 169, 169, 0.7);
+      --color-primary: var(--color-teal-300);
+    }
+
+    body {
+      background-color: var(--color-background);
+      color: var(--color-text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    .card {
+      background-color: var(--color-surface);
+      transition: all 0.3s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
+
+    .tab-active {
+      background-color: var(--color-primary);
+      color: white;
+    }
+
+    .progress-bar {
+      transition: width 0.5s ease;
+    }
+
+    /* Confetti Animation */
+    .confetti {
+      position: fixed;
+      width: 10px;
+      height: 10px;
+      background-color: #f0f;
+      position: absolute;
+      animation: confetti-fall 3s ease-out forwards;
+    }
+
+    @keyframes confetti-fall {
+      to {
+        transform: translateY(100vh) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    .bounce {
+      animation: bounce 0.5s ease;
+    }
+
+    @keyframes checkmark {
+      0% { transform: scale(0) rotate(45deg); }
+      50% { transform: scale(1.2) rotate(45deg); }
+      100% { transform: scale(1) rotate(45deg); }
+    }
+
+    .checkmark {
+      animation: checkmark 0.5s ease;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal.active {
+      display: flex;
+    }
+
+    .toast {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 16px 24px;
+      border-radius: 8px;
+      background-color: var(--color-primary);
+      color: white;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      z-index: 2000;
+      animation: slideIn 0.3s ease;
+    }
+
+    @keyframes slideIn {
+      from {
+        transform: translateX(400px);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    .badge-icon {
+      font-size: 2rem;
+    }
+
+    .transaction-type-earn {
+      color: #10b981;
+    }
+
+    .transaction-type-spend {
+      color: #3b82f6;
+    }
+
+    .transaction-type-donate {
+      color: #8b5cf6;
+    }
+    /* Voice Navigation Styles */
+    #voice-mic-btn {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: var(--color-teal-500);
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(var(--color-teal-500-rgb), 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s;
+      z-index: 1000;
+    }
+
+    #voice-mic-btn:hover {
+      transform: scale(1.1);
+      background: var(--color-teal-600);
+    }
+
+    #voice-mic-btn.listening {
+      background: var(--color-green-500);
+      animation: voice-pulse 1s infinite;
+    }
+
+    @keyframes voice-pulse {
+      0%, 100% { box-shadow: 0 4px 12px rgba(34, 197, 94, 0.5); }
+      50% { box-shadow: 0 4px 25px rgba(34, 197, 94, 0.8); }
+    }
+
+    #voice-mic-btn svg {
+      width: 24px;
+      height: 24px;
+      fill: var(--color-white);
+    }
+
+    #voice-status {
+      position: fixed;
+      bottom: 100px;
+      right: 30px;
+      background: var(--color-surface);
+      padding: 15px 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(var(--color-slate-900-rgb), 0.15);
+      border: 1px solid var(--color-card-border);
+      display: none;
+      min-width: 250px;
+      max-width: 350px;
+      z-index: 999;
+      font-size: 14px;
+      color: var(--color-text);
+    }
+
+    #voice-status.show {
+      display: block;
+    }
+     #mic-btn {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: #007bff;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s;
+      z-index: 1000;
+    }
+
+    #mic-btn:hover {
+      transform: scale(1.1);
+    }
+
+    #mic-btn.listening {
+      background: #28a745;
+      animation: pulse 1s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 4px 12px rgba(40, 167, 69, 0.5); }
+      50% { box-shadow: 0 4px 25px rgba(40, 167, 69, 0.8); }
+    }
+
+    #mic-btn svg {
+      width: 24px;
+      height: 24px;
+      fill: white;
+    }
+
+    #status {
+      position: fixed;
+      bottom: 100px;
+      right: 30px;
+      background: white;
+      padding: 15px 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+      display: none;
+      min-width: 250px;
+      max-width: 350px;
+      z-index: 999;
+      font-size: 14px;
+    }
+
+    #status.show {
+      display: block;
+    }
+
+    .command-list {
+      max-width: 800px;
+      margin: 20px auto;
+    }
+
+    .command-section {
+      margin-bottom: 20px;
+      padding: 15px;
+      background: #f8f9fa;
+      border-radius: 8px;
+    }
+
+    .command-section h3 {
+      margin-top: 0;
+      color: #007bff;
+    }
+
+    .command-section ul {
+      margin: 10px 0;
+    }
+
+    .command-section li {
+      margin: 5px 0;
+    }
+  </style>
+</head>
+<body class="min-h-screen">
+  <!-- Header -->
+  <header class="border-b" style="background-color: var(--color-surface); border-color: rgba(119, 124, 124, 0.2);">
+    <div class="container mx-auto px-4 py-4">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <svg class="w-10 h-10" style="color: var(--color-primary);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path>
+          </svg>
+          <div>
+            <h1 class="text-2xl font-bold" style="color: var(--color-text);">SkillLink SkillCredits</h1>
+            <p class="text-sm" style="color: var(--color-text-secondary);">Rewarding Learning. Empowering Sharing.</p>
+          </div>
+        </div>
+        <button id="themeToggle" class="p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition">
+          <svg id="sunIcon" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+          </svg>
+          <svg id="moonIcon" class="w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Navigation Tabs -->
+  <div class="container mx-auto px-4 mt-6">
+    <div class="flex flex-wrap gap-2">
+      <button class="tab-btn tab-active px-6 py-3 rounded-lg font-medium transition" data-tab="wallet">
+        💰 Wallet Overview
+      </button>
+      <button class="tab-btn px-6 py-3 rounded-lg font-medium transition" data-tab="redeem" style="background-color: var(--color-surface);">
+        🎁 Redeem Rewards
+      </button>
+      <button class="tab-btn px-6 py-3 rounded-lg font-medium transition" data-tab="donate" style="background-color: var(--color-surface);">
+        ❤️ Donate to Causes
+      </button>
+      <button class="tab-btn px-6 py-3 rounded-lg font-medium transition" data-tab="history" style="background-color: var(--color-surface);">
+        📜 Transaction History
+      </button>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <main class="container mx-auto px-4 py-8">
+    <!-- Wallet Overview Section -->
+    <section id="wallet" class="tab-content">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Balance Card -->
+        <div class="lg:col-span-2">
+          <div class="card rounded-2xl shadow-md p-8">
+            <div class="text-center mb-6">
+              <p class="text-sm uppercase tracking-wide mb-2" style="color: var(--color-text-secondary);">Current Balance</p>
+              <div class="flex items-center justify-center gap-2">
+                <span id="balanceDisplay" class="text-6xl font-bold" style="color: var(--color-primary);">120</span>
+                <span class="text-3xl font-semibold" style="color: var(--color-text);">SKL</span>
+              </div>
+            </div>
+
+            <!-- Progress to Next Badge -->
+            <div class="mb-6">
+              <div class="flex justify-between items-center mb-2">
+                <span class="text-sm font-medium" style="color: var(--color-text);">Progress to Next Badge</span>
+                <span class="text-sm" style="color: var(--color-text-secondary);" id="progressText">20 SKL to Expert</span>
+              </div>
+              <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3">
+                <div id="progressBar" class="progress-bar h-3 rounded-full" style="background-color: var(--color-primary); width: 60%;"></div>
+              </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+              <button id="earnBtn" class="px-4 py-3 rounded-lg font-medium transition" style="background-color: var(--color-primary); color: white;">
+                💡 Simulate Earn
+              </button>
+              <button class="tab-btn px-4 py-3 rounded-lg font-medium transition" data-tab="redeem" style="background-color: var(--color-surface); border: 1px solid rgba(119, 124, 124, 0.2);">
+                🎁 Redeem
+              </button>
+              <button class="tab-btn px-4 py-3 rounded-lg font-medium transition" data-tab="donate" style="background-color: var(--color-surface); border: 1px solid rgba(119, 124, 124, 0.2);">
+                ❤️ Donate
+              </button>
+              <button class="tab-btn px-4 py-3 rounded-lg font-medium transition" data-tab="history" style="background-color: var(--color-surface); border: 1px solid rgba(119, 124, 124, 0.2);">
+                📜 History
+              </button>
+            </div>
+          </div>
+
+          <!-- Recent Transactions -->
+          <div class="card rounded-2xl shadow-md p-6 mt-6">
+            <h3 class="text-xl font-bold mb-4" style="color: var(--color-text);">Recent Transactions</h3>
+            <div id="recentTransactions" class="space-y-3">
+              <!-- Transactions will be inserted here -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Badges & Achievements -->
+        <div>
+          <div class="card rounded-2xl shadow-md p-6">
+            <h3 class="text-xl font-bold mb-4" style="color: var(--color-text);">Your Badge</h3>
+            <div id="currentBadge" class="text-center py-6">
+              <!-- Badge will be inserted here -->
+            </div>
+          </div>
+
+          <div class="card rounded-2xl shadow-md p-6 mt-6">
+            <h3 class="text-xl font-bold mb-4" style="color: var(--color-text);">All Badges</h3>
+            <div id="allBadges" class="space-y-3">
+              <!-- All badges will be listed here -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Redeem Rewards Section -->
+    <section id="redeem" class="tab-content hidden">
+      <h2 class="text-3xl font-bold mb-6" style="color: var(--color-text);">Redeem Your Credits</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="rewardsGrid">
+        <!-- Reward cards will be inserted here -->
+      </div>
+    </section>
+
+    <!-- Donate to Causes Section -->
+    <section id="donate" class="tab-content hidden">
+      <h2 class="text-3xl font-bold mb-6" style="color: var(--color-text);">Support Community Causes</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="causesGrid">
+        <!-- Cause cards will be inserted here -->
+      </div>
+    </section>
+
+    <!-- Transaction History Section -->
+    <section id="history" class="tab-content hidden">
+      <div class="card rounded-2xl shadow-md p-6">
+        <div class="flex flex-wrap justify-between items-center mb-6 gap-4">
+          <h2 class="text-2xl font-bold" style="color: var(--color-text);">Transaction History</h2>
+          <div class="flex gap-2">
+            <select id="filterType" class="px-4 py-2 rounded-lg" style="background-color: var(--color-surface); border: 1px solid rgba(119, 124, 124, 0.2);">
+              <option value="all">All Types</option>
+              <option value="earn">Earned</option>
+              <option value="spend">Spent</option>
+              <option value="donate">Donated</option>
+            </select>
+            <button id="exportBtn" class="px-4 py-2 rounded-lg font-medium transition" style="background-color: var(--color-primary); color: white;">
+              📥 Export CSV
+            </button>
+          </div>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full">
+            <thead>
+              <tr class="border-b" style="border-color: rgba(119, 124, 124, 0.2);">
+                <th class="text-left py-3 px-4 font-semibold" style="color: var(--color-text);">Type</th>
+                <th class="text-left py-3 px-4 font-semibold" style="color: var(--color-text);">Amount</th>
+                <th class="text-left py-3 px-4 font-semibold" style="color: var(--color-text);">Reason</th>
+                <th class="text-left py-3 px-4 font-semibold" style="color: var(--color-text);">Date</th>
+              </tr>
+            </thead>
+            <tbody id="transactionTable">
+              <!-- Transaction rows will be inserted here -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Redeem Confirmation Modal -->
+  <div id="redeemModal" class="modal">
+    <div class="card rounded-2xl shadow-2xl p-8 max-w-md w-full mx-4">
+      <h3 class="text-2xl font-bold mb-4" style="color: var(--color-text);">Confirm Redemption</h3>
+      <p class="mb-2" style="color: var(--color-text);">Reward: <span id="redeemRewardName" class="font-semibold"></span></p>
+      <p class="mb-4" style="color: var(--color-text);">Cost: <span id="redeemRewardCost" class="font-semibold" style="color: var(--color-primary);"></span> SKL</p>
+      <p class="mb-6 text-sm" style="color: var(--color-text-secondary);">Your current balance: <span id="redeemCurrentBalance"></span> SKL</p>
+      <div class="flex gap-3">
+        <button id="confirmRedeem" class="flex-1 px-6 py-3 rounded-lg font-medium transition" style="background-color: var(--color-primary); color: white;">
+          Confirm
+        </button>
+        <button id="cancelRedeem" class="flex-1 px-6 py-3 rounded-lg font-medium transition" style="background-color: var(--color-surface); border: 1px solid rgba(119, 124, 124, 0.2);">
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Donate Modal -->
+  <div id="donateModal" class="modal">
+    <div class="card rounded-2xl shadow-2xl p-8 max-w-md w-full mx-4">
+      <h3 class="text-2xl font-bold mb-4" style="color: var(--color-text);">Make a Donation</h3>
+      <p class="mb-4" style="color: var(--color-text);">Cause: <span id="donateCauseName" class="font-semibold"></span></p>
+      <div class="mb-4">
+        <label class="block mb-2 font-medium" style="color: var(--color-text);">Amount (SKL)</label>
+        <input type="number" id="donateAmount" min="1" placeholder="Enter amount" class="w-full px-4 py-2 rounded-lg" style="background-color: var(--color-surface); border: 1px solid rgba(119, 124, 124, 0.2);">
+      </div>
+      <div class="flex gap-2 mb-6">
+        <button class="preset-amount flex-1 px-4 py-2 rounded-lg font-medium transition" data-amount="5" style="background-color: var(--color-surface); border: 1px solid rgba(119, 124, 124, 0.2);">5 SKL</button>
+        <button class="preset-amount flex-1 px-4 py-2 rounded-lg font-medium transition" data-amount="10" style="background-color: var(--color-surface); border: 1px solid rgba(119, 124, 124, 0.2);">10 SKL</button>
+        <button class="preset-amount flex-1 px-4 py-2 rounded-lg font-medium transition" data-amount="25" style="background-color: var(--color-surface); border: 1px solid rgba(119, 124, 124, 0.2);">25 SKL</button>
+        <button class="preset-amount flex-1 px-4 py-2 rounded-lg font-medium transition" data-amount="50" style="background-color: var(--color-surface); border: 1px solid rgba(119, 124, 124, 0.2);">50 SKL</button>
+      </div>
+      <p class="mb-6 text-sm" style="color: var(--color-text-secondary);">Your current balance: <span id="donateCurrentBalance"></span> SKL</p>
+      <div class="flex gap-3">
+        <button id="confirmDonate" class="flex-1 px-6 py-3 rounded-lg font-medium transition" style="background-color: var(--color-primary); color: white;">
+          Donate
+        </button>
+        <button id="cancelDonate" class="flex-1 px-6 py-3 rounded-lg font-medium transition" style="background-color: var(--color-surface); border: 1px solid rgba(119, 124, 124, 0.2);">
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ==========================================
+    // DATA MANAGEMENT (In-Memory Storage)
+    // NOTE: Using JavaScript variables instead of localStorage due to sandbox restrictions
+    // TODO: POST /api/credits/wallet - fetch wallet data from backend
+    // TODO: POST /api/credits/transactions - sync transactions with backend
+    // ==========================================
+
+    let walletData = {
+      userId: "demoUser",
+      balance: 120,
+      transactions: [
+        { id: "t1", type: "earn", amount: 50, reason: "Hosted Workshop: JavaScript Fundamentals", date: "2025-10-20" },
+        { id: "t2", type: "spend", amount: 20, reason: "Redeemed: Profile Boost", date: "2025-10-21" },
+        { id: "t3", type: "donate", amount: 15, reason: "Women in Tech Initiative", date: "2025-10-22" },
+        { id: "t4", type: "earn", amount: 30, reason: "Completed SkillSwap: Python Tutoring", date: "2025-10-23" },
+        { id: "t5", type: "earn", amount: 25, reason: "Mentored Student: Web Development", date: "2025-10-24" }
+      ]
+    };
+
+    const rewards = [
+      { name: "Profile Boost", cost: 50, description: "Highlight your profile for 7 days", icon: "⭐" },
+      { name: "Featured Listing", cost: 100, description: "Feature your skills prominently", icon: "⚡" },
+      { name: "Mentorship Voucher", cost: 200, description: "Get 1-on-1 mentorship session", icon: "🎓" }
+    ];
+
+    const causes = [
+      { name: "Women in Tech Initiative", description: "Supporting women entering technology careers", icon: "👥" },
+      { name: "Rural Education Drive", description: "Bringing digital education to rural communities", icon: "📚" },
+      { name: "Open Source Community Fund", description: "Supporting open source project development", icon: "💻" },
+      { name: "Digital Literacy Program", description: "Teaching digital skills to underserved populations", icon: "🖥️" }
+    ];
+
+    const badges = [
+      { name: "Novice", range: [0, 50], icon: "⭐", color: "#9ca3af" },
+      { name: "Explorer", range: [51, 100], icon: "🔥", color: "#3b82f6" },
+      { name: "Expert", range: [101, 200], icon: "⚡", color: "#8b5cf6" },
+      { name: "Master", range: [201, Infinity], icon: "🏆", color: "#f59e0b" }
+    ];
+
+    const earnReasons = [
+      "Completed SkillSwap Session",
+      "Hosted Workshop",
+      "Mentored Student",
+      "Shared Knowledge Article",
+      "Helped Community Member",
+      "Led Study Group"
+    ];
+
+    // ==========================================
+    // HELPER FUNCTIONS
+    // ==========================================
+
+    function getWallet() {
+      return walletData;
+    }
+
+    function saveWallet(data) {
+      walletData = data;
+      updateUI();
+    }
+
+    function addTransaction(type, amount, reason) {
+      const transaction = {
+        id: `t${Date.now()}`,
+        type,
+        amount,
+        reason,
+        date: new Date().toISOString().split('T')[0]
+      };
+      walletData.transactions.unshift(transaction);
+      // TODO: POST /api/credits/transactions - sync with backend
+    }
+
+    function updateBalance(amount) {
+      walletData.balance += amount;
+      updateUI();
+    }
+
+    function getCurrentBadge() {
+      const balance = walletData.balance;
+      return badges.find(badge => balance >= badge.range[0] && balance <= badge.range[1]);
+    }
+
+    function getNextBadge() {
+      const balance = walletData.balance;
+      return badges.find(badge => balance < badge.range[0]);
+    }
+
+    function showToast(message, duration = 3000) {
+      const toast = document.createElement('div');
+      toast.className = 'toast';
+      toast.textContent = message;
+      document.body.appendChild(toast);
+      setTimeout(() => {
+        toast.remove();
+      }, duration);
+    }
+
+    function createConfetti() {
+      const colors = ['#f59e0b', '#3b82f6', '#8b5cf6', '#10b981', '#ef4444', '#ec4899'];
+      for (let i = 0; i < 50; i++) {
+        const confetti = document.createElement('div');
+        confetti.className = 'confetti';
+        confetti.style.left = Math.random() * window.innerWidth + 'px';
+        confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        confetti.style.animationDelay = Math.random() * 0.3 + 's';
+        document.body.appendChild(confetti);
+        setTimeout(() => confetti.remove(), 3000);
+      }
+    }
+
+    // ==========================================
+    // UI UPDATE FUNCTIONS
+    // ==========================================
+
+    function updateUI() {
+      updateBalanceDisplay();
+      updateProgressBar();
+      updateCurrentBadge();
+      updateAllBadges();
+      updateRecentTransactions();
+      updateTransactionTable();
+    }
+
+    function updateBalanceDisplay() {
+      document.getElementById('balanceDisplay').textContent = walletData.balance;
+    }
+
+    function updateProgressBar() {
+      const currentBadge = getCurrentBadge();
+      const nextBadge = getNextBadge();
+      
+      if (nextBadge) {
+        const currentMin = currentBadge.range[0];
+        const nextMin = nextBadge.range[0];
+        const progress = ((walletData.balance - currentMin) / (nextMin - currentMin)) * 100;
+        const remaining = nextMin - walletData.balance;
+        
+        document.getElementById('progressBar').style.width = Math.min(progress, 100) + '%';
+        document.getElementById('progressText').textContent = `${remaining} SKL to ${nextBadge.name}`;
+      } else {
+        document.getElementById('progressBar').style.width = '100%';
+        document.getElementById('progressText').textContent = 'Maximum Badge Achieved!';
+      }
+    }
+
+    function updateCurrentBadge() {
+      const badge = getCurrentBadge();
+      document.getElementById('currentBadge').innerHTML = `
+        <div class="badge-icon mb-3">${badge.icon}</div>
+        <h4 class="text-2xl font-bold mb-2" style="color: ${badge.color};">${badge.name}</h4>
+        <p class="text-sm" style="color: var(--color-text-secondary);">${badge.range[0]}-${badge.range[1] === Infinity ? '∞' : badge.range[1]} SKL</p>
+      `;
+    }
+
+    function updateAllBadges() {
+      const balance = walletData.balance;
+      document.getElementById('allBadges').innerHTML = badges.map(badge => {
+        const achieved = balance >= badge.range[0];
+        return `
+          <div class="flex items-center gap-3 p-3 rounded-lg" style="background-color: ${achieved ? 'rgba(33, 128, 141, 0.1)' : 'var(--color-surface)'}; border: 1px solid rgba(119, 124, 124, 0.2);">
+            <span class="text-2xl ${achieved ? '' : 'opacity-30'}">${badge.icon}</span>
+            <div class="flex-1">
+              <p class="font-semibold" style="color: var(--color-text);">${badge.name}</p>
+              <p class="text-xs" style="color: var(--color-text-secondary);">${badge.range[0]}-${badge.range[1] === Infinity ? '∞' : badge.range[1]} SKL</p>
+            </div>
+            ${achieved ? '<span class="text-green-500 text-sm">✓</span>' : ''}
+          </div>
+        `;
+      }).join('');
+    }
+
+    function updateRecentTransactions() {
+      const recent = walletData.transactions.slice(0, 5);
+      document.getElementById('recentTransactions').innerHTML = recent.map(t => `
+        <div class="flex items-center justify-between p-3 rounded-lg" style="background-color: var(--color-surface); border: 1px solid rgba(119, 124, 124, 0.1);">
+          <div class="flex items-center gap-3 flex-1">
+            <span class="text-2xl">${getTransactionIcon(t.type)}</span>
+            <div class="flex-1">
+              <p class="font-medium" style="color: var(--color-text);">${t.reason}</p>
+              <p class="text-xs" style="color: var(--color-text-secondary);">${t.date}</p>
+            </div>
+          </div>
+          <span class="font-bold transaction-type-${t.type}">
+            ${t.type === 'earn' ? '+' : '-'}${t.amount} SKL
+          </span>
+        </div>
+      `).join('');
+    }
+
+    function updateTransactionTable() {
+      const filterType = document.getElementById('filterType').value;
+      const filtered = filterType === 'all' 
+        ? walletData.transactions 
+        : walletData.transactions.filter(t => t.type === filterType);
+      
+      document.getElementById('transactionTable').innerHTML = filtered.map(t => `
+        <tr class="border-b hover:bg-gray-50 dark:hover:bg-gray-800" style="border-color: rgba(119, 124, 124, 0.1);">
+          <td class="py-3 px-4">
+            <span class="inline-flex items-center gap-2 font-medium transaction-type-${t.type}">
+              ${getTransactionIcon(t.type)} ${t.type.charAt(0).toUpperCase() + t.type.slice(1)}
+            </span>
+          </td>
+          <td class="py-3 px-4 font-bold transaction-type-${t.type}">
+            ${t.type === 'earn' ? '+' : '-'}${t.amount} SKL
+          </td>
+          <td class="py-3 px-4" style="color: var(--color-text);">${t.reason}</td>
+          <td class="py-3 px-4" style="color: var(--color-text-secondary);">${t.date}</td>
+        </tr>
+      `).join('');
+    }
+
+    function getTransactionIcon(type) {
+      const icons = { earn: '💰', spend: '🎁', donate: '❤️' };
+      return icons[type] || '📝';
+    }
+
+    // ==========================================
+    // RENDER REWARDS AND CAUSES
+    // ==========================================
+
+    function renderRewards() {
+      document.getElementById('rewardsGrid').innerHTML = rewards.map(reward => `
+        <div class="card rounded-2xl shadow-md p-6">
+          <div class="text-center mb-4">
+            <span class="text-5xl">${reward.icon}</span>
+          </div>
+          <h3 class="text-xl font-bold mb-2" style="color: var(--color-text);">${reward.name}</h3>
+          <p class="text-sm mb-4" style="color: var(--color-text-secondary);">${reward.description}</p>
+          <div class="flex items-center justify-between">
+            <span class="text-2xl font-bold" style="color: var(--color-primary);">${reward.cost} SKL</span>
+            <button class="redeem-btn px-4 py-2 rounded-lg font-medium transition" data-name="${reward.name}" data-cost="${reward.cost}" style="background-color: var(--color-primary); color: white;">
+              Redeem
+            </button>
+          </div>
+        </div>
+      `).join('');
+
+      // Add event listeners
+      document.querySelectorAll('.redeem-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const name = btn.dataset.name;
+          const cost = parseInt(btn.dataset.cost);
+          openRedeemModal(name, cost);
+        });
+      });
+    }
+
+    function renderCauses() {
+      document.getElementById('causesGrid').innerHTML = causes.map(cause => `
+        <div class="card rounded-2xl shadow-md p-6">
+          <div class="flex items-start gap-4">
+            <span class="text-4xl">${cause.icon}</span>
+            <div class="flex-1">
+              <h3 class="text-xl font-bold mb-2" style="color: var(--color-text);">${cause.name}</h3>
+              <p class="text-sm mb-4" style="color: var(--color-text-secondary);">${cause.description}</p>
+              <button class="donate-btn px-6 py-2 rounded-lg font-medium transition" data-name="${cause.name}" style="background-color: var(--color-primary); color: white;">
+                ❤️ Donate
+              </button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+
+      // Add event listeners
+      document.querySelectorAll('.donate-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const name = btn.dataset.name;
+          openDonateModal(name);
+        });
+      });
+    }
+
+    // ==========================================
+    // MODAL FUNCTIONS
+    // ==========================================
+
+    let currentReward = null;
+    let currentCause = null;
+
+    function openRedeemModal(name, cost) {
+      if (walletData.balance < cost) {
+        showToast('❌ Insufficient balance!');
+        return;
+      }
+      currentReward = { name, cost };
+      document.getElementById('redeemRewardName').textContent = name;
+      document.getElementById('redeemRewardCost').textContent = cost;
+      document.getElementById('redeemCurrentBalance').textContent = walletData.balance;
+      document.getElementById('redeemModal').classList.add('active');
+    }
+
+    function closeRedeemModal() {
+      document.getElementById('redeemModal').classList.remove('active');
+      currentReward = null;
+    }
+
+    function openDonateModal(name) {
+      currentCause = name;
+      document.getElementById('donateCauseName').textContent = name;
+      document.getElementById('donateAmount').value = '';
+      document.getElementById('donateCurrentBalance').textContent = walletData.balance;
+      document.getElementById('donateModal').classList.add('active');
+    }
+
+    function closeDonateModal() {
+      document.getElementById('donateModal').classList.remove('active');
+      currentCause = null;
+    }
+
+    // ==========================================
+    // ACTION HANDLERS
+    // ==========================================
+
+    function handleEarn() {
+      const amount = 20;
+      const reason = earnReasons[Math.floor(Math.random() * earnReasons.length)];
+      
+      addTransaction('earn', amount, reason);
+      updateBalance(amount);
+      createConfetti();
+      showToast(`🎉 Earned ${amount} SKL!`);
+      
+      // Animate balance
+      document.getElementById('balanceDisplay').classList.add('bounce');
+      setTimeout(() => {
+        document.getElementById('balanceDisplay').classList.remove('bounce');
+      }, 500);
+      
+      // TODO: POST /api/credits/earn - sync with backend
+    }
+
+    function handleRedeem() {
+      if (!currentReward) return;
+      
+      const { name, cost } = currentReward;
+      
+      if (walletData.balance < cost) {
+        showToast('❌ Insufficient balance!');
+        closeRedeemModal();
+        return;
+      }
+      
+      addTransaction('spend', cost, `Redeemed: ${name}`);
+      updateBalance(-cost);
+      closeRedeemModal();
+      showToast(`✅ Successfully redeemed ${name}!`);
+      
+      // TODO: POST /api/credits/redeem - sync with backend
+    }
+
+    function handleDonate() {
+      if (!currentCause) return;
+      
+      const amount = parseInt(document.getElementById('donateAmount').value);
+      
+      if (!amount || amount <= 0) {
+        showToast('❌ Please enter a valid amount!');
+        return;
+      }
+      
+      if (walletData.balance < amount) {
+        showToast('❌ Insufficient balance!');
+        return;
+      }
+      
+      addTransaction('donate', amount, currentCause);
+      updateBalance(-amount);
+      closeDonateModal();
+      showToast(`💖 Thank you for donating ${amount} SKL!`);
+      
+      // TODO: POST /api/credits/donate - sync with backend
+    }
+
+    function exportCSV() {
+      const headers = ['Type', 'Amount', 'Reason', 'Date'];
+      const rows = walletData.transactions.map(t => [
+        t.type,
+        t.type === 'earn' ? `+${t.amount}` : `-${t.amount}`,
+        t.reason,
+        t.date
+      ]);
+      
+      const csv = [headers, ...rows].map(row => row.join(',')).join('\n');
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `skillcredits-transactions-${Date.now()}.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+      
+      showToast('📥 CSV exported successfully!');
+    }
+
+    // ==========================================
+    // TAB NAVIGATION
+    // ==========================================
+
+    function switchTab(tabName) {
+      // Hide all tabs
+      document.querySelectorAll('.tab-content').forEach(tab => {
+        tab.classList.add('hidden');
+      });
+      
+      // Show selected tab
+      document.getElementById(tabName).classList.remove('hidden');
+      
+      // Update button styles
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('tab-active');
+        btn.style.backgroundColor = 'var(--color-surface)';
+        btn.style.color = 'var(--color-text)';
+      });
+      
+      document.querySelectorAll(`[data-tab="${tabName}"]`).forEach(btn => {
+        btn.classList.add('tab-active');
+        btn.style.backgroundColor = 'var(--color-primary)';
+        btn.style.color = 'white';
+      });
+    }
+
+    // ==========================================
+    // THEME TOGGLE
+    // ==========================================
+
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      
+      html.setAttribute('data-theme', newTheme);
+      
+      // Toggle icons
+      document.getElementById('sunIcon').classList.toggle('hidden');
+      document.getElementById('moonIcon').classList.toggle('hidden');
+    }
+
+    // ==========================================
+    // EVENT LISTENERS
+    // ==========================================
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // Initialize UI
+      updateUI();
+      renderRewards();
+      renderCauses();
+      
+      // Tab navigation
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          switchTab(btn.dataset.tab);
+        });
+      });
+      
+      // Earn button
+      document.getElementById('earnBtn').addEventListener('click', handleEarn);
+      
+      // Redeem modal
+      document.getElementById('confirmRedeem').addEventListener('click', handleRedeem);
+      document.getElementById('cancelRedeem').addEventListener('click', closeRedeemModal);
+      
+      // Donate modal
+      document.getElementById('confirmDonate').addEventListener('click', handleDonate);
+      document.getElementById('cancelDonate').addEventListener('click', closeDonateModal);
+      
+      // Preset donation amounts
+      document.querySelectorAll('.preset-amount').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.getElementById('donateAmount').value = btn.dataset.amount;
+        });
+      });
+      
+      // Filter transactions
+      document.getElementById('filterType').addEventListener('change', updateTransactionTable);
+      
+      // Export CSV
+      document.getElementById('exportBtn').addEventListener('click', exportCSV);
+      
+      // Theme toggle
+      document.getElementById('themeToggle').addEventListener('click', toggleTheme);
+      
+      // Close modals on outside click
+      document.querySelectorAll('.modal').forEach(modal => {
+        modal.addEventListener('click', (e) => {
+          if (e.target === modal) {
+            closeRedeemModal();
+            closeDonateModal();
+          }
+        });
+      });
+    });
+
+  </script>
+  <div id="status"></div>
+
+  <button id="mic-btn">
+    <svg viewBox="0 0 24 24">
+      <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/>
+      <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/>
+    </svg>
+  </button>
+
+  <script>
+    const micBtn = document.getElementById('mic-btn');
+    const status = document.getElementById('status');
+
+    // Route configuration with multiple keyword variations
+    const ROUTES = {
+      // Main pages
+      home: {
+        path: '/index',
+        keywords: ['home', 'homepage', 'main page', 'start'],
+        display: 'Home'
+      },
+      dashboard: {
+        path: '/dashboard',
+        keywords: ['dashboard', 'overview', 'main'],
+        display: 'Dashboard'
+      },
+      
+      // Booking
+      booking: {
+        path: '/mybookings',
+        keywords: ['booking', 'book', 'appointment', 'schedule', 'session', 'reserve'],
+        display: 'Booking'
+      },
+      myBookings: {
+        path: '/mybookings',
+        keywords: ['my booking', 'scheduled', 'my session', 'my appointment'],
+        display: 'My Bookings'
+      },
+      
+      // Community & Communication
+      community: {
+        path: '/feed',
+        keywords: ['community', 'community page', 'members', 'network'],
+        display: 'Community'
+      },
+      chat: {
+        path: '/index',
+        keywords: ['chat', 'message', 'inbox', 'conversation', 'dm'],
+        display: 'Chat'
+      },
+      skillSwap: {
+        path: '/swap',
+        keywords: ['skill swap', 'swap', 'exchange', 'trade skill'],
+        display: 'Skill Swap'
+      },
+      
+      // Resources
+      resources: {
+        path: '/resources',
+        keywords: ['resource', 'learning resource', 'material', 'content'],
+        display: 'Resources'
+      },
+      
+      
+      // Skill Credits
+      skillCredits: {
+        path: '/credits',
+        keywords: ['skill credit', 'credit', 'wallet', 'balance', 'my credit'],
+        display: 'Skill Credits'
+      },
+      earnCredits: {
+        path: '/credits',
+        keywords: ['earn credit', 'get credit', 'buy credit', 'purchase credit'],
+        display: 'Earn Credits'
+      },
+      
+      // Profile & Settings
+      myProfile: {
+        path: '{% url 'profile' %}',
+        keywords: ['my profile', 'profile page', 'my account','profile','my account'],
+        display: 'My Profile'
+      },
+      map: {
+        path: '/map',
+        keywords: ['map', 'location', 'directions', 'find','nearby'],
+        display: 'Map'
+      },
+      
+      // Auth
+      login: {
+        path: '/index',
+        keywords: ['login', 'sign in', 'log in'],
+        display: 'Login'
+      },
+      signup: {
+        path: '/signup',
+        keywords: ['signup', 'sign up', 'register', 'create account', 'join'],
+        display: 'Sign Up'
+      },
+      logout: {
+        path: '/index',
+        keywords: ['logout', 'log out', 'sign out'],
+        display: 'Logout'
+      }
+    };
+
+    // Profile routes
+    const PROFILES = {
+      rohanGupta: {
+        path: '/profile/rohan-gupta',
+        keywords: ['rohan', 'rohan gupta', 'gupta'],
+        display: 'Rohan Gupta'
+      },
+      kritiSreyash: {
+        path: '/profile/kriti-sreyash',
+        keywords: ['kriti', 'kriti sreyash', 'sreyash'],
+        display: 'Kriti Sreyash'
+      },
+      aditya: {
+        path: '/profile/aditya',
+        keywords: ['aditya'],
+        display: 'Aditya'
+      },
+      soumya: {
+        path: '/profile/soumya',
+        keywords: ['soumya'],
+        display: 'Soumya'
+      }
+    };
+
+    // Check browser support
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const SpeechSynthesis = window.speechSynthesis;
+    
+    if (!SpeechRecognition) {
+      alert('Voice recognition not supported. Use Chrome or Edge browser.');
+    } else {
+      const recognition = new SpeechRecognition();
+      recognition.lang = 'en-US';
+      recognition.interimResults = false;
+
+      // Function to speak text (voice feedback)
+      function speak(text) {
+        if (SpeechSynthesis) {
+          // Cancel any ongoing speech
+          SpeechSynthesis.cancel();
+          
+          const utterance = new SpeechSynthesisUtterance(text);
+          utterance.rate = 1.1;
+          utterance.pitch = 1;
+          utterance.volume = 1;
+          SpeechSynthesis.speak(utterance);
+        }
+      }
+
+      // Function to match command to route
+      function matchCommand(command) {
+        const lowerCommand = command.toLowerCase().trim();
+        
+        // Check profiles first (more specific)
+        for (const [key, profile] of Object.entries(PROFILES)) {
+          for (const keyword of profile.keywords) {
+            if (lowerCommand.includes(keyword)) {
+              return { path: profile.path, display: profile.display, type: 'profile' };
+            }
+          }
+        }
+        
+        // Check general routes
+        for (const [key, route] of Object.entries(ROUTES)) {
+          for (const keyword of route.keywords) {
+            if (lowerCommand.includes(keyword)) {
+              return { path: route.path, display: route.display, type: 'route' };
+            }
+          }
+        }
+        
+        return null;
+      }
+
+      micBtn.addEventListener('click', () => {
+        recognition.start();
+        micBtn.classList.add('listening');
+        status.textContent = '🎤 Listening...';
+        status.classList.add('show');
+      });
+
+      recognition.onresult = (event) => {
+        const command = event.results[0][0].transcript;
+        console.log('Heard:', command);
+        
+        status.textContent = `Heard: "${command}"`;
+        micBtn.classList.remove('listening');
+
+        const match = matchCommand(command);
+
+        if (match) {
+          const message = `Opening ${match.display}`;
+          status.textContent = `✅ ${message}`;
+          
+          // Voice feedback
+          speak(message);
+          
+          setTimeout(() => {
+            window.location.href = match.path;
+          }, 1500);
+        } else {
+          const errorMsg = 'Command not recognized. Please try again.';
+          status.textContent = `❌ ${errorMsg}`;
+          speak(errorMsg);
+          
+          setTimeout(() => {
+            status.classList.remove('show');
+          }, 2500);
+        }
+      };
+
+      recognition.onerror = (event) => {
+        micBtn.classList.remove('listening');
+        let errorMsg = '';
+        
+        if (event.error === 'no-speech') {
+          errorMsg = 'No speech detected. Please try again.';
+        } else if (event.error === 'not-allowed') {
+          errorMsg = 'Microphone access denied. Please allow microphone permissions.';
+        } else {
+          errorMsg = `Error: ${event.error}`;
+        }
+        
+        status.textContent = `❌ ${errorMsg}`;
+        
+        setTimeout(() => {
+          status.classList.remove('show');
+        }, 3000);
+      };
+
+      recognition.onend = () => {
+        micBtn.classList.remove('listening');
+      };
+    }
+  </script>
+</body>
+</html>

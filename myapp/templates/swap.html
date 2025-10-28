@@ -1,0 +1,1611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkillLink SkillSwap System | Enhanced</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Load Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* Custom styles for professional look and feel */
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: #eef2ff; /* Light indigo background */
+        }
+        /* Style for the main container to simulate a dedicated page */
+        #skillswap-page {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+        .skill-tag {
+            @apply inline-flex items-center px-3 py-1 text-xs font-medium bg-indigo-100 text-indigo-700 rounded-full transition duration-150 ease-in-out hover:bg-indigo-200 cursor-pointer;
+        }
+        .token-pill {
+            @apply inline-flex items-center px-2 py-0.5 text-xs font-semibold rounded-full mr-1;
+        }
+        .scrollable-content { max-height: 80vh; overflow-y: auto; }
+        
+        /* Custom modal transitions */
+        .modal {
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .modal.show {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        /* Custom animation for AI loading */
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        .animate-typing-dot {
+            animation: blink 1s infinite;
+        }
+        /* Custom spin for the 'Zap' icon */
+        @keyframes spin-slow {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .animate-spin-slow {
+            animation: spin-slow 2s linear infinite;
+        }
+        
+        /* Style for the new signature pad */
+        #signature-pad {
+            cursor: crosshair;
+        }
+
+        /* Mock chat bubble */
+        .chat-bubble {
+            @apply p-3 rounded-lg max-w-xs;
+        }
+        .chat-bubble-self {
+            @apply bg-indigo-600 text-white rounded-br-none;
+        }
+        .chat-bubble-other {
+            @apply bg-gray-200 text-gray-800 rounded-bl-none;
+        }
+
+        /* Loading spinner for buttons */
+        .spinner {
+            @apply w-4 h-4 border-2 border-t-transparent border-white rounded-full animate-spin;
+        }
+        .spinner-dark {
+             @apply w-4 h-4 border-2 border-t-transparent border-indigo-600 rounded-full animate-spin;
+        }
+        /* Voice Navigation Styles */
+    #voice-mic-btn {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: var(--color-teal-500);
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(var(--color-teal-500-rgb), 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s;
+      z-index: 1000;
+    }
+
+    #voice-mic-btn:hover {
+      transform: scale(1.1);
+      background: var(--color-teal-600);
+    }
+
+    #voice-mic-btn.listening {
+      background: var(--color-green-500);
+      animation: voice-pulse 1s infinite;
+    }
+
+    @keyframes voice-pulse {
+      0%, 100% { box-shadow: 0 4px 12px rgba(34, 197, 94, 0.5); }
+      50% { box-shadow: 0 4px 25px rgba(34, 197, 94, 0.8); }
+    }
+
+    #voice-mic-btn svg {
+      width: 24px;
+      height: 24px;
+      fill: var(--color-white);
+    }
+
+    #voice-status {
+      position: fixed;
+      bottom: 100px;
+      right: 30px;
+      background: var(--color-surface);
+      padding: 15px 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(var(--color-slate-900-rgb), 0.15);
+      border: 1px solid var(--color-card-border);
+      display: none;
+      min-width: 250px;
+      max-width: 350px;
+      z-index: 999;
+      font-size: 14px;
+      color: var(--color-text);
+    }
+
+    #voice-status.show {
+      display: block;
+    }
+     #mic-btn {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: #007bff;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s;
+      z-index: 1000;
+    }
+
+    #mic-btn:hover {
+      transform: scale(1.1);
+    }
+
+    #mic-btn.listening {
+      background: #28a745;
+      animation: pulse 1s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 4px 12px rgba(40, 167, 69, 0.5); }
+      50% { box-shadow: 0 4px 25px rgba(40, 167, 69, 0.8); }
+    }
+
+    #mic-btn svg {
+      width: 24px;
+      height: 24px;
+      fill: white;
+    }
+
+    #status {
+      position: fixed;
+      bottom: 100px;
+      right: 30px;
+      background: white;
+      padding: 15px 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+      display: none;
+      min-width: 250px;
+      max-width: 350px;
+      z-index: 999;
+      font-size: 14px;
+    }
+
+    #status.show {
+      display: block;
+    }
+
+    .command-list {
+      max-width: 800px;
+      margin: 20px auto;
+    }
+
+    .command-section {
+      margin-bottom: 20px;
+      padding: 15px;
+      background: #f8f9fa;
+      border-radius: 8px;
+    }
+
+    .command-section h3 {
+      margin-top: 0;
+      color: #007bff;
+    }
+
+    .command-section ul {
+      margin: 10px 0;
+    }
+
+    .command-section li {
+      margin: 5px 0;
+    }
+    </style>
+</head>
+<body>
+
+    <!-- Main App Container -->
+    <div id="app" class="p-4 sm:p-6">
+        
+        <!-- Open Modal Button (for simulating the popup integration) -->
+        <button id="open-modal-btn" onclick="SkillSwap.toggleModal('skillswap-modal', true)" 
+                class="fixed bottom-6 right-6 z-50 p-4 bg-indigo-600 text-white rounded-full shadow-xl hover:bg-indigo-700 transition duration-300 transform hover:scale-105"
+                aria-label="Open SkillSwap Modal">
+            <i data-lucide="zap" class="w-6 h-6"></i>
+        </button>
+
+        <!-- Dedicated Page Layout (Initial View) -->
+        <div id="skillswap-page" class="hidden md:block">
+            <h1 class="text-3xl font-extrabold text-gray-800 mb-6 border-b-4 border-indigo-200 pb-2">SkillSwap Exchange Platform <span class="text-indigo-600">v3.1</span></h1>
+            <div id="page-content" class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Left/Center Column (Form and Suggestions) -->
+                <div class="lg:col-span-2 space-y-8">
+                    <div id="swap-form-container"></div>
+                    <div id="ai-suggestions-container"></div>
+                    
+                    <!-- "How it Works" Panel -->
+                    <div class="bg-white p-6 rounded-xl shadow-lg border-t-4 border-gray-300">
+                        <h2 class="text-2xl font-bold mb-6 text-gray-800 flex items-center">
+                            <i data-lucide="book-marked" class="w-6 h-6 mr-2 text-indigo-600"></i>
+                            How It Works
+                        </h2>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+                            <!-- Step 1 -->
+                            <div class="flex flex-col items-center p-4 bg-indigo-50 rounded-lg">
+                                <div class="p-3 bg-indigo-600 text-white rounded-full mb-3">
+                                    <i data-lucide="search" class="w-6 h-6"></i>
+                                </div>
+                                <h3 class="font-bold text-lg text-gray-800 mb-1">1. Define & Search</h3>
+                                <p class="text-sm text-gray-600">Tell the AI what skill you want to learn and what skill you can teach in return.</p>
+                            </div>
+                            <!-- Step 2 -->
+                            <div class="flex flex-col items-center p-4 bg-indigo-50 rounded-lg">
+                                <div class="p-3 bg-indigo-600 text-white rounded-full mb-3">
+                                    <i data-lucide="users" class="w-6 h-6"></i>
+                                </div>
+                                <h3 class="font-bold text-lg text-gray-800 mb-1">2. Connect & Chat</h3>
+                                <p class="text-sm text-gray-600">Browse your ✨ Gemini-powered matches and start a quick chat.</p>
+                            </div>
+                            <!-- Step 3 -->
+                            <div class="flex flex-col items-center p-4 bg-indigo-50 rounded-lg">
+                                <div class="p-3 bg-indigo-600 text-white rounded-full mb-3">
+                                    <i data-lucide="calendar-check" class="w-6 h-6"></i>
+                                </div>
+                                <h3 class="font-bold text-lg text-gray-800 mb-1">3. Schedule & Swap!</h3>
+                                <p class="text-sm text-gray-600">Book a session, complete the swap, and earn tokens and reputation.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- END: "How it Works" Panel -->
+
+                </div>
+
+                <!-- Right/Sticky Panel (Gamification and History) -->
+                <div class="lg:col-span-1 space-y-8 lg:sticky lg:top-8 self-start">
+                    <div id="gamification-panel"></div>
+                    <div id="swap-history-container"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Modal Popup Layout (Simulating Popup Integration) -->
+        <div id="skillswap-modal" class="modal fixed inset-0 z-50 overflow-y-auto bg-gray-900 bg-opacity-75 invisible opacity-0" aria-modal="true" role="dialog">
+            <div class="flex items-center justify-center min-h-screen p-4">
+                <div class="bg-white rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden transform transition-all duration-300">
+                    
+                    <div class="flex justify-between items-center p-4 border-b bg-indigo-50">
+                        <h2 class="text-2xl font-semibold text-indigo-700">Quick SkillSwap</h2>
+                        <button onclick="SkillSwap.toggleModal('skillswap-modal', false)" class="text-gray-500 hover:text-gray-700 p-2 rounded-full hover:bg-indigo-100 transition" aria-label="Close modal">
+                            <i data-lucide="x" class="w-6 h-6"></i>
+                        </button>
+                    </div>
+
+                    <div id="modal-content" class="p-4 grid grid-cols-1 md:grid-cols-2 gap-4 scrollable-content">
+                        <!-- Left Panel: Form -->
+                        <div id="modal-form-container"></div>
+                        <!-- Right Panel: Suggestions -->
+                        <div id="modal-suggestions-container"></div>
+                    </div>
+
+                    <div class="p-4 border-t bg-gray-50 flex justify-end">
+                        <span class="text-sm text-gray-500">✨ AI-Powered Matching by Gemini</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mini Booking Modal (General Use) -->
+        <div id="booking-modal" class="modal fixed inset-0 z-50 overflow-y-auto bg-gray-900 bg-opacity-75 invisible opacity-0" aria-modal="true" role="dialog">
+            <div class="flex items-center justify-center min-h-screen p-4">
+                <div class="bg-white rounded-xl shadow-2xl w-full max-w-md p-6 transform transition-all duration-300">
+                    <h3 class="text-xl font-bold mb-4 text-indigo-700">Schedule Swap Session</h3>
+                    <p class="mb-4 text-gray-600" id="booking-partner-name">Booking session with...</p>
+                    
+                    <div class="space-y-3">
+                        <label for="date-input" class="block text-sm font-medium text-gray-700">Preferred Date:</label>
+                        <input type="date" id="date-input" class="w-full p-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500">
+                        <label for="time-input" class="block text-sm font-medium text-gray-700">Preferred Time:</label>
+                        <input type="time" id="time-input" class="w-full p-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500">
+                    
+                        <!-- START: Canvas Prototype Integration -->
+                        <label for="signature-pad" class="block text-sm font-medium text-gray-700">Confirm with Signature (Prototype):</label>
+                        <canvas id="signature-pad" class="w-full h-32 bg-gray-100 border border-gray-300 rounded-lg" width="400" height="128"></canvas>
+                        <button type="button" id="clear-signature-btn" class="text-xs text-indigo-600 hover:text-indigo-800 font-medium transition">Clear Signature</button>
+                        <!-- END: Canvas Prototype Integration -->
+                    </div>
+
+                    <div class="mt-6 flex justify-end space-x-3">
+                        <button onclick="SkillSwap.toggleModal('booking-modal', false)" 
+                                class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 transition">
+                            Cancel
+                        </button>
+                        <button 
+                                class="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition">
+                            Confirm Booking
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Profile Preview Modal -->
+        <div id="profile-modal" class="modal fixed inset-0 z-50 overflow-y-auto bg-gray-900 bg-opacity-75 invisible opacity-0" aria-modal="true" role="dialog">
+            <div class="flex items-center justify-center min-h-screen p-4">
+                <div class="bg-white rounded-xl shadow-2xl w-full max-w-lg p-6 transform transition-all duration-300">
+                    <div id="profile-modal-content"></div>
+                    <div class="mt-6 flex justify-end">
+                        <button onclick="SkillSwap.toggleModal('profile-modal', false)" 
+                                class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 transition">
+                            Close
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Chat Modal -->
+        <div id="chat-modal" class="modal fixed inset-0 z-50 overflow-y-auto bg-gray-900 bg-opacity-75 invisible opacity-0" aria-modal="true" role="dialog">
+            <div class="flex items-center justify-center min-h-screen p-4">
+                <div class="bg-white rounded-xl shadow-2xl w-full max-w-lg transform transition-all duration-300 flex flex-col max-h-[70vh]">
+                    <!-- Chat Header -->
+                    <div class="flex justify-between items-center p-4 border-b bg-indigo-50">
+                        <h3 class="text-xl font-bold text-indigo-700" id="chat-partner-name">Chat with...</h3>
+                        <button onclick="SkillSwap.toggleModal('chat-modal', false)" class="text-gray-500 hover:text-gray-700 p-2 rounded-full hover:bg-indigo-100 transition" aria-label="Close modal">
+                            <i data-lucide="x" class="w-6 h-6"></i>
+                        </button>
+                    </div>
+                    
+                    <!-- Chat Body (Mock) -->
+                    <div class="flex-1 p-4 space-y-4 overflow-y-auto">
+                        <div class="flex justify-start">
+                            <div class="chat-bubble chat-bubble-other">
+                                Hi! I saw your request for learning Telugu. I can help with that!
+                            </div>
+                        </div>
+                        <div class="flex justify-end">
+                            <div class="chat-bubble chat-bubble-self">
+                                That's great! I can teach you Python in exchange.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Chat Input -->
+                    <div class="p-4 border-t bg-gray-50">
+                        <div class="flex space-x-2">
+                            <input type="text" id="chat-input" placeholder="Type your message..." class="flex-1 w-full p-3 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500">
+                            <button class="p-3 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition shadow-md" aria-label="Send message">
+                                <i data-lucide="send" class="w-5 h-5"></i>
+                            </button>
+                        </div>
+                        <!-- Gemini Icebreaker Button -->
+                        <button id="gemini-icebreaker-btn" onclick="SkillSwap.getGeminiIcebreaker()" class="mt-3 w-full flex items-center justify-center px-4 py-2 text-sm font-medium text-indigo-700 bg-indigo-100 rounded-lg hover:bg-indigo-200 transition">
+                            <i data-lucide="sparkles" class="w-4 h-4 mr-2"></i> 
+                            ✨ Suggest Icebreaker
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+<script>
+    // --- Global Constants and User Data ---
+    const users = [{"id": 1, "name": "Divya Malhotra", "city": "Cuttack", "latitude": 20.584133, "longitude": 85.80457, "skills": ["Gardening", "Mobile App Development", "Pranayama"], "user_type": "offering", "rating": 5.0, "years_experience": 13, "hourly_rate": 1000, "bio": "Passionate about gardening and helping others learn.", "currency": "INR"}, /* ... (rest of user data omitted for brevity) ... */ {"id": 50, "name": "Shreya Mohanty", "city": "Cuttack", "latitude": 20.603476, "longitude": 85.955918, "skills": ["Hindi Teaching", "Video Editing", "Career Coaching", "Calligraphy"], "user_type": "offering", "rating": 4.6, "years_experience": 9, "hourly_rate": 800, "bio": "Passionate about hindi teaching and helping others learn.", "currency": "INR"}]; 
+
+    // Transform user data into the app's profile format
+    const ALL_PROFILES = users.map(profile => {
+        const badges = [];
+        if (profile.years_experience >= 10) badges.push("Expert");
+        if (profile.rating >= 4.5) badges.push("Top Rated");
+        if (profile.user_type === 'offering' || profile.user_type === 'both') badges.push("Teacher");
+        if (profile.user_type === 'seeking' || profile.user_type === 'both') badges.push("Learner");
+
+        const initials = profile.name.split(' ').map(n => n[0]).join('');
+        const avatar = `https://placehold.co/40x40/6b7280/ffffff?text=${initials.substring(0, 2)}`;
+
+        return {
+            ...profile,
+            location: profile.city,
+            avatar: avatar,
+            tokens: profile.hourly_rate, 
+            hours: profile.years_experience, 
+            reputation: Math.round(profile.rating * 20),
+            badges: badges
+        };
+    });
+
+    // Mock data for history and user stats
+    let MOCK_HISTORY = [ { id: 101, partner: "Rohan S.", skills: "React for Python", date: "2024-09-15", status: "Completed", rating: 5 }, { id: 102, partner: "Jane D.", skills: "Spanish Conversation", date: "2024-09-20", status: "Completed", rating: 4 }, { id: 103, partner: "Sanya M.", skills: "Tally ERP Basics", date: "2024-10-01", status: "Confirmed", rating: null }, { id: 104, partner: "Sarah P.", skills: "Photography Lighting", date: "2024-10-10", status: "Pending", rating: null } ];
+    let USER_STATS = { tokens: 750, hours: 42, reputation: 91, badges: ["Starter Kit", "First Swap", "Consistent Learner", "Time Banker"], completionRate: 80, totalSwaps: 20 };
+
+    // App State Variables
+    let AI_MATCHES_CACHE = []; // Stores the original AI-ranked list of IDs
+    let CURRENT_MATCHES = []; // Stores the filtered/sorted full profiles for display
+    let IS_MODAL_VIEW = false;
+    let VISIBLE_MATCH_COUNT = 5; 
+    let CURRENT_CHAT_PROFILE_ID = null; 
+    let CURRENT_SEARCH_CONTEXT = { teachSkill: '', learnSkill: '' }; 
+
+    // --- Setup Placeholders ---
+    const appId = typeof __app_id !== 'undefined' ? __app_id : 'skilllink-app-id';
+    const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
+
+    // --- Gemini API Configuration ---
+    const API_KEY = "AIzaSyCLt9oCAJWR_K7ygXHMluMIf8pkPEvrgHo"; // Kept as "" to be populated by the environment
+    const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${API_KEY}`;
+
+
+    function initializeDemoData() {
+        console.log(`App ID: ${appId}. Firebase Mock Config loaded.`);
+        SkillSwap.renderAll();
+        document.getElementById('skillswap-page').classList.remove('hidden');
+        lucide.createIcons();
+    }
+
+    // --- Exponential Backoff Fetch ---
+    async function fetchWithBackoff(apiUrl, payload, maxRetries = 5) {
+        let delay = 1000; 
+        for (let i = 0; i < maxRetries; i++) {
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                     // Check for specific error codes for retry logic
+                    if (response.status === 429 || response.status >= 500) { 
+                        console.warn(`API Error (${response.status}), retrying...`);
+                        throw new Error(`API Error: ${response.status}`); // Trigger retry
+                    } else {
+                        // Client error (e.g., 400), don't retry, log specific error
+                        console.error("Client error, not retrying:", response.status);
+                        const errorData = await response.json().catch(() => ({ error: { message: "Unknown client error" } })); // Gracefully handle non-JSON error response
+                        throw new Error(errorData.error?.message || `Failed to fetch with status: ${response.status}`);
+                    }
+                }
+                // Success
+                return await response.json(); 
+            } catch (error) {
+                // Log warning only on retry attempts, not the final failure
+                if (i < maxRetries - 1) { 
+                    console.warn(`Attempt ${i + 1} failed for ${apiUrl}. Retrying in ${delay}ms... Error: ${error.message}`);
+                    await new Promise(resolve => setTimeout(resolve, delay));
+                    delay *= 2; // Increase delay
+                } else {
+                    // Final attempt failed
+                    console.error(`All retries failed for ${apiUrl}. Last error: ${error.message}`);
+                    throw error; // Re-throw the last error
+                }
+            }
+        }
+    }
+
+    // --- SkillSwap Logic Object ---
+    const SkillSwap = {
+        
+        signaturePad: null, signatureCtx: null, isDrawing: false, lastX: 0, lastY: 0,
+
+        toggleModal(id, show) {
+            const modal = document.getElementById(id);
+            if (show) {
+                modal.classList.add('show');
+                modal.classList.remove('invisible', 'opacity-0');
+            } else {
+                modal.classList.remove('show');
+                modal.classList.add('invisible', 'opacity-0');
+            }
+            if (id === 'skillswap-modal') {
+                const page = document.getElementById('skillswap-page');
+                page.classList.toggle('hidden', show);
+                IS_MODAL_VIEW = show;
+                if (show) SkillSwap.renderAll(); // Re-render content inside modal
+            }
+        },
+
+        openProfileModal(profileId) {
+            const profile = ALL_PROFILES.find(p => p.id === profileId);
+            if (!profile) return;
+            // ... (rest of profile modal rendering - unchanged) ...
+             const content = document.getElementById('profile-modal-content');
+            content.innerHTML = `
+                <div class="flex flex-col items-center border-b pb-4 mb-4">
+                    <img src="${profile.avatar}" alt="${profile.name}" class="w-20 h-20 rounded-full object-cover shadow-md mb-3 ring-4 ring-indigo-200">
+                    <h3 class="text-2xl font-bold text-gray-800">${profile.name}</h3>
+                    <p class="text-sm text-indigo-600 font-medium">${profile.location}</p>
+                    <p class="text-sm text-gray-600 mt-2 text-center">${profile.bio}</p>
+                </div>
+                
+                <div class="grid grid-cols-3 gap-2 text-center mb-4">
+                    <div class="p-2 bg-gray-50 rounded-lg">
+                        <p class="text-xl font-bold text-indigo-700">${profile.rating}</p>
+                        <p class="text-xs text-gray-500">Rating</p>
+                    </div>
+                     <div class="p-2 bg-gray-50 rounded-lg">
+                        <p class="text-xl font-bold text-green-700">${profile.tokens} ${profile.currency}</p>
+                        <p class="text-xs text-gray-500">Rate (Hr)</p>
+                    </div>
+                    <div class="p-2 bg-gray-50 rounded-lg">
+                        <p class="text-xl font-bold text-red-700">${profile.hours} Yrs</p>
+                        <p class="text-xs text-gray-500">Experience</p>
+                    </div>
+                </div>
+
+                <h4 class="font-semibold text-gray-700 mb-2">Teachable Skills:</h4>
+                <div class="flex flex-wrap gap-2 mb-4">${SkillSwap.renderTags(profile.skills)}</div>
+
+                <h4 class="font-semibold text-gray-700 mb-2">Reputation & Badges:</h4>
+                <div class="flex flex-wrap gap-2">${SkillSwap.renderTags(profile.badges, true)}</div>
+            `;
+            SkillSwap.toggleModal('profile-modal', true);
+            lucide.createIcons();
+        },
+
+        openBookingModal(partnerName) {
+            document.getElementById('booking-partner-name').textContent = `Booking session with ${partnerName}.`;
+            SkillSwap.toggleModal('booking-modal', true);
+            this.initializeSignaturePad(); 
+            this.clearSignature(); 
+        },
+
+        openChatModal(profileId) {
+            const profile = ALL_PROFILES.find(p => p.id === profileId);
+            if (!profile) return;
+            CURRENT_CHAT_PROFILE_ID = profile.id; 
+            document.getElementById('chat-partner-name').textContent = `Chat with ${profile.name}`;
+            document.getElementById('chat-input').value = ""; 
+            SkillSwap.toggleModal('chat-modal', true);
+        },
+
+        initializeSignaturePad() {
+             // ... (signature pad logic - unchanged) ...
+            if (document.getElementById('signature-pad') && !this.signaturePad) {
+                this.signaturePad = document.getElementById('signature-pad');
+                this.signatureCtx = this.signaturePad.getContext('2d');
+                this.signatureCtx.strokeStyle = '#374151'; 
+                this.signatureCtx.lineWidth = 2;
+                this.signatureCtx.lineCap = 'round';
+                this.isDrawing = false;
+
+                const getEventCoords = (e) => {
+                    const rect = this.signaturePad.getBoundingClientRect();
+                    let x, y;
+                    
+                    if (e.touches && e.touches[0]) {
+                        x = e.touches[0].clientX - rect.left;
+                        y = e.touches[0].clientY - rect.top;
+                    } else {
+                        x = e.clientX - rect.left;
+                        y = e.clientY - rect.top;
+                    }
+                    x *= this.signaturePad.width / rect.width;
+                    y *= this.signaturePad.height / rect.height;
+                    return [x, y];
+                }
+
+                const draw = (e) => {
+                    if (!this.isDrawing) return;
+                    e.preventDefault(); 
+                    const [x, y] = getEventCoords(e);
+                    this.signatureCtx.beginPath();
+                    this.signatureCtx.moveTo(this.lastX, this.lastY);
+                    this.signatureCtx.lineTo(x, y);
+                    this.signatureCtx.stroke();
+                    [this.lastX, this.lastY] = [x, y];
+                };
+
+                const startDrawing = (e) => {
+                    e.preventDefault();
+                    this.isDrawing = true;
+                    [this.lastX, this.lastY] = getEventCoords(e);
+                };
+
+                const stopDrawing = () => {
+                    this.isDrawing = false;
+                    this.signatureCtx.beginPath();
+                };
+
+                this.signaturePad.addEventListener('mousedown', startDrawing);
+                this.signaturePad.addEventListener('mousemove', draw);
+                this.signaturePad.addEventListener('mouseup', stopDrawing);
+                this.signaturePad.addEventListener('mouseout', stopDrawing);
+                this.signaturePad.addEventListener('touchstart', startDrawing);
+                this.signaturePad.addEventListener('touchmove', draw);
+                this.signaturePad.addEventListener('touchend', stopDrawing);
+                document.getElementById('clear-signature-btn').addEventListener('click', () => this.clearSignature());
+            }
+        },
+
+        clearSignature() {
+            if (this.signatureCtx) {
+                this.signatureCtx.clearRect(0, 0, this.signaturePad.width, this.signaturePad.height);
+            }
+        },
+
+        loadMoreMatches() {
+            VISIBLE_MATCH_COUNT += 5;
+            SkillSwap.renderSuggestions();
+        },
+
+        filterAndSortMatches() {
+            const sortValue = document.getElementById('sort-by-select')?.value || 'ai-score'; // Added fallback
+            const filterValue = document.getElementById('filter-by-select')?.value || 'all'; // Added fallback
+
+            // Map cached IDs back to full profiles
+            let matches = AI_MATCHES_CACHE.map(id => ALL_PROFILES.find(p => p.id === id)).filter(Boolean);
+
+            // Apply Filter
+            if (filterValue !== 'all') {
+                if (filterValue === 'top-rated') {
+                    matches = matches.filter(p => p.rating >= 4.5);
+                } else {
+                    matches = matches.filter(p => p.user_type === filterValue);
+                }
+            }
+
+            // Apply Sort (Only if not sorting by AI score, which is the default ranking)
+            if (sortValue !== 'ai-score') {
+                switch(sortValue) {
+                    case 'rating':
+                        matches.sort((a, b) => b.rating - a.rating);
+                        break;
+                    case 'experience':
+                        matches.sort((a, b) => b.years_experience - a.years_experience);
+                        break;
+                }
+            }
+            // If sortValue is 'ai-score', we keep the original Gemini ranking
+
+            CURRENT_MATCHES = matches;
+            VISIBLE_MATCH_COUNT = 5; 
+            SkillSwap.renderSuggestions(); 
+        },
+
+        // --- UPDATED: Gemini API Match Function (Refined Prompt & Parsing) ---
+        async getGeminiMatches(teachSkill, learnSkill, profiles) {
+    const systemPrompt = `You are an expert AI matchmaker for SkillLink. Your goal is to find the best skill swap partners.
+Analyze the user's request and the provided list of profiles (JSON format).
+Return a JSON array containing objects for the top 10 most suitable profiles, ranked from best to worst match.
+Each object must have: {"id": profile_ID, "reasoning": "brief explanation (max 15 words)"}
+
+Matching Criteria (in order of priority):
+1. Perfect Match: Profile offers the skill the user wants to learn AND seeks the skill the user can teach.
+2. Good Match: Profile offers the skill the user wants to learn.
+3. Bonus Factors: Higher rating and yearsexperience increase ranking within priority groups.
+
+Output Format: Respond ONLY with a valid JSON array. No markdown, no explanations.`;
+
+    const profilesForPrompt = profiles.map(p => ({
+        id: p.id,
+        skills: p.skills,
+        usertype: p.usertype,
+        rating: p.rating,
+        yearsexperience: p.yearsexperience
+    }));
+
+    const userQuery = `User Request:
+- I can teach: ${teachSkill}
+- I want to learn: ${learnSkill}
+
+Available Profiles:
+${JSON.stringify(profilesForPrompt, null, 2)}
+
+Return the ranked JSON array of top 10 profile objects.`;
+
+    const payload = {
+        contents: [{ parts: [{ text: userQuery }] }],
+        generationConfig: {
+            responseMimeType: "application/json",
+            temperature: 0.7
+        },
+        systemInstruction: { parts: [{ text: systemPrompt }] }
+    };
+
+    try {
+        const result = await fetchWithBackoff(API_URL, payload);
+        console.log("Gemini Raw Response:", JSON.stringify(result, null, 2));
+
+        const candidate = result.candidates?.[0];
+        if (!candidate || !candidate.content?.parts?.[0]?.text) {
+            console.error("No valid response structure:", result);
+            throw new Error("No valid content found in AI response.");
+        }
+
+        let text = candidate.content.parts[0].text.trim();
+        console.log("Extracted text:", text);
+
+        // Remove markdown code blocks if present
+        text = text.replace(/``````\s*/g, '').trim();
+        
+        // Try to extract JSON array if there's extra text
+        const jsonArrayMatch = text.match(/\[\s*\{[\s\S]*\}\s*\]/);
+        if (jsonArrayMatch) {
+            text = jsonArrayMatch[0];
+        }
+
+        console.log("Cleaned text for parsing:", text);
+
+        const matchedObjects = JSON.parse(text);
+        console.log("Parsed Matches:", matchedObjects);
+
+        // Validate structure
+        if (!Array.isArray(matchedObjects)) {
+            throw new Error("AI response is not an array");
+        }
+
+        // Validate each object and filter valid IDs
+        const validIds = matchedObjects
+            .filter(item => 
+                typeof item === 'object' && 
+                item !== null && 
+                'id' in item && 
+                'reasoning' in item &&
+                profiles.some(p => p.id === item.id) // Only include IDs that exist
+            )
+            .map(item => item.id);
+
+        console.log("Valid matched IDs:", validIds);
+
+        if (validIds.length === 0) {
+            throw new Error("No valid profile matches found");
+        }
+
+        return validIds;
+
+    } catch (error) {
+        console.error("Gemini API Error Details:", error);
+        
+        // Display detailed error to user
+        const container = ISMODALVIEW 
+            ? document.getElementById('modal-suggestions-container')
+            : document.getElementById('ai-suggestions-container');
+        
+        container.innerHTML = `
+            <div class="bg-red-50 p-6 rounded-xl shadow-lg border-2 border-red-300">
+                <div class="flex items-center mb-3">
+                    <i data-lucide="alert-triangle" class="w-8 h-8 text-red-500 mr-2"></i>
+                    <h3 class="text-xl font-bold text-red-700">API Error</h3>
+                </div>
+                <p class="text-sm text-gray-700 mb-2"><strong>Error:</strong> ${error.message}</p>
+                <details class="text-xs text-gray-600 mt-3">
+                    <summary class="cursor-pointer font-semibold hover:text-red-600">View Technical Details</summary>
+                    <pre class="mt-2 p-3 bg-white rounded border overflow-x-auto">${JSON.stringify(error, null, 2)}</pre>
+                </details>
+                <p class="text-sm text-gray-600 mt-4">
+                    <strong>Common fixes:</strong><br>
+                    • Verify your API key is valid<br>
+                    • Check browser console for CORS or network errors<br>
+                    • Ensure API key has Gemini API permissions<br>
+                    • Check if you've exceeded API rate limits
+                </p>
+            </div>
+        `;
+        lucide.createIcons();
+        
+        throw error;
+    }
+},
+        async getGeminiMatchesOld(teachSkill, learnSkill, profiles) {
+            const systemPrompt = `You are an expert AI matchmaker for SkillLink. Your goal is to find the best skill swap partners. 
+
+Return the ranked JSON array of top 10 profile objects (id, reasoning).`;
+
+
+            const payload = {
+                contents: [{ parts: [{ text: userQuery }] }],
+                // Instruct model to output JSON
+                generationConfig: { 
+                    responseMimeType: "application/json",
+                 },
+                systemInstruction: {
+                    parts: [{ text: systemPrompt }]
+                }
+            };
+
+            const result = await fetchWithBackoff(API_URL, payload);
+            console.log("Gemini Raw Response:", result); // Log the raw response
+
+            const candidate = result.candidates?.[0];
+
+             if (candidate && candidate.content?.parts?.[0]?.text) {
+                const text = candidate.content.parts[0].text;
+                try {
+                    // Gemini should return valid JSON directly when responseMimeType is set
+                    const matchedObjects = JSON.parse(text); 
+                    console.log("Parsed Matches:", matchedObjects);
+
+                    // Validate the structure
+                    if (Array.isArray(matchedObjects) && matchedObjects.every(item => typeof item === 'object' && item !== null && 'id' in item && 'reasoning' in item)) {
+                         // Return only the IDs for caching, reasoning is used elsewhere if needed
+                        return matchedObjects.map(item => item.id);
+                    } else {
+                        console.error("Parsed JSON response has incorrect structure:", matchedObjects);
+                        throw new Error("AI returned data in an unexpected format.");
+                    }
+                } catch (e) {
+                    console.error("Failed to parse JSON response from Gemini:", e, "Raw text:", text);
+                    // Attempt to extract JSON even if there's extra text (fallback)
+                    const jsonMatch = text.match(/\[\s*\{.*\}\s*]/s);
+                     if (jsonMatch && jsonMatch[0]) {
+                        try {
+                           const fallbackParse = JSON.parse(jsonMatch[0]);
+                            if (Array.isArray(fallbackParse) && fallbackParse.every(item => typeof item === 'object' && item !== null && 'id' in item && 'reasoning' in item)) {
+                                console.warn("Used fallback JSON extraction.");
+                                return fallbackParse.map(item => item.id);
+                            }
+                        } catch (fallbackError) {
+                             console.error("Fallback JSON parsing also failed:", fallbackError);
+                        }
+                    }
+                    throw new Error(`AI response was not valid JSON. Error: ${e.message}`);
+                }
+            }
+            // Handle cases where the response structure is unexpected
+            if (result.promptFeedback?.blockReason) {
+                 throw new Error(`AI request blocked: ${result.promptFeedback.blockReason}`);
+            }
+            throw new Error("No valid content found in AI response.");
+        },
+
+        async getGeminiIcebreaker() {
+            const profile = ALL_PROFILES.find(p => p.id === CURRENT_CHAT_PROFILE_ID);
+            if (!profile) return;
+
+            const { teachSkill, learnSkill } = CURRENT_SEARCH_CONTEXT;
+            const btn = document.getElementById('gemini-icebreaker-btn');
+            const originalBtnHTML = btn.innerHTML; // Store full HTML
+            btn.innerHTML = `<div class="spinner-dark mx-auto"></div>`; // Use spinner with appropriate color
+            btn.disabled = true;
+
+            const systemPrompt = "You are a friendly networking assistant for SkillLink. Generate a single, concise, natural-sounding icebreaker message (under 25 words) for a user starting a skill-swap chat. Respond *only* with the message itself, no quotes or explanations.";
+
+            const userQuery = `My Request:
+- I can teach: "${teachSkill}"
+- I want to learn: "${learnSkill}"
+
+Their Profile:
+- Name: ${profile.name}
+- Their Skills: ${profile.skills.join(', ')}
+- Their Bio: ${profile.bio}
+
+Generate one friendly icebreaker message to start the chat, focusing on my interest in learning "${learnSkill}" from them.`;
+
+
+            const payload = {
+                contents: [{ parts: [{ text: userQuery }] }],
+                systemInstruction: {
+                    parts: [{ text: systemPrompt }]
+                }
+            };
+            
+            try {
+                const result = await fetchWithBackoff(API_URL, payload);
+                const text = result.candidates?.[0]?.content?.parts?.[0]?.text;
+                if (text) {
+                    document.getElementById('chat-input').value = text.trim();
+                } else {
+                     throw new Error("No text received from Gemini for icebreaker.");
+                }
+            } catch (error) {
+                console.error("Failed to get icebreaker:", error);
+                 // Provide a simple fallback
+                document.getElementById('chat-input').value = `Hi ${profile.name.split(' ')[0]}! Interested in learning ${learnSkill} from you. Can we chat?`;
+            } finally {
+                btn.innerHTML = originalBtnHTML; // Restore original HTML
+                btn.disabled = false;
+                // No need to call lucide.createIcons() if original HTML is restored
+            }
+        },
+
+        async submitSwap() {
+            const teachSkill = document.getElementById('teach-skill-input').value.trim();
+            const learnSkill = document.getElementById('learn-skill-input').value.trim();
+            
+            CURRENT_SEARCH_CONTEXT = { teachSkill, learnSkill }; // Store context
+
+            if (!teachSkill || !learnSkill) {
+                console.error("Please enter skills to teach and learn.");
+                // Optionally show a user-friendly message here
+                return;
+            }
+
+            const container = IS_MODAL_VIEW ? document.getElementById('modal-suggestions-container') : document.getElementById('ai-suggestions-container');
+            
+            // Show Loading State
+            container.innerHTML = `
+                <div class="p-8 bg-white rounded-xl shadow-2xl border border-indigo-300">
+                    <div class="flex items-center space-x-3 mb-4">
+                        <i data-lucide="zap" class="w-8 h-8 text-indigo-600 animate-spin-slow"></i>
+                        <span class="text-xl font-bold text-indigo-700">Calling Gemini AI Matchmaker</span>
+                        <span class="text-xl font-bold text-indigo-700 animate-typing-dot" style="animation-delay: 0s;">.</span>
+                        <span class="text-xl font-bold text-indigo-700 animate-typing-dot" style="animation-delay: 0.3s;">.</span>
+                        <span class="text-xl font-bold text-indigo-700 animate-typing-dot" style="animation-delay: 0.6s;">.</span>
+                    </div>
+                    <p class="text-sm text-gray-500">Analyzing profiles for optimal skill swap potential...</p>
+                </div>
+            `;
+            lucide.createIcons();
+
+            try {
+                // Call Gemini API - Now returns only IDs
+                const matchedIds = await SkillSwap.getGeminiMatches(teachSkill, learnSkill, ALL_PROFILES);
+                
+                AI_MATCHES_CACHE = matchedIds; // Store the ranked IDs
+
+                // Apply default filters/sorts (which maps IDs to profiles) and render
+                SkillSwap.filterAndSortMatches(); 
+
+            } catch (error) {
+                console.error("Error during AI matching:", error);
+                // Display Error State
+                container.innerHTML = `
+                     <div class="bg-white p-6 rounded-xl shadow-lg border border-red-300 text-center">
+                         <i data-lucide="alert-triangle" class="w-8 h-8 mx-auto mb-2 text-red-500"></i>
+                         <p class="font-semibold text-red-700">AI Matching Failed</p>
+                         <p class="text-sm text-gray-600">${error.message}. Please try again later.</p>
+                     </div>
+                  `;
+                lucide.createIcons();
+            }
+        },
+
+        surpriseMe() {
+            // Select a random profile ID
+            const randomId = ALL_PROFILES[Math.floor(Math.random() * ALL_PROFILES.length)].id;
+            AI_MATCHES_CACHE = [randomId]; // Cache just the single ID
+            SkillSwap.filterAndSortMatches(); // Render the single profile
+        },
+
+        renderTags(tags, isBadge = false) {
+             // ... (tag rendering - unchanged) ...
+             if (!tags) return '';
+            return tags.map(tag => {
+                if (isBadge) {
+                    return `<span class="token-pill bg-indigo-500 text-white shadow-sm">${tag}</span>`; // Added shadow
+                }
+                // Make skill tags clickable (example placeholder action)
+                return `<span class="skill-tag" onclick="console.log('Filter by skill: ${tag}')" title="Filter by ${tag}">${tag}</span>`;
+            }).join('');
+        },
+
+        renderSwapForm() {
+            // ... (form rendering - largely unchanged, check input values) ...
+             const formHtml = `
+                <div class="bg-white p-6 rounded-xl shadow-2xl border-t-4 border-indigo-600">
+                    <h2 class="text-2xl font-bold mb-6 text-gray-800 flex items-center">
+                        <i data-lucide="hand-metal" class="w-6 h-6 mr-2 text-indigo-600"></i>
+                        1. Define Your Swap
+                    </h2>
+                    <form id="swap-form" onsubmit="event.preventDefault(); SkillSwap.submitSwap()">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                            <div class="p-4 bg-green-50 rounded-lg border border-green-200">
+                                <h3 class="text-xl font-bold mb-3 text-green-700 flex items-center">
+                                    <i data-lucide="graduation-cap" class="w-5 h-5 mr-2"></i> Skill I Possess
+                                </h3>
+                                <label for="teach-skill-input" class="block text-sm font-medium text-gray-700 mb-1">I Can Teach...</label>
+                                <input type="text" id="teach-skill-input" name="teach-skill" required
+                                    class="mt-1 block w-full p-3 border border-green-400 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 transition"
+                                    placeholder="e.g., Python, Painting"
+                                    aria-required="true" aria-label="Skill I can teach" value="Python"> 
+                            </div>
+                            <div class="p-4 bg-red-50 rounded-lg border border-red-200">
+                                <h3 class="text-xl font-bold mb-3 text-red-700 flex items-center">
+                                    <i data-lucide="book-open-text" class="w-5 h-5 mr-2"></i> Skill I Need
+                                </h3>
+                                <label for="learn-skill-input" class="block text-sm font-medium text-gray-700 mb-1">I Want to Learn...</label>
+                                <input type="text" id="learn-skill-input" name="learn-skill" required
+                                    class="mt-1 block w-full p-3 border border-red-400 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 transition"
+                                    placeholder="e.g., Telugu, Data Analysis"
+                                    aria-required="true" aria-label="Skill I want to learn" value="Telugu Lessons"> 
+                            </div>
+                        </div>
+                        <div class="p-4 border border-indigo-300 rounded-xl bg-indigo-50 shadow-inner mb-6">
+                            <h4 class="font-bold text-indigo-700 mb-3 flex items-center border-b border-indigo-200 pb-2">
+                                <i data-lucide="filter" class="w-4 h-4 mr-2"></i> Refine Match Filters (Optional)
+                            </h4>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                     <label for="commitment-level" class="block text-sm font-medium text-gray-700">Min. Experience (Years)</label>
+                                     <select id="commitment-level" class="mt-1 block w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                                         <option value="any">Any Experience</option>
+                                         <option value="1">1+ Year</option>
+                                         <option value="5">5+ Years</option>
+                                         <option value="10">10+ Years</option>
+                                     </select>
+                                </div>
+                                <div class="flex flex-col justify-end">
+                                    <div class="flex items-center">
+                                        <input id="location-toggle" type="checkbox" checked class="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500">
+                                        <label for="location-toggle" class="ml-2 block text-sm text-gray-900">
+                                            Prioritize Local (<span class="font-semibold">Mumbai</span>) 
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <label for="description-input" class="block text-sm font-medium text-gray-700 mt-4">Optional: Add Context/Goals for AI</label>
+                            <textarea id="description-input" rows="1" class="mt-1 block w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500" placeholder="e.g., Need help preparing for a certification exam."></textarea>
+                        </div>
+                        <div class="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-3 mt-6">
+                            <button type="submit" class="flex-1 w-full sm:w-auto px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-extrabold rounded-lg shadow-lg hover:from-indigo-700 hover:to-purple-700 transition duration-300 focus:outline-none focus:ring-4 focus:ring-indigo-500 focus:ring-opacity-50 flex items-center justify-center">
+                                <i data-lucide="sparkles" class="w-5 h-5 inline mr-2"></i> ✨ Find Gemini Matches
+                            </button>
+                            <button type="button" onclick="SkillSwap.surpriseMe()" class="flex-1 w-full sm:w-auto px-6 py-3 bg-gray-200 text-gray-700 font-medium rounded-lg shadow-md hover:bg-gray-300 transition duration-300 flex items-center justify-center">
+                                <i data-lucide="shuffle" class="w-5 h-5 inline mr-2"></i> Surprise Me
+                            </button>
+                        </div>
+                        <p class="mt-4 text-xs text-gray-500 italic">
+                            AI Matching powered by Google Gemini.
+                        </p>
+                    </form>
+                </div>
+            `;
+            const containerId = IS_MODAL_VIEW ? 'modal-form-container' : 'swap-form-container';
+            document.getElementById(containerId).innerHTML = formHtml;
+             lucide.createIcons(); // Ensure icons render after HTML injection
+        },
+
+        renderSuggestions() {
+            const containerId = IS_MODAL_VIEW ? 'modal-suggestions-container' : 'ai-suggestions-container';
+            const container = document.getElementById(containerId);
+
+            // Handle Initial/Empty State
+             if (AI_MATCHES_CACHE.length === 0) {
+                 container.innerHTML = `
+                     <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-200 text-center">
+                         <i data-lucide="list-filter" class="w-10 h-10 mx-auto mb-3 text-indigo-300"></i>
+                         <p class="font-semibold text-gray-700">Ready for Matches!</p>
+                         <p class="text-sm text-gray-500">Define your swap above and click "Find Gemini Matches" to see AI-powered suggestions.</p>
+                     </div>
+                  `;
+                 lucide.createIcons();
+                 return;
+            }
+
+            // Handle No Results After Filtering
+            if (CURRENT_MATCHES.length === 0 && AI_MATCHES_CACHE.length > 0) {
+                 container.innerHTML = `
+                     <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-200">
+                         <h2 class="text-2xl font-bold mb-4 text-gray-800 flex items-center">
+                            <i data-lucide="bot" class="w-6 h-6 mr-2 text-indigo-600"></i>
+                            Gemini Matches
+                         </h2>
+                         <!-- Show filters -->
+                          <div class="flex flex-wrap gap-2 mb-4 p-3 bg-gray-50 rounded-lg border">
+                            <select id="sort-by-select" onchange="SkillSwap.filterAndSortMatches()" class="p-2 border rounded-lg text-sm bg-white shadow-inner focus:ring-indigo-500 focus:border-indigo-500">
+                                <option value="ai-score">Sort By: ✨ AI Score</option>
+                                <option value="rating">Sort By: Highest Rating</option>
+                                <option value="experience">Sort By: Most Experience</option>
+                            </select>
+                            <select id="filter-by-select" onchange="SkillSwap.filterAndSortMatches()" class="p-2 border rounded-lg text-sm bg-white shadow-inner focus:ring-indigo-500 focus:border-indigo-500">
+                                <option value="all">Filter: All Users</option>
+                                <option value="top-rated">Filter: Top Rated (4.5+)</option>
+                                <option value="offering">Filter: Teachers</option>
+                                <option value="seeking">Filter: Learners</option>
+                                <option value="both">Filter: Swappers</option>
+                            </select>
+                        </div>
+                         <div class="text-center py-4">
+                            <i data-lucide="search-x" class="w-8 h-8 mx-auto mb-2 text-gray-400"></i>
+                            <p class="font-semibold text-gray-700">No matches found with current filters.</p>
+                            <p class="text-sm text-gray-500">Try adjusting your filters above.</p>
+                         </div>
+                    </div>
+                 `;
+                 lucide.createIcons();
+                  // Restore filter values
+                 document.getElementById('sort-by-select').value = document.getElementById('sort-by-select')?.value || 'ai-score';
+                 document.getElementById('filter-by-select').value = document.getElementById('filter-by-select')?.value || 'all';
+                 return;
+            }
+            
+            // Render Results
+            const visibleMatches = CURRENT_MATCHES.slice(0, VISIBLE_MATCH_COUNT);
+            const hasMore = CURRENT_MATCHES.length > VISIBLE_MATCH_COUNT;
+
+            const suggestionsHtml = `
+                <div class="bg-white p-6 rounded-xl shadow-2xl border-t-4 border-indigo-600">
+                    <h2 class="text-2xl font-bold mb-4 text-gray-800 flex items-center">
+                        <i data-lucide="bot" class="w-6 h-6 mr-2 text-indigo-600"></i>
+                        Top ✨ Gemini Matches (${visibleMatches.length} / ${CURRENT_MATCHES.length} Shown)
+                    </h2>
+                    <p class="text-sm text-gray-600 mb-4 italic">// Ranked by Gemini. Use filters/sort to refine.</p>
+                    
+                    <div class="flex flex-wrap gap-2 mb-4 p-3 bg-gray-50 rounded-lg border">
+                       <select id="sort-by-select" onchange="SkillSwap.filterAndSortMatches()" class="p-2 border rounded-lg text-sm bg-white shadow-inner focus:ring-indigo-500 focus:border-indigo-500">
+                            <option value="ai-score">Sort By: ✨ AI Score</option>
+                            <option value="rating">Sort By: Highest Rating</option>
+                            <option value="experience">Sort By: Most Experience</option>
+                        </select>
+                        <select id="filter-by-select" onchange="SkillSwap.filterAndSortMatches()" class="p-2 border rounded-lg text-sm bg-white shadow-inner focus:ring-indigo-500 focus:border-indigo-500">
+                            <option value="all">Filter: All Users</option>
+                            <option value="top-rated">Filter: Top Rated (4.5+)</option>
+                            <option value="offering">Filter: Teachers</option>
+                            <option value="seeking">Filter: Learners</option>
+                            <option value="both">Filter: Swappers</option>
+                        </select>
+                    </div>
+
+                    <ul class="space-y-4">
+                        ${visibleMatches.map(profile => profile ? ` 
+                            <li class="p-4 border border-gray-100 rounded-xl bg-white hover:shadow-lg transition duration-150 flex items-start space-x-4">
+                                <img src="${profile.avatar}" alt="${profile.name}" class="w-12 h-12 rounded-full object-cover shadow-sm ring-2 ring-indigo-100 flex-shrink-0">
+                                <div class="flex-1 min-w-0"> 
+                                    <div class="flex justify-between items-start">
+                                        <h3 class="font-bold text-gray-800 hover:text-indigo-600 cursor-pointer transition truncate" onclick="SkillSwap.openProfileModal(${profile.id})" aria-label="View profile for ${profile.name}" title="${profile.name}">
+                                            ${profile.name}
+                                        </h3>
+                                        <div class="flex flex-col items-end space-y-1 flex-shrink-0 ml-2"> 
+                                            <span class="text-xs font-semibold text-yellow-600 flex items-center">
+                                                <i data-lucide="star" class="w-4 h-4 fill-yellow-400 text-yellow-400 mr-1 flex-shrink-0"></i>
+                                                ${profile.rating}
+                                            </span>
+                                            <span class="text-xs font-medium text-gray-500 flex items-center">
+                                                <i data-lucide="map-pin" class="w-3 h-3 mr-1 flex-shrink-0"></i> ${profile.location}
+                                            </span>
+                                        </div>
+                                    </div>
+                                     
+                                    <div class="flex flex-wrap gap-1 mb-2 mt-1"> 
+                                        ${SkillSwap.renderTags(profile.skills)}
+                                    </div>
+                                       
+                                    <div class="flex flex-wrap items-center gap-1 mt-2">
+                                        <span class="token-pill bg-green-500 text-white">
+                                            ${profile.tokens} ${profile.currency}/hr
+                                        </span>
+                                        <span class="token-pill bg-blue-500 text-white"> {/* Changed color */}
+                                            ${profile.hours} Yrs Exp
+                                        </span>
+                                        ${SkillSwap.renderTags(profile.badges, true)}
+                                    </div>
+                                    
+                                    <div class="mt-4 flex flex-wrap gap-2">
+                                        <button onclick="SkillSwap.openBookingModal('${profile.name}')" 
+                                                class="flex items-center px-3 py-2 text-xs font-semibold text-white bg-green-600 rounded-full hover:bg-green-700 transition shadow-md">
+                                            <i data-lucide="calendar" class="w-4 h-4 mr-1"></i> Connect & Schedule
+                                        </button>
+                                        <button onclick="SkillSwap.openChatModal(${profile.id})" class="flex items-center px-3 py-2 text-xs font-semibold text-gray-700 bg-gray-100 rounded-full hover:bg-gray-200 transition shadow-sm">
+                                            <i data-lucide="message-circle" class="w-4 h-4 mr-1"></i> Quick Chat
+                                        </button>
+                                        {/* <button class="flex items-center px-3 py-2 text-xs font-semibold text-indigo-700 bg-indigo-100 rounded-full hover:bg-indigo-200 transition shadow-sm">
+                                            <i data-lucide="users" class="w-4 h-4 mr-1"></i> Group Swap
+                                        </button> */}
+                                    </div>
+                                </div>
+                            </li>
+                        ` : '' ).join('')}
+                    </ul>
+                    
+                    ${hasMore ? `
+                        <div class="mt-6 text-center">
+                            <button onclick="SkillSwap.loadMoreMatches()" 
+                                    class="px-6 py-3 w-full md:w-auto bg-gray-100 text-indigo-600 font-bold rounded-lg border-2 border-indigo-300 hover:bg-indigo-100 transition duration-300 flex items-center justify-center mx-auto shadow-md">
+                                <i data-lucide="chevron-down-circle" class="w-5 h-5 mr-2"></i> Show Next 5 Matches (${CURRENT_MATCHES.length - VISIBLE_MATCH_COUNT} more)
+                            </button>
+                        </div>
+                    ` : CURRENT_MATCHES.length > 0 ? `
+                        <p class="mt-6 text-center text-sm text-gray-500 font-medium">
+                            <i data-lucide="check-circle" class="w-4 h-4 inline mr-1 text-green-500"></i> All available matches shown.
+                        </p>
+                    ` : ''} 
+                </div>
+            `;
+            container.innerHTML = suggestionsHtml;
+             // Restore filter/sort values after rendering
+             document.getElementById('sort-by-select').value = document.getElementById('sort-by-select')?.value || 'ai-score';
+             document.getElementById('filter-by-select').value = document.getElementById('filter-by-select')?.value || 'all';
+             
+            lucide.createIcons();
+        },
+
+        renderGamificationPanel() {
+             // ... (gamification panel rendering - unchanged) ...
+              const container = document.getElementById('gamification-panel');
+            const panelHtml = `
+                <div class="bg-gradient-to-br from-indigo-700 to-purple-800 text-white p-6 rounded-xl shadow-2xl">
+                    <h2 class="text-2xl font-extrabold mb-4 flex items-center border-b border-indigo-500 pb-2">
+                        <i data-lucide="activity-square" class="w-6 h-6 mr-2 text-yellow-300"></i> SkillLink Status
+                    </h2>
+                    
+                    <div class="grid grid-cols-2 gap-4 text-center mb-6">
+                        <div class="p-3 bg-indigo-600 rounded-lg shadow-inner">
+                            <p class="text-4xl font-extrabold text-green-300">${USER_STATS.tokens}</p>
+                            <p class="text-indigo-200 text-sm flex items-center justify-center mt-1">
+                                Skill Tokens 
+                                <span class="group ml-1 cursor-help relative" tabindex="0">
+                                    <i data-lucide="info" class="w-3 h-3 text-indigo-300"></i>
+                                    <span class="absolute right-0 top-full p-2 mt-2 text-xs text-black bg-white rounded-lg shadow-xl opacity-0 group-hover:opacity-100 transition duration-300 z-10 w-48 text-left">
+                                        Tokens are earned upon successful completion of a swap session.
+                                    </span>
+                                </span>
+                            </p>
+                        </div>
+                        <div class="p-3 bg-indigo-600 rounded-lg shadow-inner">
+                            <p class="text-4xl font-extrabold text-red-300">${USER_STATS.hours}h</p>
+                            <p class="text-indigo-200 text-sm flex items-center justify-center mt-1">
+                                TimeBank Hours
+                                <span class="group ml-1 cursor-help relative" tabindex="0">
+                                    <i data-lucide="info" class="w-3 h-3 text-indigo-300"></i>
+                                    <span class="absolute right-0 top-full p-2 mt-2 text-xs text-black bg-white rounded-lg shadow-xl opacity-0 group-hover:opacity-100 transition duration-300 z-10 w-48 text-left">
+                                        Hours committed to teach, allowing you to "borrow" time from the community.
+                                    </span>
+                                </span>
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="mb-6">
+                         <h3 class="text-lg font-bold mb-1">Reputation Score: ${USER_STATS.reputation}%</h3>
+                         <div class="w-full bg-indigo-600 rounded-full h-2.5">
+                            <div class="bg-yellow-400 h-2.5 rounded-full" style="width: ${USER_STATS.reputation}%" aria-valuenow="${USER_STATS.reputation}" aria-valuemin="0" aria-valuemax="100" role="progressbar"></div>
+                        </div>
+                    </div>
+
+                    <h3 class="text-lg font-semibold mb-2">Earned Badges</h3>
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        ${USER_STATS.badges.map(badge => `
+                            <span class="token-pill bg-yellow-400 text-indigo-900 shadow-md">${badge}</span>
+                        `).join('')}
+                    </div>
+
+                    <button class="w-full py-2 mt-2 bg-indigo-500 rounded-lg font-bold hover:bg-indigo-400 transition shadow-lg">
+                        View Global Leaderboard
+                    </button>
+                </div>
+            `;
+            container.innerHTML = panelHtml;
+            lucide.createIcons();
+        },
+
+        renderHistory() {
+             // ... (history panel rendering - unchanged) ...
+             const container = document.getElementById('swap-history-container');
+            const historyHtml = `
+                <div class="bg-white p-6 rounded-xl shadow-2xl border-t-4 border-indigo-600">
+                    <h2 class="text-2xl font-bold mb-4 text-gray-800 flex items-center">
+                        <i data-lucide="history" class="w-6 h-6 mr-2 text-indigo-600"></i>
+                        Swap History (${MOCK_HISTORY.length})
+                    </h2>
+                    <div class="flex justify-between items-center mb-4"> {/* Added items-center */}
+                        <select id="history-filter" class="p-2 border rounded-lg text-sm shadow-inner focus:ring-indigo-500 focus:border-indigo-500">
+                            <option value="all">Filter: All Statuses</option>
+                            <option value="completed">Completed</option>
+                            <option value="pending">Pending</option>
+                            <option value="confirmed">Confirmed</option>
+                        </select>
+                        <button onclick="console.log('Sorting logic here')" class="p-2 text-sm text-gray-600 hover:text-indigo-700 flex items-center rounded-lg hover:bg-gray-100 transition">
+                            Date <i data-lucide="arrow-down-up" class="w-4 h-4 ml-1"></i>
+                        </button>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th scope="col" class="py-3 px-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Partner</th>
+                                    <th scope="col" class="py-3 px-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Skills</th>
+                                    <th scope="col" class="py-3 px-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                                    <th scope="col" class="py-3 px-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                    <th scope="col" class="py-3 px-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rating</th>
+                                </tr>
+                            </thead>
+                            <tbody id="history-body" class="divide-y divide-gray-100 bg-white">
+                                ${MOCK_HISTORY.map(item => {
+                                    let statusColor, statusIcon;
+                                    switch (item.status) {
+                                        case 'Completed': statusColor = 'text-green-600 bg-green-100'; statusIcon = 'check-circle'; break;
+                                        case 'Confirmed': statusColor = 'text-blue-600 bg-blue-100'; statusIcon = 'calendar-check'; break;
+                                        case 'Pending': default: statusColor = 'text-yellow-600 bg-yellow-100'; statusIcon = 'loader'; break;
+                                    }
+                                    const ratingDisplay = item.rating ? `
+                                        <span class="flex items-center text-yellow-600 font-medium">
+                                            <i data-lucide="star" class="w-3 h-3 fill-current text-yellow-400 mr-1"></i> ${item.rating}
+                                        </span>` : '<span class="text-gray-400">-</span>';
+
+                                    return `
+                                        <tr class="text-sm text-gray-800 hover:bg-indigo-50 transition">
+                                            <td class="py-3 px-2 font-medium whitespace-nowrap">${item.partner}</td>
+                                            <td class="py-3 px-2 text-gray-600 whitespace-nowrap">${item.skills}</td>
+                                            <td class="py-3 px-2 whitespace-nowrap">${item.date.split('-').reverse().join('/')}</td>
+                                            <td class="py-3 px-2 whitespace-nowrap">
+                                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${statusColor}">
+                                                    <i data-lucide="${statusIcon}" class="w-3 h-3 mr-1"></i> ${item.status}
+                                                </span>
+                                            </td>
+                                            <td class="py-3 px-2">${ratingDisplay}</td>
+                                        </tr>
+                                    `;
+                                }).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                     <p class="mt-4 text-xs text-gray-500 italic">// History data is currently static.</p>
+                </div>
+            `;
+            container.innerHTML = historyHtml;
+            lucide.createIcons();
+        },
+
+        renderAll() {
+            SkillSwap.renderSwapForm();
+            SkillSwap.renderSuggestions(); 
+            // Only render these if not in modal view
+            if (!IS_MODAL_VIEW) { 
+                 SkillSwap.renderGamificationPanel();
+                 SkillSwap.renderHistory();
+            }
+        }
+    };
+
+    // --- Initialization ---
+    window.onload = function() {
+        window.SkillSwap = SkillSwap; 
+        initializeDemoData();
+    };
+
+</script>
+<div id="status"></div>
+
+  <button id="mic-btn">
+    <svg viewBox="0 0 24 24">
+      <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/>
+      <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/>
+    </svg>
+  </button>
+
+  <script>
+    const micBtn = document.getElementById('mic-btn');
+    const status = document.getElementById('status');
+
+    // Route configuration with multiple keyword variations
+    const ROUTES = {
+      // Main pages
+      home: {
+        path: '/index',
+        keywords: ['home', 'homepage', 'main page', 'start'],
+        display: 'Home'
+      },
+      dashboard: {
+        path: '/dashboard',
+        keywords: ['dashboard', 'overview', 'main'],
+        display: 'Dashboard'
+      },
+      
+      // Booking
+      booking: {
+        path: '/mybookings',
+        keywords: ['booking', 'book', 'appointment', 'schedule', 'session', 'reserve'],
+        display: 'Booking'
+      },
+      myBookings: {
+        path: '/mybookings',
+        keywords: ['my booking', 'scheduled', 'my session', 'my appointment'],
+        display: 'My Bookings'
+      },
+       map: {
+        path: '/map',
+        keywords: ['map', 'location', 'directions', 'find','nearby'],
+        display: 'Map'
+      },
+      // Community & Communication
+      community: {
+        path: '/feed',
+        keywords: ['community', 'community page', 'members', 'network'],
+        display: 'Community'
+      },
+      chat: {
+        path: '/index',
+        keywords: ['chat', 'message', 'inbox', 'conversation', 'dm'],
+        display: 'Chat'
+      },
+      skillSwap: {
+        path: '/swap',
+        keywords: ['skill swap', 'swap', 'exchange', 'trade skill'],
+        display: 'Skill Swap'
+      },
+      
+      // Resources
+      resources: {
+        path: '/resources',
+        keywords: ['resource', 'learning resource', 'material', 'content'],
+        display: 'Resources'
+      },
+      
+      
+      // Skill Credits
+      skillCredits: {
+        path: '/credits',
+        keywords: ['skill credit', 'credit', 'wallet', 'balance', 'my credit'],
+        display: 'Skill Credits'
+      },
+      earnCredits: {
+        path: '/credits',
+        keywords: ['earn credit', 'get credit', 'buy credit', 'purchase credit'],
+        display: 'Earn Credits'
+      },
+      
+      // Profile & Settings
+      myProfile: {
+        path: '{% url 'profile' %}',
+        keywords: ['my profile', 'profile page', 'my account','profile','my account'],
+        display: 'My Profile'
+      },
+     
+      
+      // Auth
+      login: {
+        path: '/index',
+        keywords: ['login', 'sign in', 'log in'],
+        display: 'Login'
+      },
+      signup: {
+        path: '/signup',
+        keywords: ['signup', 'sign up', 'register', 'create account', 'join'],
+        display: 'Sign Up'
+      },
+      logout: {
+        path: '/index',
+        keywords: ['logout', 'log out', 'sign out'],
+        display: 'Logout'
+      }
+    };
+
+    // Profile routes
+    const PROFILES = {
+      rohanGupta: {
+        path: '/profile/rohan-gupta',
+        keywords: ['rohan', 'rohan gupta', 'gupta'],
+        display: 'Rohan Gupta'
+      },
+      kritiSreyash: {
+        path: '/profile/kriti-sreyash',
+        keywords: ['kriti', 'kriti sreyash', 'sreyash'],
+        display: 'Kriti Sreyash'
+      },
+      aditya: {
+        path: '/profile/aditya',
+        keywords: ['aditya'],
+        display: 'Aditya'
+      },
+      soumya: {
+        path: '/profile/soumya',
+        keywords: ['soumya'],
+        display: 'Soumya'
+      }
+    };
+
+    // Check browser support
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const SpeechSynthesis = window.speechSynthesis;
+    
+    if (!SpeechRecognition) {
+      alert('Voice recognition not supported. Use Chrome or Edge browser.');
+    } else {
+      const recognition = new SpeechRecognition();
+      recognition.lang = 'en-US';
+      recognition.interimResults = false;
+
+      // Function to speak text (voice feedback)
+      function speak(text) {
+        if (SpeechSynthesis) {
+          // Cancel any ongoing speech
+          SpeechSynthesis.cancel();
+          
+          const utterance = new SpeechSynthesisUtterance(text);
+          utterance.rate = 1.1;
+          utterance.pitch = 1;
+          utterance.volume = 1;
+          SpeechSynthesis.speak(utterance);
+        }
+      }
+
+      // Function to match command to route
+      function matchCommand(command) {
+        const lowerCommand = command.toLowerCase().trim();
+        
+        // Check profiles first (more specific)
+        for (const [key, profile] of Object.entries(PROFILES)) {
+          for (const keyword of profile.keywords) {
+            if (lowerCommand.includes(keyword)) {
+              return { path: profile.path, display: profile.display, type: 'profile' };
+            }
+          }
+        }
+        
+        // Check general routes
+        for (const [key, route] of Object.entries(ROUTES)) {
+          for (const keyword of route.keywords) {
+            if (lowerCommand.includes(keyword)) {
+              return { path: route.path, display: route.display, type: 'route' };
+            }
+          }
+        }
+        
+        return null;
+      }
+
+      micBtn.addEventListener('click', () => {
+        recognition.start();
+        micBtn.classList.add('listening');
+        status.textContent = '🎤 Listening...';
+        status.classList.add('show');
+      });
+
+      recognition.onresult = (event) => {
+        const command = event.results[0][0].transcript;
+        console.log('Heard:', command);
+        
+        status.textContent = `Heard: "${command}"`;
+        micBtn.classList.remove('listening');
+
+        const match = matchCommand(command);
+
+        if (match) {
+          const message = `Opening ${match.display}`;
+          status.textContent = `✅ ${message}`;
+          
+          // Voice feedback
+          speak(message);
+          
+          setTimeout(() => {
+            window.location.href = match.path;
+          }, 1500);
+        } else {
+          const errorMsg = 'Command not recognized. Please try again.';
+          status.textContent = `❌ ${errorMsg}`;
+          speak(errorMsg);
+          
+          setTimeout(() => {
+            status.classList.remove('show');
+          }, 2500);
+        }
+      };
+
+      recognition.onerror = (event) => {
+        micBtn.classList.remove('listening');
+        let errorMsg = '';
+        
+        if (event.error === 'no-speech') {
+          errorMsg = 'No speech detected. Please try again.';
+        } else if (event.error === 'not-allowed') {
+          errorMsg = 'Microphone access denied. Please allow microphone permissions.';
+        } else {
+          errorMsg = `Error: ${event.error}`;
+        }
+        
+        status.textContent = `❌ ${errorMsg}`;
+        
+        setTimeout(() => {
+          status.classList.remove('show');
+        }, 3000);
+      };
+
+      recognition.onend = () => {
+        micBtn.classList.remove('listening');
+      };
+    }
+  </script>
+</body>
+</html>
+

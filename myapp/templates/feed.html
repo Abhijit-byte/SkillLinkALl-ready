@@ -1,0 +1,1058 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>CommunityHub - Home</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#3B82F6",
+                        "secondary": "#22C55E",
+                        "background-light": "#F8FAFC",
+                        "background-dark": "#020617",
+                        "card-light": "#FFFFFF",
+                        "card-dark": "#1E293B",
+                        "text-light": "#334155",
+                        "text-dark": "#CBD5E1",
+                        "subtle-text-light": "#64748B",
+                        "subtle-text-dark": "#94A3B8",
+                        "border-light": "#E2E8F0",
+                        "border-dark": "#334155",
+                    },
+                    fontFamily: {
+                        "display": ["Public Sans", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "0.75rem",
+                        "xl": "1rem",
+                        "full": "9999px"
+                    },
+                    boxShadow: {
+                        'subtle': '0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05)',
+                    }
+                },
+            },
+        }
+    </script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings:
+            'FILL' 0,
+            'wght' 400,
+            'GRAD' 0,
+            'opsz' 24
+        }
+        /* Voice Navigation Styles */
+    #voice-mic-btn {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: var(--color-teal-500);
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(var(--color-teal-500-rgb), 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s;
+      z-index: 1000;
+    }
+
+    #voice-mic-btn:hover {
+      transform: scale(1.1);
+      background: var(--color-teal-600);
+    }
+
+    #voice-mic-btn.listening {
+      background: var(--color-green-500);
+      animation: voice-pulse 1s infinite;
+    }
+
+    @keyframes voice-pulse {
+      0%, 100% { box-shadow: 0 4px 12px rgba(34, 197, 94, 0.5); }
+      50% { box-shadow: 0 4px 25px rgba(34, 197, 94, 0.8); }
+    }
+
+    #voice-mic-btn svg {
+      width: 24px;
+      height: 24px;
+      fill: var(--color-white);
+    }
+
+    #voice-status {
+      position: fixed;
+      bottom: 100px;
+      right: 30px;
+      background: var(--color-surface);
+      padding: 15px 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(var(--color-slate-900-rgb), 0.15);
+      border: 1px solid var(--color-card-border);
+      display: none;
+      min-width: 250px;
+      max-width: 350px;
+      z-index: 999;
+      font-size: 14px;
+      color: var(--color-text);
+    }
+
+    #voice-status.show {
+      display: block;
+    }
+     #mic-btn {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: #007bff;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s;
+      z-index: 1000;
+    }
+
+    #mic-btn:hover {
+      transform: scale(1.1);
+    }
+
+    #mic-btn.listening {
+      background: #28a745;
+      animation: pulse 1s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 4px 12px rgba(40, 167, 69, 0.5); }
+      50% { box-shadow: 0 4px 25px rgba(40, 167, 69, 0.8); }
+    }
+
+    #mic-btn svg {
+      width: 24px;
+      height: 24px;
+      fill: white;
+    }
+
+    #status {
+      position: fixed;
+      bottom: 100px;
+      right: 30px;
+      background: white;
+      padding: 15px 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+      display: none;
+      min-width: 250px;
+      max-width: 350px;
+      z-index: 999;
+      font-size: 14px;
+    }
+
+    #status.show {
+      display: block;
+    }
+
+    .command-list {
+      max-width: 800px;
+      margin: 20px auto;
+    }
+
+    .command-section {
+      margin-bottom: 20px;
+      padding: 15px;
+      background: #f8f9fa;
+      border-radius: 8px;
+    }
+
+    .command-section h3 {
+      margin-top: 0;
+      color: #007bff;
+    }
+
+    .command-section ul {
+      margin: 10px 0;
+    }
+
+    .command-section li {
+      margin: 5px 0;
+    }
+    </style>
+</head>
+<body class="font-display bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark">
+    <div class="relative flex h-auto min-h-screen w-full flex-col">
+        <!-- TopNavBar -->
+        <header class="sticky top-0 z-50 flex items-center justify-center whitespace-nowrap border-b border-solid border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark/80 backdrop-blur-sm px-4 sm:px-6 lg:px-8 shadow-subtle">
+            <div class="flex items-center justify-between w-full max-w-7xl py-3">
+                <div class="flex items-center gap-8">
+                    <div class="flex items-center gap-2 text-text-light dark:text-text-dark">
+                        <span class="material-symbols-outlined text-primary text-3xl">diversity_3</span>
+                        <h2 class="text-xl font-bold tracking-tight">CommunityHub</h2>
+                    </div>
+                    <nav class="hidden md:flex items-center gap-6">
+                        <a class="text-sm font-medium hover:text-primary dark:hover:text-primary transition-colors" href="{% url 'dashboard' %}">Home</a>
+                        <a class="text-sm font-medium text-subtle-text-light dark:text-subtle-text-dark hover:text-primary dark:hover:text-primary transition-colors" href="{% url 'projects' %}">Projects</a>
+                        <a class="text-sm font-medium text-subtle-text-light dark:text-subtle-text-dark hover:text-primary dark:hover:text-primary transition-colors" href="{% url 'events' %}">Events</a>
+                        <a class="text-sm font-medium text-subtle-text-light dark:text-subtle-text-dark hover:text-primary dark:hover:text-primary transition-colors" href="{% url 'explore' %}">Explore</a>
+                        <a class="text-sm font-medium text-subtle-text-light dark:text-subtle-text-dark hover:text-primary dark:hover:text-primary transition-colors" href="{% url 'resources' %}">Resources</a>
+                    </nav>
+                </div>
+                <div class="flex flex-1 items-center justify-end gap-4">
+                    <label class="hidden lg:flex flex-col w-full max-w-xs">
+                        <div class="relative flex w-full flex-1 items-stretch">
+                            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-subtle-text-light dark:text-subtle-text-dark">search</span>
+                            <input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-sm text-text-light dark:text-text-dark bg-background-light dark:bg-background-dark focus:outline-0 focus:ring-2 focus:ring-primary/50 border-border-light dark:border-border-dark h-10 placeholder:text-subtle-text-light dark:placeholder:text-subtle-text-dark pl-10 pr-4" placeholder="Search..." value=""/>
+                        </div>
+                    </label>
+                    <button class="flex h-10 w-10 cursor-pointer items-center justify-center overflow-hidden rounded-lg bg-background-light dark:bg-background-dark text-subtle-text-light dark:text-subtle-text-dark hover:bg-gray-200 dark:hover:bg-border-dark lg:hidden">
+                        <span class="material-symbols-outlined">search</span>
+                    </button>
+                    <!-- User Avatar (Maria Sanchez) -->
+                    <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="User profile avatar" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuD74gK5nMifUo_FqeKIGnDbhaYMtoOyf7ywM9WKoiqRsyYiAsA47tzXUhsrISZLuCS2OHHTQGy6OSPXyZmTO8iDGUFHDit-Jh93BaxDZ3rgxCZVp4C35_69lYugrd8D0th52M60lzxrWCvXyeGxoqt2di86OcUkj8yc7iqgn0vJyzb81tKq4g_POjdyNdcby3RuO4wOfMIs-2LJa_TyiEbaPgvWjGMeJ9QUS4ner3cF24pZw1MZmp6FEzmljDgGQRsWWEm2gGleEN8");'></div>
+                </div>
+            </div>
+        </header>
+        <!-- Main Content (3-Column Layout) -->
+        <main class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                <!-- Left Sidebar (Profile and Navigation) -->
+                <aside class="lg:col-span-3 lg:sticky lg:top-24 h-fit">
+                    <div class="flex flex-col gap-6">
+                        <!-- ProfileHeader -->
+                        <div class="bg-card-light dark:bg-card-dark p-4 rounded-lg shadow-subtle border border-border-light dark:border-border-dark">
+                            <div class="flex w-full flex-col gap-4 items-start">
+                                <div class="flex gap-4 items-center">
+                                    <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full w-16 h-16" data-alt="Profile picture of Maria Sanchez" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuD74gK5nMifUo_FqeKIGnDbhaYMtoOyf7ywM9WKoiqRsyYiAsA47tzXUhsrISZLuCS2OHHTQGy6OSPXyZmTO8iDGUFHDit-Jh93BaxDZ3rgxCZVp4C35_69lYugrd8D0th52M60lzxrWCvXyeGxoqt2di86OcUkj8yc7iqgn0vJyzb81tKq4g_POjdyNdcby3RuO4wOfMIs-2LJa_TyiEbaPgvWjGMeJ9QUS4ner3cF24pZw1MZmp6FEzmljDgGQRsWWEm2gGleEN8");'></div>
+                                    <div class="flex flex-col justify-center">
+                                        <p class="text-lg font-bold">Priyam</p>
+                                        <p class="text-sm text-subtle-text-light dark:text-subtle-text-dark">Community Member, Maplewood</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Skills Section -->
+                        <div class="bg-card-light dark:bg-card-dark rounded-lg shadow-subtle border border-border-light dark:border-border-dark">
+                            <h3 class="text-base font-bold px-4 pt-4 pb-2">My Skills</h3>
+                            <div class="flex gap-2 p-4 pt-0 flex-wrap">
+                                <div class="flex h-7 shrink-0 items-center justify-center gap-x-2 rounded-full bg-primary/10 px-3"><p class="text-primary text-xs font-medium">Gardening</p></div>
+                                <div class="flex h-7 shrink-0 items-center justify-center gap-x-2 rounded-full bg-primary/10 px-3"><p class="text-primary text-xs font-medium">Web Design</p></div>
+                                <div class="flex h-7 shrink-0 items-center justify-center gap-x-2 rounded-full bg-primary/10 px-3"><p class="text-primary text-xs font-medium">Event Planning</p></div>
+                                <div class="flex h-7 shrink-0 items-center justify-center gap-x-2 rounded-full bg-primary/10 px-3"><p class="text-primary text-xs font-medium">Social Media</p></div>
+                                <div class="flex h-7 shrink-0 items-center justify-center gap-x-2 rounded-full bg-primary/10 px-3"><p class="text-primary text-xs font-medium">Spanish</p></div>
+                            </div>
+                        </div>
+                        <!-- SideNavBar -->
+                        <div class="bg-card-light dark:bg-card-dark p-2 rounded-lg shadow-subtle border border-border-light dark:border-border-dark">
+                            <div class="flex flex-col gap-1">
+                                <a class="flex items-center gap-3 px-3 py-2 rounded-md bg-primary/10 text-primary" href="{% url 'projects' %}">
+                                    <span class="material-symbols-outlined !text-2xl">grid_view</span>
+                                    <p class="text-sm font-medium">My Projects</p>
+                                </a>
+                                <a class="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-white/5 transition-colors text-subtle-text-light dark:text-subtle-text-dark hover:text-text-light dark:hover:text-text-dark" href="{% url 'events' %}">
+                                    <span class="material-symbols-outlined !text-2xl">calendar_month</span>
+                                    <p class="text-sm font-medium">My Events</p>
+                                </a>
+                                <a class="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-white/5 transition-colors text-subtle-text-light dark:text-subtle-text-dark hover:text-text-light dark:hover:text-text-dark" href="#">
+                                    <span class="material-symbols-outlined !text-2xl">bookmark</span>
+                                    <p class="text-sm font-medium">Saved Posts</p>
+                                </a>
+                                <a class="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-white/5 transition-colors text-subtle-text-light dark:text-subtle-text-dark hover:text-text-light dark:hover:text-text-dark" href="#">
+                                    <span class="material-symbols-outlined !text-2xl">groups</span>
+                                    <p class="text-sm font-medium">Local Groups</p>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </aside>
+                <!-- Center Feed -->
+                <div class="lg:col-span-6 flex flex-col gap-6">
+                    <!-- Start a Post -->
+                    <div class="bg-card-light dark:bg-card-dark p-4 rounded-lg shadow-subtle border border-border-light dark:border-border-dark">
+                        <div class="flex items-start gap-4">
+                            <!-- Use Priyam's avatar for consistency when posting -->
+                            <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="User's profile picture for posting" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuD74gK5nMifUo_FqeKIGnDbhaYMtoOyf7ywM9WKoiqRsyYiAsA47tzXUhsrISZLuCS2OHHTQGy6OSPXyZmTO8iDGUFHDit-Jh93BaxDZ3rgxCZVp4C35_69lYugrd8D0th52M60lzxrWCvXyeGxoqt2di86OcUkj8yc7iqgn0vJyzb81tKq4g_POjdyNdcby3RuO4wOfMIs-2LJa_TyiEbaPgvWjGMeJ9QUS4ner3cF24pZw1MZmp6FEzmljDgGQRsWWEm2gGleEN8");'></div>
+                            <div class="flex-1">
+                                <textarea class="form-textarea w-full rounded-lg border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-colors placeholder:text-subtle-text-light dark:placeholder:text-subtle-text-dark" placeholder="What's happening in your community? Share an update, ask a question, or propose a project!" rows="3"></textarea>
+                                <div class="flex items-center justify-end gap-3 mt-3">
+                                    <button class="flex items-center justify-center gap-2 h-10 px-4 bg-secondary/10 text-secondary text-sm font-bold rounded-lg hover:bg-secondary/20 transition-colors">
+                                        <span class="material-symbols-outlined !text-xl">lightbulb</span>
+                                        <span>Propose a New Project</span>
+                                    </button>
+                                    <button class="flex items-center justify-center gap-2 h-10 px-4 bg-primary text-white text-sm font-bold rounded-lg hover:bg-primary/90 transition-colors">
+                                        <span class="material-symbols-outlined !text-xl">campaign</span>
+                                        <span>Share an Update</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Post 1: Found Pet (Most Recent) -->
+                    <div class="bg-card-light dark:bg-card-dark p-4 rounded-lg shadow-subtle border border-border-light dark:border-border-dark">
+                        <div class="flex items-start gap-4">
+                            <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="Profile picture of Leo Garcia" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDAaRWxCfIfdu0vcq8BBRe4Jszj3B9BeNajRbwVVytA4qBBKL-MRVpxHHq3neT1XWrSkU-4FM9ApNVQkW6xwiwdXsxDyc6x-9Ikdxw0nzw1apmVg673fRzn_IrD5gqZueSke6N0p53zB2mvt7W60Par--vaEvYtlpHy7PDIHPy7pU4t3SfNyGVCDNBrUFwcmmaw4ioQyycnXR6-JUgp40AXmAyk6pLfxSMGHCvrWr0pdvrtb6US4D1Tq-YKycaOcOv3hq0f586jF0o");'></div>
+                            <div class="flex-1">
+                                <div class="flex items-baseline gap-2">
+                                    <p class="font-bold">Leo Garcia</p>
+                                    <p class="text-xs text-subtle-text-light dark:text-subtle-text-dark">5 minutes ago</p>
+                                </div>
+                                <h3 class="text-lg font-bold mt-1 text-secondary">URGENT: Found Lost Golden Retriever near the park entrance!</h3>
+                                <p class="mt-2 text-sm">Found a female Golden Retriever with a blue collar near the main park entrance on Oak Street. She seems friendly but scared and hungry. I've secured her in my backyard for now. Please reply immediately if she's yours or you know the owner!</p>
+                                <div class="flex items-center gap-4 mt-4 text-subtle-text-light dark:text-subtle-text-dark">
+                                    <button class="flex items-center gap-1.5 text-sm hover:text-primary transition-colors"><span class="material-symbols-outlined !text-xl">forum</span> 0</button>
+                                    <button class="flex items-center gap-1.5 text-sm hover:text-primary transition-colors"><span class="material-symbols-outlined !text-xl">share</span> 0</button>
+                                    <button class="flex items-center gap-1.5 ml-auto h-9 px-4 text-sm font-bold bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors">Contact User</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- NEW POST 2: Cultural Event Prep (Diwali) -->
+                    <div class="bg-card-light dark:bg-card-dark p-4 rounded-lg shadow-subtle border border-border-light dark:border-border-dark">
+                        <div class="flex items-start gap-4">
+                            <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="Profile picture of Ravi Sharma" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuC1_8Xg-6hZ2rGv5nOq2nU3k5o4v9k6a7s9q8d7k8p5j4t6u7v6m5s8w4d9g6e7f8e3c8b7d9g0t5u8r4y6h3f7e5i8o7p2l6j9k1m2n4q6r8s0t3u5v7w9x0z");'></div>
+                            <div class="flex-1">
+                                <div class="flex items-baseline gap-2">
+                                    <p class="font-bold">Ravi Sharma (Cultural Committee)</p>
+                                    <p class="text-xs text-subtle-text-light dark:text-subtle-text-dark">30 minutes ago</p>
+                                </div>
+                                <h3 class="text-lg font-bold mt-1 text-primary">VOLUNTEERS NEEDED: Diwali Mela 2024 Planning Kicks Off!</h3>
+                                <p class="mt-2 text-sm">We're starting preparations for the biggest Diwali event of the year! We need help with vendor coordination, lighting design, and setting up the kids' activities. Join our first planning meeting tomorrow evening!</p>
+                                <div class="flex items-center gap-4 mt-4 text-subtle-text-light dark:text-subtle-text-dark">
+                                    <button class="flex items-center gap-1.5 text-sm hover:text-primary transition-colors"><span class="material-symbols-outlined !text-xl">celebration</span> 45</button>
+                                    <button class="flex items-center gap-1.5 text-sm hover:text-primary transition-colors"><span class="material-symbols-outlined !text-xl">share</span> 18</button>
+                                    <button class="flex items-center gap-1.5 text-sm hover:text-primary transition-colors"><span class="material-symbols-outlined !text-xl">bookmark</span> Save</button>
+                                    <button class="flex items-center gap-1.5 ml-auto h-9 px-4 text-sm font-bold bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors">Join Committee</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- NEW POST 3: Apartment/Colony Management Update (Maintenance Fee) -->
+                    <div class="bg-card-light dark:bg-card-dark p-4 rounded-lg shadow-subtle border border-border-light dark:border-border-dark">
+                        <div class="flex items-start gap-4">
+                            <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="Profile picture of Aditi Singh" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDQ7P7a2b9t5rV3wX8q9d0y6f4g2h1e9c8b7d9g0t5u8r4y6h3f7e5i8o7p2l6j9k1m2n4q6r8s0t3u5v7w9x0z");'></div>
+                            <div class="flex-1">
+                                <div class="flex items-baseline gap-2">
+                                    <p class="font-bold">Aditi Singh (Apt. Maintenance)</p>
+                                    <p class="text-xs text-subtle-text-light dark:text-subtle-text-dark">1 hour ago</p>
+                                </div>
+                                <h3 class="text-lg font-bold mt-1">IMPORTANT NOTICE: Quarterly Maintenance Fee Deadline</h3>
+                                <p class="mt-2 text-sm">A friendly reminder that the deadline for the quarterly apartment maintenance fees (Q4 2024) is this Sunday. Please pay via the Maplewood Connect App or at the security office. Late fees will apply next week. Thank you!</p>
+                                <div class="flex items-center gap-4 mt-4 text-subtle-text-light dark:text-subtle-text-dark">
+                                    <button class="flex items-center gap-1.5 text-sm hover:text-primary transition-colors"><span class="material-symbols-outlined !text-xl">forum</span> 2</button>
+                                    <button class="flex items-center gap-1.5 text-sm hover:text-primary transition-colors"><span class="material-symbols-outlined !text-xl">campaign</span> Send Alert</button>
+                                    <button class="flex items-center gap-1.5 ml-auto h-9 px-4 text-sm font-bold bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors">Pay Now</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- NEW POST 4: Colony Clean-Up (Replaces Miller's Pond) -->
+                    <div class="bg-card-light dark:bg-card-dark p-4 rounded-lg shadow-subtle border border-border-light dark:border-border-dark">
+                        <div class="flex items-start gap-4">
+                            <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="Profile picture of David Kim" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDofBsSYcS9iJJxtJsmACKBjacqao1FVPYaqa_F7KQbDpQVvx-R8jOJo-zUwjCHjNXhr0igcWWCvUZr_Y26wPamKhC21z_2ef_Ch9rKJnW7GSeh9juLm_jQ3U33Vsx2AFoug8wrP6jemIOmkyDe57SkGK6QXrZ3RVSghRZ_Ph95ZdWzv1QTkAQ8_ZHuVBF2jMl82hOHKBIaIix_UPMoD0XuJVL5h8l-vxOermbMWZ02m1u7JJ7pDnSPpy3u3Vq-mkfjUQblv0b5tmY");'></div>
+                            <div class="flex-1">
+                                <div class="flex items-baseline gap-2">
+                                    <p class="font-bold">RWA Sector 14</p>
+                                    <p class="text-xs text-subtle-text-light dark:text-subtle-text-dark">5 hours ago</p>
+                                </div>
+                                <h3 class="text-lg font-bold mt-1 text-secondary">RWA NOTICE: Urgent Clean-Up Drive for the Sector 14 Park!</h3>
+                                <p class="mt-2 text-sm">We are organizing a voluntary clean-up this Saturday morning (9 AM) for the Sector 14 central park and children's play area. Need volunteers for weeding and trash removal. Let's keep our area beautiful. Refreshments will be provided!</p>
+                                <div class="flex items-center gap-4 mt-4 text-subtle-text-light dark:text-subtle-text-dark">
+                                    <button class="flex items-center gap-1.5 text-sm hover:text-primary transition-colors"><span class="material-symbols-outlined !text-xl">forum</span> 12</button>
+                                    <button class="flex items-center gap-1.5 text-sm hover:text-primary transition-colors"><span class="material-symbols-outlined !text-xl">share</span> 3</button>
+                                    <button class="flex items-center gap-1.5 text-sm hover:text-primary transition-colors"><span class="material-symbols-outlined !text-xl">bookmark</span> Save</button>
+                                    <button class="flex items-center gap-1.5 ml-auto h-9 px-4 text-sm font-bold bg-secondary text-white rounded-lg hover:bg-secondary/90 transition-colors">Sign Up to Help</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Post 5: Skill Share -->
+                    <div class="bg-card-light dark:bg-card-dark p-4 rounded-lg shadow-subtle border border-border-light dark:border-border-dark">
+                        <div class="flex items-start gap-4">
+                            <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="Profile picture of Alice Johnson" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCS8eM9U1rD1iQn7oUa5rE9q7F7p6cT5t5_t_Q2B9rO9v4v8f4b-P9F5yT6p9rZ8x4L9E7p7F7e7p7b9r8a9v6a4w7d9q4w4b9o9r4d5g6m7q7h6d5g7w8r7q7h6g5d4m5g7d8r9a8w4");'></div>
+                            <div class="flex-1">
+                                <div class="flex items-baseline gap-2">
+                                    <p class="font-bold">Alice Johnson</p>
+                                    <p class="text-xs text-subtle-text-light dark:text-subtle-text-dark">1 day ago</p>
+                                </div>
+                                <h3 class="text-lg font-bold mt-1">Free Beginner Spanish Conversation Classes</h3>
+                                <p class="mt-2 text-sm">¡Hola! I'm a native Spanish speaker and happy to offer free tutoring for students or adults interested in basic conversation. We'll meet every Saturday from 1 PM to 2 PM in the library meeting room. All skill levels welcome!</p>
+                                <div class="flex items-center gap-4 mt-4 text-subtle-text-light dark:text-subtle-text-dark">
+                                    <button class="flex items-center gap-1.5 text-sm hover:text-primary transition-colors"><span class="material-symbols-outlined !text-xl">forum</span> 6</button>
+                                    <button class="flex items-center gap-1.5 text-sm hover:text-primary transition-colors"><span class="material-symbols-outlined !text-xl">share</span> 1</button>
+                                    <button class="flex items-center gap-1.5 text-sm hover:text-primary transition-colors"><span class="material-symbols-outlined !text-xl">bookmark</span> Save</button>
+                                    <button class="flex items-center gap-1.5 ml-auto h-9 px-4 text-sm font-bold bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors">RSVP for Next Class</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- NEW POST 6: Local Services Inquiry (Indian Context) -->
+                    <div class="bg-card-light dark:bg-card-dark p-4 rounded-lg shadow-subtle border border-border-light dark:border-border-dark">
+                        <div class="flex items-start gap-4">
+                            <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="Profile picture of Priya Menon" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDQ7P7a2b9t5rV3wX8q9d0y6f4g2h1e9c8b7d9g0t5u8r4y6h3f7e5i8o7p2l6j9k1m2n4q6r8s0t3u5v7w9x0z");'></div>
+                            <div class="flex-1">
+                                <div class="flex items-baseline gap-2">
+                                    <p class="font-bold">Priya Menon</p>
+                                    <p class="text-xs text-subtle-text-light dark:text-subtle-text-dark">1 day ago</p>
+                                </div>
+                                <h3 class="text-lg font-bold mt-1">LOOKING FOR RECOMMENDATIONS: Reliable Full-Time Maid/Cook</h3>
+                                <p class="mt-2 text-sm">Hi neighbours, can anyone recommend a **reliable full-time maid or cook** available in the Sector 14 area? Needs to be experienced with South Indian cooking. Please DM me or comment below if you have trusted references!</p>
+                                <div class="flex items-center gap-4 mt-4 text-subtle-text-light dark:text-subtle-text-dark">
+                                    <button class="flex items-center gap-1.5 text-sm hover:text-primary transition-colors"><span class="material-symbols-outlined !text-xl">forum</span> 14</button>
+                                    <button class="flex items-center gap-1.5 text-sm hover:text-primary transition-colors"><span class="material-symbols-outlined !text-xl">share</span> 2</button>
+                                    <button class="flex items-center gap-1.5 text-sm hover:text-primary transition-colors"><span class="material-symbols-outlined !text-xl">bookmark</span> Save</button>
+                                    <button class="flex items-center gap-1.5 ml-auto h-9 px-4 text-sm font-bold bg-secondary text-white rounded-lg hover:bg-secondary/90 transition-colors">Send Direct Message</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Post 7: Volunteer Call (Animal Shelter) -->
+                    <div class="bg-card-light dark:bg-card-dark p-4 rounded-lg shadow-subtle border border-border-light dark:border-border-dark">
+                        <div class="flex items-start gap-4">
+                            <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="Logo of Maplewood Animal Shelter" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCL7UExbeDP1Q1OQtYIoB-pW-7fiKpPXcjToHKasUpwdLWMv68DNTdtWAC4-RL_WIQHJLXGKSoiG4PlxlZq_y1ThMFWUJglsiQNqtgs4Jt-DvxDH8mblUAk6tvmy_ib1_SA5bFoIfL2Iwm72wHkcV1XOHr9K1SUglbFH-HlrFqgAKpl_hNCUHPO5D0mnfzCMTTS8Duwp2j6OpbhmLT6lRVyycsCCvT3zQ0bSSmTLFPTiHnq5gn2TXf9K61RALBSyykvng_UssXgkvo");'></div>
+                            <div class="flex-1">
+                                <div class="flex items-baseline gap-2">
+                                    <p class="font-bold">Maplewood Animal Shelter</p>
+                                    <p class="text-xs text-subtle-text-light dark:text-subtle-text-dark">1 day ago</p>
+                                </div>
+                                <h3 class="text-lg font-bold mt-1">HELP NEEDED: Coding a New Website for Our Shelter</h3>
+                                <p class="mt-2 text-sm">We're a non-profit looking for volunteer web developers to help us build a new website. Our goal is to make our adoption process smoother. Any help is appreciated! We need frontend, backend, and design expertise.</p>
+                                <div class="flex items-center gap-4 mt-4 text-subtle-text-light dark:text-subtle-text-dark">
+                                    <button class="flex items-center gap-1.5 text-sm hover:text-primary transition-colors"><span class="material-symbols-outlined !text-xl">forum</span> 8</button>
+                                    <button class="flex items-center gap-1.5 text-sm hover:text-primary transition-colors"><span class="material-symbols-outlined !text-xl">share</span> 11</button>
+                                    <button class="flex items-center gap-1.5 text-sm hover:text-primary transition-colors"><span class="material-symbols-outlined !text-xl">bookmark</span> Save</button>
+                                    <button class="flex items-center gap-1.5 ml-auto h-9 px-4 text-sm font-bold bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors">Volunteer</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- NEW POST 8: Ganesh Chaturthi Update (Cultural Context) -->
+                    <div class="bg-card-light dark:bg-card-dark p-4 rounded-lg shadow-subtle border border-border-light dark:border-border-dark">
+                        <div class="flex items-start gap-4">
+                            <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="Profile picture of Shanti Devi" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDofBsSYcS9iJJxtJsmACKBjacqao1FVPYaqa_F7KQbDpQVvx-R8jOJo-zUwjCHjNXhr0igcWWCvUZr_Y26wPamKhC21z_2ef_Ch9rKJnW7GSeh9juLm_jQ3U33Vsx2AFoug8wrP6jemIOmkyDe57SkGK6QXrZ3RVSghRZ_Ph95ZdWzv1QTkAQ8_ZHuVBF2jMl82hOHKBIaIix_UPMoD0XuJVL5h8l-vxOermbMWZ02m1u7JJ7pDnSPpy3u3Vq-mkfjUQblv0b5tmY");'></div>
+                            <div class="flex-1">
+                                <div class="flex items-baseline gap-2">
+                                    <p class="font-bold">Shanti Devi</p>
+                                    <p class="text-xs text-subtle-text-light dark:text-subtle-text-dark">2 days ago</p>
+                                </div>
+                                <h3 class="text-lg font-bold mt-1 text-primary">UPDATE: Ganesh Chaturthi Idol Immersion Schedule & Traffic Advisory</h3>
+                                <p class="mt-2 text-sm">Attention residents: The schedule for the community Ganpati idol immersion (**Visarjan**) next Sunday is now finalized. Please check the community notice board for the exact route and be mindful of temporary traffic diversions in the main lane between 4 PM and 7 PM.</p>
+                                <div class="flex items-center gap-4 mt-4 text-subtle-text-light dark:text-subtle-text-dark">
+                                    <button class="flex items-center gap-1.5 text-sm hover:text-primary transition-colors"><span class="material-symbols-outlined !text-xl">forum</span> 21</button>
+                                    <button class="flex items-center gap-1.5 text-sm hover:text-primary transition-colors"><span class="material-symbols-outlined !text-xl">share</span> 9</button>
+                                    <button class="flex items-center gap-1.5 text-sm hover:text-primary transition-colors"><span class="material-symbols-outlined !text-xl">bookmark</span> Save</button>
+                                    <button class="flex items-center gap-1.5 ml-auto h-9 px-4 text-sm font-bold bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors">View Route Map</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Post 9: Meeting Announcement -->
+                    <div class="bg-card-light dark:bg-card-dark p-4 rounded-lg shadow-subtle border border-border-light dark:border-border-dark">
+                        <div class="flex items-start gap-4">
+                            <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="Profile picture of Neighborhood Watch Group" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCv8cWq3kE8aP6q2sXy8gT5rF2mF8lO4h7p3v9k6a7s9q8d7k8p5j4t6u7v6m5s8w4d9g6e7f8e3c8b7d9g0t5u8r4y6h3f7e5i8o7p2l6j9k1m2n4q6r8s0t3u5v7w9x0z");'></div>
+                            <div class="flex-1">
+                                <div class="flex items-baseline gap-2">
+                                    <p class="font-bold">Northwood Neighborhood Watch</p>
+                                    <p class="text-xs text-subtle-text-light dark:text-subtle-text-dark">2 days ago</p>
+                                </div>
+                                <h3 class="text-lg font-bold mt-1">REMINDER: Quarterly Public Safety Meeting Next Week</h3>
+                                <p class="mt-2 text-sm">Our next quarterly public safety meeting is scheduled for Tuesday at 7 PM in the Town Hall Annex. We will discuss recent crime trends, new security initiatives, and start planning for the holiday season patrol schedule. All residents are encouraged to attend.</p>
+                                <div class="flex items-center gap-4 mt-4 text-subtle-text-light dark:text-subtle-text-dark">
+                                    <button class="flex items-center gap-1.5 text-sm hover:text-primary transition-colors"><span class="material-symbols-outlined !text-xl">forum</span> 15</button>
+                                    <button class="flex items-center gap-1.5 text-sm hover:text-primary transition-colors"><span class="material-symbols-outlined !text-xl">share</span> 7</button>
+                                    <button class="flex items-center gap-1.5 text-sm hover:text-primary transition-colors"><span class="material-symbols-outlined !text-xl">bookmark</span> Save</button>
+                                    <button class="flex items-center gap-1.5 ml-auto h-9 px-4 text-sm font-bold bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors">View Details</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- NEW POST 10: Tech Project Detail/Need (Colony Management App) -->
+                    <div class="bg-card-light dark:bg-card-dark p-4 rounded-lg shadow-subtle border border-border-light dark:border-border-dark">
+                        <div class="flex items-start gap-4">
+                            <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="Profile picture of Sarah Chen" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuC-Eq01wTUQbpBEQlRYRw55CPToZtZb6POR7sN8BrwI__sLMctVdD2m4-HpTbonPClLdP6ei4iuOPER0WgQ3KaG40nzJkBS64T0v_JgU_gd8aG7PavSZtfTLhV6dCtqs0SaercjXe5uy6zR_j9lHR8bJWAEfNynyJ0-BIb3mYdF161S1KXYJa3eB0ICqkVaQSj2OSxR4_y7umElQIySW1U_eNL5WRjBaWfVu9iSdHc-LxkriloCfmpnavKk0zj6ukDKaZAcK9QdsuM");'></div>
+                            <div class="flex-1">
+                                <div class="flex items-baseline gap-2">
+                                    <p class="font-bold">Maplewood Tech Collective</p>
+                                    <p class="text-xs text-subtle-text-light dark:text-subtle-text-dark">3 days ago</p>
+                                </div>
+                                <h3 class="text-lg font-bold mt-1 text-secondary">URGENT CODING HELP: Need Backend Dev for Visitor Management Module</h3>
+                                <p class="mt-2 text-sm">Our 'Maplewood Connect' app team is urgently looking for a backend developer (Node.js/Firebase) to finalize the digital security/visitor gate pass module before launch. Join us and make a tangible impact on colony security!</p>
+                                <div class="flex items-center gap-4 mt-4 text-subtle-text-light dark:text-subtle-text-dark">
+                                    <button class="flex items-center gap-1.5 text-sm hover:text-primary transition-colors"><span class="material-symbols-outlined !text-xl">forum</span> 18</button>
+                                    <button class="flex items-center gap-1.5 text-sm hover:text-primary transition-colors"><span class="material-symbols-outlined !text-xl">share</span> 5</button>
+                                    <button class="flex items-center gap-1.5 text-sm hover:text-primary transition-colors"><span class="material-symbols-outlined !text-xl">bookmark</span> Save</button>
+                                    <button class="flex items-center gap-1.5 ml-auto h-9 px-4 text-sm font-bold bg-secondary text-white rounded-lg hover:bg-secondary/90 transition-colors">Offer Tech Help</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <!-- Post 11: Cultural/Temple Meeting -->
+                    <div class="bg-card-light dark:bg-card-dark p-4 rounded-lg shadow-subtle border border-border-light dark:border-border-dark">
+                        <div class="flex items-start gap-4">
+                            <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="Profile picture of Jatni Heritage Group" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDofBsSYcS9iJJxtJsmACKBjacqao1FVPYaqa_F7KQbDpQVvx-R8jOJo-zUwjCHjNXhr0igcWWCvUZr_Y26wPamKhC21z_2ef_Ch9rKJnW7GSeh9juLm_jQ3U33Vsx2AFoug8wrP6jemIOmkyDe57SkGK6QXrZ3RVSghRZ_Ph95ZdWzv1QTkAQ8_ZHuVBF2jMl82hOHKBIaIix_UPMoD0XuJVL5h8l-vxOermbMWZ02m1u7JJ7pDnSPpy3u3Vq-mkfjUQblv0b5tmY");'></div>
+                            <div class="flex-1">
+                                <div class="flex items-baseline gap-2">
+                                    <p class="font-bold">Jatni Heritage Group</p>
+                                    <p class="text-xs text-subtle-text-light dark:text-subtle-text-dark">4 days ago</p>
+                                </div>
+                                <h3 class="text-lg font-bold mt-1">TOWN HALL: Discussion on Proposed Cultural & Community Center</h3>
+                                <p class="mt-2 text-sm">We invite all community members to discuss the plan for establishing a new cultural and community center (potential temple site) near Elm Street. Your feedback on the vision and location is essential for moving forward. Meeting is Nov 8th.</p>
+                                <div class="flex items-center gap-4 mt-4 text-subtle-text-light dark:text-subtle-text-dark">
+                                    <button class="flex items-center gap-1.5 text-sm hover:text-primary transition-colors"><span class="material-symbols-outlined !text-xl">forum</span> 35</button>
+                                    <button class="flex items-center gap-1.5 text-sm hover:text-primary transition-colors"><span class="material-symbols-outlined !text-xl">share</span> 10</button>
+                                    <button class="flex items-center gap-1.5 text-sm hover:text-primary transition-colors"><span class="material-symbols-outlined !text-xl">bookmark</span> Save</button>
+                                    <button class="flex items-center gap-1.5 ml-auto h-9 px-4 text-sm font-bold bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors">View Proposal</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Post 12: Event Organization (Harvest Festival) -->
+                    <div class="bg-card-light dark:bg-card-dark p-4 rounded-lg shadow-subtle border border-border-light dark:border-border-dark">
+                        <div class="flex items-start gap-4">
+                            <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="Profile picture of Sarah Chen" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuC-Eq01wTUQbpBEQlRYRw55CPToZtZb6POR7sN8BrwI__sLMctVdD2m4-HpTbonPClLdP6ei4iuOPER0WgQ3KaG40nzJkBS64T0v_JgU_gd8aG7PavSZtfTLhV6dCtqs0SaercjXe5uy6zR_j9lHR8bJWAEfNynyJ0-BIb3mYdF161S1KXYJa3eB0ICqkVaQSj2OSxR4_y7umElQIySW1U_eNL5WRjBaWfVu9iSdHc-LxkriloCfmpnavKk0zj6ukDKaZAcK9QdsuM");'></div>
+                            <div class="flex-1">
+                                <div class="flex items-baseline gap-2">
+                                    <p class="font-bold">Sarah Chen</p>
+                                    <p class="text-xs text-subtle-text-light dark:text-subtle-text-dark">5 days ago</p>
+                                </div>
+                                <h3 class="text-lg font-bold mt-1">ORGANIZING: Annual Community Harvest Festival</h3>
+                                <p class="mt-2 text-sm">It's that time of year again! I'm looking for volunteers to help organize the Annual Community Harvest Festival. We need people for planning, setup, and on-the-day activities. Let's make it the best one yet!</p>
+                                <div class="flex items-center gap-4 mt-4 text-subtle-text-light dark:text-subtle-text-dark">
+                                    <button class="flex items-center gap-1.5 text-sm hover:text-primary transition-colors"><span class="material-symbols-outlined !text-xl">forum</span> 25</button>
+                                    <button class="flex items-center gap-1.5 text-sm hover:text-primary transition-colors"><span class="material-symbols-outlined !text-xl">share</span> 15</button>
+                                    <button class="flex items-center gap-1.5 text-sm hover:text-primary transition-colors"><span class="material-symbols-outlined !text-xl">bookmark</span> Save</button>
+                                    <button class="flex items-center gap-1.5 ml-auto h-9 px-4 text-sm font-bold bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors">Join Event</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Post 13: Update with Image (Community Garden) -->
+                    <div class="bg-card-light dark:bg-card-dark rounded-lg shadow-subtle border border-border-light dark:border-border-dark overflow-hidden">
+                        <div class="p-4">
+                            <div class="flex items-start gap-4">
+                                <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="Profile picture of Raj Patel" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDAaRWxCfIfdu0vcq8BBRe4Jszj3B9BeNajRbwVVytA4qBBKL-MRVpxHHq3neT1XWrSkU-4FM9ApNVQkW6xwiwdXsxDyc6x-9Ikdxw0nzw1apmVg673fRzn_IrD5gqZueSke6N0p53zB2mvt7W60Par--vaEvYtlpHy7PDIHPy7pU4t3SfNyGVCDNBrUFwcmmaw4ioQyycnXR6-JUgp40AXmAyk6pLfxSMGHCvrWr0pdvrtb6US4D1Tq-YKycaOcOv3hq0f586jF0o");'></div>
+                                <div class="flex-1">
+                                    <div class="flex items-baseline gap-2">
+                                        <p class="font-bold">Raj Patel</p>
+                                        <p class="text-xs text-subtle-text-light dark:text-subtle-text-dark">6 days ago</p>
+                                    </div>
+                                    <h3 class="text-lg font-bold mt-1">UPDATE: Community Garden on Maple Ave</h3>
+                                    <p class="mt-2 text-sm">Just wanted to share a quick update. The tomato plants are thriving! Thanks to everyone who helped with the weeding last weekend. Come by Saturday morning if you want to help with the bean trellis installation!</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Post Image -->
+                        <div class="w-full aspect-video bg-cover bg-center mt-2" data-alt="Lush green tomato plants in a community garden" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDJDJPxnIBVxPHHUBdNBps-xyCujvp1AzPMTy2FA8NAnJiF0zJCbmu5BdAHJhw7muWWdPl28cqj3oNd6UaybiQ_D7z5fe6QaRmDU8ny4iak1Ec1sd6RD_F3U02meJ_QbadK5k3BlQckDymejGczewCEMAeEcEJCmgWzcqnwz2aIM3AaXW4ourYUYse8TBpjweWJhY1qYLfaV1aAveabYglmjeSQ_VdSM2k-Gpc01-exqW06k7-BY7RJoCr66V0XQjozIhdZvD5dT4')"></div>
+                        <div class="p-4 pt-2">
+                            <div class="flex items-center gap-4 mt-2 text-subtle-text-light dark:text-subtle-text-dark">
+                                <button class="flex items-center gap-1.5 text-sm hover:text-primary transition-colors"><span class="material-symbols-outlined !text-xl">forum</span> 31</button>
+                                <button class="flex items-center gap-1.5 text-sm hover:text-primary transition-colors"><span class="material-symbols-outlined !text-xl">share</span> 9</button>
+                                <button class="flex items-center gap-1.5 text-sm hover:text-primary transition-colors"><span class="material-symbols-outlined !text-xl">bookmark</span> Save</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Post 14: Local Business Shoutout -->
+                    <div class="bg-card-light dark:bg-card-dark p-4 rounded-lg shadow-subtle border border-border-light dark:border-border-dark">
+                        <div class="flex items-start gap-4">
+                            <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="Profile picture of Robert Lee" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCL7UExbeDP1Q1OQtYIoB-pW-7fiKpPXcjToHKasUpwdLWMv68DNTdtWAC4-RL_WIQHJLXGKSoiG4PlxlZq_y1ThMFWUJglsiQNqtgs4Jt-DvxDH8mblUAk6tvmy_ib1_SA5bFoIfL2Iwm72wHkcV1XOHr9K1SUglbFH-HlrFqgAKpl_hNCUHPO5D0mnfzCMTTS8Duwp2j6OpbhmLT6lRVyycsCCvT3zQ0bSSmTLFPTiHnq5gn2TXf9K61RALBSyykvng_UssXgkvo");'></div>
+                            <div class="flex-1">
+                                <div class="flex items-baseline gap-2">
+                                    <p class="font-bold">Robert Lee</p>
+                                    <p class="text-xs text-subtle-text-light dark:text-subtle-text-dark">7 days ago</p>
+                                </div>
+                                <h3 class="text-lg font-bold mt-1">LOCAL LOVE: Please support Maplewood's new bookstore, 'Page Turners'</h3>
+                                <p class="mt-2 text-sm">Stop by the new independent bookstore, Page Turners, on Main Street! They have a fantastic selection and are hosting a children's reading event next Friday. Let's show our support for local businesses!</p>
+                                <div class="flex items-center gap-4 mt-4 text-subtle-text-light dark:text-subtle-text-dark">
+                                    <button class="flex items-center gap-1.5 text-sm hover:text-primary transition-colors"><span class="material-symbols-outlined !text-xl">forum</span> 9</button>
+                                    <button class="flex items-center gap-1.5 text-sm hover:text-primary transition-colors"><span class="material-symbols-outlined !text-xl">share</span> 14</button>
+                                    <button class="flex items-center gap-1.5 text-sm hover:text-primary transition-colors"><span class="material-symbols-outlined !text-xl">bookmark</span> Save</button>
+                                    <button class="flex items-center gap-1.5 ml-auto h-9 px-4 text-sm font-bold bg-secondary text-white rounded-lg hover:bg-secondary/90 transition-colors">Show Map</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Post 15: City Council Notice -->
+                    <div class="bg-card-light dark:bg-card-dark p-4 rounded-lg shadow-subtle border border-border-light dark:border-border-dark">
+                        <div class="flex items-start gap-4">
+                            <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="Logo of Maplewood City Council" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDf9gK3nMifUo_FqeKIGnDbhaYMtoOyf7ywM9WKoiqRsyYiAsA47tzXUhsrISZLuCS2OHHTQGy6OSPXyZmTO8iDGUFHDit-Jh93BaxDZ3rgxCZVp4C35_69lYugrd8D0th52M60lzxrWCvXyeGxoqt2di86OcUkj8yc7iqgn0vJyzb81tKq4g_POjdyNdcby3RuO4wOfMIs-2LJa_TyiEbaPgvWjGMeJ9QUS4ner3cF24pZw1MZmp6FEzmljDgGQRsWWEm2gGleEN8");'></div>
+                            <div class="flex-1">
+                                <div class="flex items-baseline gap-2">
+                                    <p class="font-bold">Maplewood City Council</p>
+                                    <p class="text-xs text-subtle-text-light dark:text-subtle-text-dark">1 week ago</p>
+                                </div>
+                                <h3 class="text-lg font-bold mt-1">NOTICE: Next City Council Meeting Agenda Available (Nov 15th)</h3>
+                                <p class="mt-2 text-sm">The agenda for the November 15th City Council Meeting is now posted online. Key items include the budget proposal for next year and zoning changes for Elm Street. Public comments are strongly encouraged and can be submitted online.</p>
+                                <div class="flex items-center gap-4 mt-4 text-subtle-text-light dark:text-subtle-text-dark">
+                                    <button class="flex items-center gap-1.5 text-sm hover:text-primary transition-colors"><span class="material-symbols-outlined !text-xl">forum</span> 4</button>
+                                    <button class="flex items-center gap-1.5 text-sm hover:text-primary transition-colors"><span class="material-symbols-outlined !text-xl">share</span> 19</button>
+                                    <button class="flex items-center gap-1.5 text-sm hover:text-primary transition-colors"><span class="material-symbols-outlined !text-xl">bookmark</span> Save</button>
+                                    <button class="flex items-center gap-1.5 ml-auto h-9 px-4 text-sm font-bold bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors">View Agenda</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Post 16: Workshop Announcement (Library) -->
+                    <div class="bg-card-light dark:bg-card-dark p-4 rounded-lg shadow-subtle border border-border-light dark:border-border-dark">
+                        <div class="flex items-start gap-4">
+                            <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="Logo of Jatni Public Library" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAzpFC9i8zhXSprKXsOZtVYT1lbVjNr4JHfRyrKPj9Xh4RKj_3WTAumhtqBJtO9p46FcdVjghrzkJC9NNfmB_engrUL43c3KGW3egmgCDZllDw_amMnx3d-YvatogyIlW5CDix1-i0IlvBGoIhDoW06urqdHoiiuZ0-7MK1v7AWRSscyNVwh2IFiwkuMuEe5k1W3bXiPPorc_9aq99Lnu1zGKjrHwxE0ijzhZsNObryWSpkD2O0OJQ7NvqNAHU-inOUrym0RVTu1I");'></div>
+                            <div class="flex-1">
+                                <div class="flex items-baseline gap-2">
+                                    <p class="font-bold">Jatni Public Library</p>
+                                    <p class="text-xs text-subtle-text-light dark:text-subtle-text-dark">1 week ago</p>
+                                </div>
+                                <h3 class="text-lg font-bold mt-1">WORKSHOP: Free 'Grant Writing' Workshop for Beginners</h3>
+                                <p class="mt-2 text-sm">Want to get funding for your community project? Join our free workshop on grant writing essentials this Thursday at 6 PM. Learn how to draft a successful proposal. No registration required!</p>
+                                <div class="flex items-center gap-4 mt-4 text-subtle-text-light dark:text-subtle-text-dark">
+                                    <button class="flex items-center gap-1.5 text-sm hover:text-primary transition-colors"><span class="material-symbols-outlined !text-xl">forum</span> 5</button>
+                                    <button class="flex items-center gap-1.5 text-sm hover:text-primary transition-colors"><span class="material-symbols-outlined !text-xl">share</span> 22</button>
+                                    <button class="flex items-center gap-1.5 text-sm hover:text-primary transition-colors"><span class="material-symbols-outlined !text-xl">bookmark</span> Save</button>
+                                    <button class="flex items-center gap-1.5 ml-auto h-9 px-4 text-sm font-bold bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors">View Event</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <!-- Right Sidebar (Events and Projects) -->
+                <aside class="lg:col-span-3 lg:sticky lg:top-24 h-fit">
+                    <div class="flex flex-col gap-6">
+                        <!-- Upcoming Events -->
+                        <div class="bg-card-light dark:bg-card-dark p-4 rounded-lg shadow-subtle border border-border-light dark:border-border-dark">
+                            <h3 class="text-base font-bold mb-3">Upcoming Local Events</h3>
+                            <ul class="space-y-4">
+                                <!-- Original Events -->
+                                <li class="flex items-start gap-4">
+                                    <div class="flex flex-col items-center justify-center h-12 w-12 rounded-lg bg-primary/10 text-primary font-bold">
+                                        <span class="text-xs">OCT</span>
+                                        <span class="text-xl leading-none">28</span>
+                                    </div>
+                                    <div>
+                                        <a class="font-semibold text-sm hover:underline" href="#">Maplewood Farmers Market</a>
+                                        <p class="text-xs text-subtle-text-light dark:text-subtle-text-dark">Sat, 9:00 AM @ Town Square</p>
+                                    </div>
+                                </li>
+                                <!-- Event: Maintenance Deadline -->
+                                <li class="flex items-start gap-4">
+                                    <div class="flex flex-col items-center justify-center h-12 w-12 rounded-lg bg-red-100 text-red-600 font-bold">
+                                        <span class="text-xs">OCT</span>
+                                        <span class="text-xl leading-none">29</span>
+                                    </div>
+                                    <div>
+                                        <a class="font-semibold text-sm hover:underline text-red-600" href="#">Apt. Maintenance Fee Deadline (Q4)</a>
+                                        <p class="text-xs text-subtle-text-light dark:text-subtle-text-dark">Due Sunday @ All Day</p>
+                                    </div>
+                                </li>
+                                <!-- Event: Diwali Mela Planning -->
+                                <li class="flex items-start gap-4">
+                                    <div class="flex flex-col items-center justify-center h-12 w-12 rounded-lg bg-orange-100 text-orange-600 font-bold">
+                                        <span class="text-xs">OCT</span>
+                                        <span class="text-xl leading-none">30</span>
+                                    </div>
+                                    <div>
+                                        <a class="font-semibold text-sm hover:underline text-orange-600" href="#">Diwali Mela Planning Meeting</a>
+                                        <p class="text-xs text-subtle-text-light dark:text-subtle-text-dark">Mon, 7:00 PM @ Community Hall</p>
+                                    </div>
+                                </li>
+                                <!-- New Event: Park Cleanup Day (Updated) -->
+                                <li class="flex items-start gap-4">
+                                    <div class="flex flex-col items-center justify-center h-12 w-12 rounded-lg bg-secondary/10 text-secondary font-bold">
+                                        <span class="text-xs">NOV</span>
+                                        <span class="text-xl leading-none">04</span>
+                                    </div>
+                                    <div>
+                                        <a class="font-semibold text-sm hover:underline text-secondary" href="#">Sector 14 Park Clean-up Drive</a>
+                                        <p class="text-xs text-subtle-text-light dark:text-subtle-text-dark">Sat, 9:00 AM @ Sector 14 Central Park</p>
+                                    </div>
+                                </li>
+                                <li class="flex items-start gap-4">
+                                    <div class="flex flex-col items-center justify-center h-12 w-12 rounded-lg bg-primary/10 text-primary font-bold">
+                                        <span class="text-xs">NOV</span>
+                                        <span class="text-xl leading-none">04</span>
+                                    </div>
+                                    <div>
+                                        <a class="font-semibold text-sm hover:underline" href="#">Book Drive for Schools</a>
+                                        <p class="text-xs text-subtle-text-light dark:text-subtle-text-dark">All Day @ Jatni Public Library</p>
+                                    </div>
+                                </li>
+                                <!-- Event 3: Cultural Center Discussion -->
+                                <li class="flex items-start gap-4">
+                                    <div class="flex flex-col items-center justify-center h-12 w-12 rounded-lg bg-primary/10 text-primary font-bold">
+                                        <span class="text-xs">NOV</span>
+                                        <span class="text-xl leading-none">08</span>
+                                    </div>
+                                    <div>
+                                        <a class="font-semibold text-sm hover:underline" href="#">Cultural Center Discussion Town Hall</a>
+                                        <p class="text-xs text-subtle-text-light dark:text-subtle-text-dark">Wed, 7:00 PM @ Town Hall Annex</p>
+                                    </div>
+                                </li>
+                                <li class="flex items-start gap-4">
+                                    <div class="flex flex-col items-center justify-center h-12 w-12 rounded-lg bg-primary/10 text-primary font-bold">
+                                        <span class="text-xs">NOV</span>
+                                        <span class="text-xl leading-none">11</span>
+                                    </div>
+                                    <div>
+                                        <a class="font-semibold text-sm hover:underline" href="#">Park Cleanup Day (Miller's Pond)</a>
+                                        <p class="text-xs text-subtle-text-light dark:text-subtle-text-dark">Sat, 10:00 AM @ Miller's Pond</p>
+                                    </div>
+                                </li>
+                                <!-- New Event: Ganesh Visarjan -->
+                                <li class="flex items-start gap-4">
+                                    <div class="flex flex-col items-center justify-center h-12 w-12 rounded-lg bg-primary/10 text-primary font-bold">
+                                        <span class="text-xs">NOV</span>
+                                        <span class="text-xl leading-none">12</span>
+                                    </div>
+                                    <div>
+                                        <a class="font-semibold text-sm hover:underline" href="#">Ganpati Visarjan Procession</a>
+                                        <p class="text-xs text-subtle-text-light dark:text-subtle-text-dark">Sun, 4:00 PM @ Main Colony Lane</p>
+                                    </div>
+                                </li>
+                                <!-- Event 4: City Council Meeting -->
+                                <li class="flex items-start gap-4">
+                                    <div class="flex flex-col items-center justify-center h-12 w-12 rounded-lg bg-primary/10 text-primary font-bold">
+                                        <span class="text-xs">NOV</span>
+                                        <span class="text-xl leading-none">15</span>
+                                    </div>
+                                    <div>
+                                        <a class="font-semibold text-sm hover:underline" href="#">Quarterly City Council Meeting</a>
+                                        <p class="text-xs text-subtle-text-light dark:text-subtle-text-dark">Wed, 7:00 PM @ Town Hall</p>
+                                    </div>
+                                </li>
+                                <li class="flex items-start gap-4">
+                                    <div class="flex flex-col items-center justify-center h-12 w-12 rounded-lg bg-primary/10 text-primary font-bold">
+                                        <span class="text-xs">NOV</span>
+                                        <span class="text-xl leading-none">18</span>
+                                    </div>
+                                    <div>
+                                        <a class="font-semibold text-sm hover:underline" href="#">Beginner's Knitting Circle Meetup</a>
+                                        <p class="text-xs text-subtle-text-light dark:text-subtle-text-dark">Sat, 2:00 PM @ The Corner Cafe</p>
+                                    </div>
+                                </li>
+                                <li class="flex items-start gap-4">
+                                    <div class="flex flex-col items-center justify-center h-12 w-12 rounded-lg bg-primary/10 text-primary font-bold">
+                                        <span class="text-xs">NOV</span>
+                                        <span class="text-xl leading-none">25</span>
+                                    </div>
+                                    <div>
+                                        <a class="font-semibold text-sm hover:underline" href="#">Holiday Toy Drive Kickoff</a>
+                                        <p class="text-xs text-subtle-text-light dark:text-subtle-text-dark">Sat, 11:00 AM @ Town Hall</p>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- Featured Projects -->
+                        <div class="bg-card-light dark:bg-card-dark p-4 rounded-lg shadow-subtle border border-border-light dark:border-border-dark">
+                            <h3 class="text-base font-bold mb-3">Featured Projects</h3>
+                            <ul class="space-y-3">
+                                <li>
+                                    <a class="font-semibold text-sm hover:underline" href="#">Diwali Mela Organizing</a>
+                                    <p class="text-xs text-subtle-text-light dark:text-subtle-text-dark">Cultural Committee needs volunteers for stalls/lighting.</p>
+                                </li>
+                                <li>
+                                    <a class="font-semibold text-sm hover:underline" href="#">Community Mural on Main St.</a>
+                                    <p class="text-xs text-subtle-text-light dark:text-subtle-text-dark">Seeking artists and painters!</p>
+                                </li>
+                                <li>
+                                    <a class="font-semibold text-sm hover:underline" href="#">Building the 'Maplewood Connect' App</a>
+                                    <p class="text-xs text-subtle-text-light dark:text-subtle-text-dark">Tech volunteers needed for resident app development.</p>
+                                </li>
+                                <li>
+                                    <a class="font-semibold text-sm hover:underline" href="#">Revitalize the Downtown Clock Tower</a>
+                                    <p class="text-xs text-subtle-text-light dark:text-subtle-text-dark">Seeking engineering/construction expertise.</p>
+                                </li>
+                                <li>
+                                    <a class="font-semibold text-sm hover:underline" href="#">Adopt-a-Street Program Expansion</a>
+                                    <p class="text-xs text-subtle-text-light dark:text-subtle-text-dark">Seeking neighborhood blocks to sign up for cleanup.</p>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- Skill Directory -->
+                        <div class="bg-card-light dark:bg-card-dark p-4 rounded-lg shadow-subtle border border-border-light dark:border-border-dark">
+                            <h3 class="text-base font-bold mb-3">Skill Directory</h3>
+                            <p class="text-sm text-subtle-text-light dark:text-subtle-text-dark mb-3">Connect with members based on skills and expertise.</p>
+                            <button class="w-full flex items-center justify-center gap-2 h-10 px-4 bg-primary/10 text-primary text-sm font-bold rounded-lg hover:bg-primary/20 transition-colors">
+                                <span>Explore Skills</span>
+                                <span class="material-symbols-outlined !text-xl">arrow_forward</span>
+                            </button>
+                        </div>
+                    </div>
+                </aside>
+            </div>
+        </main>
+    </div>
+    <div id="status"></div>
+
+  <button id="mic-btn">
+    <svg viewBox="0 0 24 24">
+      <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/>
+      <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/>
+    </svg>
+  </button>
+
+  <script>
+    const micBtn = document.getElementById('mic-btn');
+    const status = document.getElementById('status');
+
+    // Route configuration with multiple keyword variations
+    const ROUTES = {
+      // Main pages
+      home: {
+        path: '/index',
+        keywords: ['home', 'homepage', 'main page', 'start'],
+        display: 'Home'
+      },
+      dashboard: {
+        path: '/dashboard',
+        keywords: ['dashboard', 'overview', 'main'],
+        display: 'Dashboard'
+      },
+      
+      // Booking
+      booking: {
+        path: '/mybookings',
+        keywords: ['booking', 'book', 'appointment', 'schedule', 'session', 'reserve'],
+        display: 'Booking'
+      },
+      myBookings: {
+        path: '/mybookings',
+        keywords: ['my booking', 'scheduled', 'my session', 'my appointment'],
+        display: 'My Bookings'
+      },
+      
+      // Community & Communication
+      community: {
+        path: '/feed',
+        keywords: ['community', 'community page', 'members', 'network'],
+        display: 'Community'
+      },
+      map: {
+        path: '/map',
+        keywords: ['map', 'location', 'directions', 'find','nearby'],
+        display: 'Map'
+      },
+      chat: {
+        path: '/index',
+        keywords: ['chat', 'message', 'inbox', 'conversation', 'dm'],
+        display: 'Chat'
+      },
+      skillSwap: {
+        path: '/swap',
+        keywords: ['skill swap', 'swap', 'exchange', 'trade skill'],
+        display: 'Skill Swap'
+      },
+      
+      // Resources
+      resources: {
+        path: '/resources',
+        keywords: ['resource', 'learning resource', 'material', 'content'],
+        display: 'Resources'
+      },
+      
+      
+      // Skill Credits
+      skillCredits: {
+        path: '/credits',
+        keywords: ['skill credit', 'credit', 'wallet', 'balance', 'my credit'],
+        display: 'Skill Credits'
+      },
+      earnCredits: {
+        path: '/credits',
+        keywords: ['earn credit', 'get credit', 'buy credit', 'purchase credit'],
+        display: 'Earn Credits'
+      },
+      
+      // Profile & Settings
+      myProfile: {
+        path: '{% url 'profile' %}',
+        keywords: ['my profile', 'profile page', 'my account','profile','my account'],
+        display: 'My Profile'
+      },
+     
+      
+      // Auth
+      login: {
+        path: '/index',
+        keywords: ['login', 'sign in', 'log in'],
+        display: 'Login'
+      },
+      signup: {
+        path: '/signup',
+        keywords: ['signup', 'sign up', 'register', 'create account', 'join'],
+        display: 'Sign Up'
+      },
+      logout: {
+        path: '/index',
+        keywords: ['logout', 'log out', 'sign out'],
+        display: 'Logout'
+      }
+    };
+
+    // Profile routes
+    const PROFILES = {
+      rohanGupta: {
+        path: '/profile/rohan-gupta',
+        keywords: ['rohan', 'rohan gupta', 'gupta'],
+        display: 'Rohan Gupta'
+      },
+      kritiSreyash: {
+        path: '/profile/kriti-sreyash',
+        keywords: ['kriti', 'kriti sreyash', 'sreyash'],
+        display: 'Kriti Sreyash'
+      },
+      aditya: {
+        path: '/profile/aditya',
+        keywords: ['aditya'],
+        display: 'Aditya'
+      },
+      soumya: {
+        path: '/profile/soumya',
+        keywords: ['soumya'],
+        display: 'Soumya'
+      }
+    };
+
+    // Check browser support
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const SpeechSynthesis = window.speechSynthesis;
+    
+    if (!SpeechRecognition) {
+      alert('Voice recognition not supported. Use Chrome or Edge browser.');
+    } else {
+      const recognition = new SpeechRecognition();
+      recognition.lang = 'en-US';
+      recognition.interimResults = false;
+
+      // Function to speak text (voice feedback)
+      function speak(text) {
+        if (SpeechSynthesis) {
+          // Cancel any ongoing speech
+          SpeechSynthesis.cancel();
+          
+          const utterance = new SpeechSynthesisUtterance(text);
+          utterance.rate = 1.1;
+          utterance.pitch = 1;
+          utterance.volume = 1;
+          SpeechSynthesis.speak(utterance);
+        }
+      }
+
+      // Function to match command to route
+      function matchCommand(command) {
+        const lowerCommand = command.toLowerCase().trim();
+        
+        // Check profiles first (more specific)
+        for (const [key, profile] of Object.entries(PROFILES)) {
+          for (const keyword of profile.keywords) {
+            if (lowerCommand.includes(keyword)) {
+              return { path: profile.path, display: profile.display, type: 'profile' };
+            }
+          }
+        }
+        
+        // Check general routes
+        for (const [key, route] of Object.entries(ROUTES)) {
+          for (const keyword of route.keywords) {
+            if (lowerCommand.includes(keyword)) {
+              return { path: route.path, display: route.display, type: 'route' };
+            }
+          }
+        }
+        
+        return null;
+      }
+
+      micBtn.addEventListener('click', () => {
+        recognition.start();
+        micBtn.classList.add('listening');
+        status.textContent = '🎤 Listening...';
+        status.classList.add('show');
+      });
+
+      recognition.onresult = (event) => {
+        const command = event.results[0][0].transcript;
+        console.log('Heard:', command);
+        
+        status.textContent = `Heard: "${command}"`;
+        micBtn.classList.remove('listening');
+
+        const match = matchCommand(command);
+
+        if (match) {
+          const message = `Opening ${match.display}`;
+          status.textContent = `✅ ${message}`;
+          
+          // Voice feedback
+          speak(message);
+          
+          setTimeout(() => {
+            window.location.href = match.path;
+          }, 1500);
+        } else {
+          const errorMsg = 'Command not recognized. Please try again.';
+          status.textContent = `❌ ${errorMsg}`;
+          speak(errorMsg);
+          
+          setTimeout(() => {
+            status.classList.remove('show');
+          }, 2500);
+        }
+      };
+
+      recognition.onerror = (event) => {
+        micBtn.classList.remove('listening');
+        let errorMsg = '';
+        
+        if (event.error === 'no-speech') {
+          errorMsg = 'No speech detected. Please try again.';
+        } else if (event.error === 'not-allowed') {
+          errorMsg = 'Microphone access denied. Please allow microphone permissions.';
+        } else {
+          errorMsg = `Error: ${event.error}`;
+        }
+        
+        status.textContent = `❌ ${errorMsg}`;
+        
+        setTimeout(() => {
+          status.classList.remove('show');
+        }, 3000);
+      };
+
+      recognition.onend = () => {
+        micBtn.classList.remove('listening');
+      };
+    }
+  </script>
+</body>
+</html>

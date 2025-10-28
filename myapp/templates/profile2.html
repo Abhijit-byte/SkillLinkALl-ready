@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>ProFolio - Rohan Kapoor</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#4f46e5", // Indigo
+                        "background-light": "#f4f5f7",
+                        "background-dark": "#111827",
+                        "surface-light": "#ffffff",
+                        "surface-dark": "#1f2937",
+                        "heading-light": "#111827",
+                        "heading-dark": "#f9fafb",
+                        "body-light": "#374151",
+                        "body-dark": "#d1d5db",
+                        "subtle-light": "#6b7280",
+                        "subtle-dark": "#9ca3af"
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "2xl": "1rem", "full": "9999px" },
+                    boxShadow: {
+                        'lg': '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)',
+                        'xl': '0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)',
+                        'inner-lg': 'inset 0 2px 4px 0 rgb(0 0 0 / 0.05)',
+                    },
+                },
+            },
+        }
+    </script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+
+<body
+    class="bg-background-light dark:bg-background-dark font-display text-body-light dark:text-body-dark leading-relaxed antialiased">
+    <div class="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden">
+        <div class="layout-container flex h-full grow flex-col">
+            <header
+                class="sticky top-0 z-50 w-full bg-surface-light/90 dark:bg-surface-dark/90 backdrop-blur-lg border-b border-gray-200/80 dark:border-gray-700/80 shadow-sm">
+                <div class="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+                    <div class="flex items-center justify-between whitespace-nowrap h-16">
+                        <div class="flex items-center gap-4 text-heading-light dark:text-heading-dark">
+                            <div class="size-6 text-indigo-600 dark:text-indigo-500">
+                                <svg fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"> /* SVG Logo */ </svg>
+                            </div>
+                            <h2 class="text-xl font-bold leading-tight tracking-[-0.015em]">SkillLink</h2>
+                        </div>
+                        <div class="flex flex-1 justify-end items-center gap-4">
+                            <div class="hidden sm:flex items-center gap-8">
+                                <a class="text-sm font-medium text-subtle-light dark:text-subtle-dark hover:text-indigo-600 dark:hover:text-indigo-500 transition-colors" href="#">Home</a>
+                                <a class="text-sm font-medium text-subtle-light dark:text-subtle-dark hover:text-indigo-600 dark:hover:text-indigo-500 transition-colors" href="#">Network</a>
+                                <a class="text-sm font-medium text-subtle-light dark:text-subtle-dark hover:text-indigo-600 dark:hover:text-indigo-500 transition-colors" href="#">Jobs</a>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <button class="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 w-10 bg-transparent text-subtle-light dark:text-subtle-dark hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors" aria-label="Notifications">
+                                    <span class="material-symbols-outlined">notifications</span>
+                                </button>
+                                <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10"
+                                    data-alt="User profile picture"
+                                    style='background-image: url("https://picsum.photos/seed/RohanKapoorHeader/100/100");'>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+            <main class="flex-1 px-4 sm:px-6 lg:px-8 py-12 md:py-16">
+                <div class="max-w-7xl mx-auto flex flex-col gap-8">
+                    <div class="bg-surface-light dark:bg-surface-dark rounded-2xl shadow-lg overflow-hidden border border-gray-200/50 dark:border-gray-700/50">
+                        <div class="w-full bg-center bg-no-repeat bg-cover flex flex-col justify-end min-h-[250px]"
+                            data-alt="Indian classical music or sitar banner"
+                            style='background-image: url("https://picsum.photos/seed/RohanKapoorBanner/1200/300");'>
+                        </div>
+                        <div class="p-6">
+                            <div class="flex flex-col sm:flex-row gap-6 -mt-28 items-start">
+                                <div class="relative">
+                                     <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full h-36 w-36 border-4 border-surface-light dark:border-surface-dark shadow-xl"
+                                        data-alt="Profile picture of Rohan Kapoor"
+                                        style='background-image: url("https://picsum.photos/seed/RohanKapoorProfile/150/150");'>
+                                    </div>
+                                    <div class="absolute bottom-3 right-3 size-7 bg-green-500 rounded-full border-4 border-surface-light dark:border-surface-dark flex items-center justify-center text-white text-xs font-bold"></div>
+                                </div>
+                                <div class="flex-1 pt-16 sm:pt-4">
+                                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                                        <div>
+                                            <p class="text-heading-light dark:text-heading-dark text-3xl font-bold leading-tight tracking-[-0.015em]">Rohan Kapoor</p>
+                                            <p class="text-subtle-light dark:text-subtle-dark text-lg font-normal leading-normal">Sitar Player & Composer</p>
+                                            <p class="text-subtle-light dark:text-subtle-dark text-sm font-normal leading-normal mt-1">Mumbai, India</p>
+                                        </div>
+                                        <div class="flex w-full sm:w-auto gap-3">
+                                            <button class="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-5 bg-indigo-600 dark:bg-indigo-500 text-white hover:bg-indigo-700 dark:hover:bg-indigo-600 transition-colors shadow-md hover:shadow-lg text-sm font-bold leading-normal tracking-[0.015em] flex-1 sm:flex-auto"> <span class="truncate">Dashboard</span> </button>
+                                            <button class="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-5 bg-surface-light dark:bg-surface-dark border border-gray-300 dark:border-gray-600 text-heading-light dark:text-heading-dark hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-sm font-bold leading-normal tracking-[0.015em] flex-1 sm:flex-auto"> <span class="truncate">Contact Me</span> </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-surface-light dark:bg-surface-dark rounded-2xl shadow-lg p-6 border border-gray-200/50 dark:border-gray-700/50">
+                        <h2 class="text-heading-light dark:text-heading-dark text-xl font-bold leading-tight tracking-[-0.015em] pb-4">Key Stats</h2>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                            <div class="flex flex-col items-center justify-center p-4 bg-indigo-50 dark:bg-indigo-900/40 rounded-2xl hover:shadow-lg transition-shadow"> <span class="text-3xl font-bold text-indigo-600 dark:text-indigo-400">5</span> <p class="text-sm font-medium text-subtle-light dark:text-subtle-dark mt-1">Albums</p> </div>
+                            <div class="flex flex-col items-center justify-center p-4 bg-indigo-50 dark:bg-indigo-900/40 rounded-2xl hover:shadow-lg transition-shadow"> <span class="text-3xl font-bold text-indigo-600 dark:text-indigo-400">15+</span> <p class="text-sm font-medium text-subtle-light dark:text-subtle-dark mt-1">Years Performing</p> </div>
+                            <div class="flex flex-col items-center justify-center p-4 bg-indigo-50 dark:bg-indigo-900/40 rounded-2xl hover:shadow-lg transition-shadow"> <span class="text-3xl font-bold text-indigo-600 dark:text-indigo-400">50+</span> <p class="text-sm font-medium text-subtle-light dark:text-subtle-dark mt-1">Collaborations</p> </div>
+                            <div class="flex flex-col items-center justify-center p-4 bg-indigo-50 dark:bg-indigo-900/40 rounded-2xl hover:shadow-lg transition-shadow"> <span class="text-3xl font-bold text-indigo-600 dark:text-indigo-400">12K</span> <p class="text-sm font-medium text-subtle-light dark:text-subtle-dark mt-1">Followers</p> </div>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                        <div class="lg:col-span-2 flex flex-col gap-8">
+                            <div class="bg-surface-light dark:bg-surface-dark rounded-2xl shadow-lg p-6 border border-gray-200/50 dark:border-gray-700/50">
+                                <h2 class="text-heading-light dark:text-heading-dark text-xl font-bold leading-tight tracking-[-0.015em] pb-3">About</h2>
+                                <p class="text-base font-normal leading-relaxed">
+                                    Acclaimed Sitar player and composer bridging the gap between Hindustani classical traditions and contemporary global music. With over 15 years of performance experience across international stages, I aim to explore the expressive potential of the sitar through original compositions, fusion projects, and film scoring. Trained under renowned gurus, I am dedicated to preserving the rich heritage of Indian classical music while pushing its creative boundaries. Also passionate about teaching and mentoring aspiring musicians.
+                                </p>
+                            </div>
+                            <div class="bg-surface-light dark:bg-surface-dark rounded-2xl shadow-lg p-6 border border-gray-200/50 dark:border-gray-700/50">
+                                <h2 class="text-heading-light dark:text-heading-dark text-xl font-bold leading-tight tracking-[-0.015em] pb-4">Experience</h2>
+                                <div class="flex flex-col gap-6">
+                                    <div class="flex gap-4">
+                                        <div class="flex-shrink-0 size-12 rounded-lg bg-indigo-100 dark:bg-indigo-900/40 flex items-center justify-center"> <span class="material-symbols-outlined text-indigo-600 dark:text-indigo-400">music_note</span> </div>
+                                        <div>
+                                            <h3 class="font-bold text-heading-light dark:text-heading-dark">Independent Musician & Composer</h3>
+                                            <p class="font-medium">Self-Employed</p>
+                                            <p class="text-sm text-subtle-light dark:text-subtle-dark">Jan 2010 - Present · 15 yrs+</p>
+                                            <p class="mt-2 text-base">Performing solo sitar concerts globally, composing original music for albums and collaborations, scoring independent films, and conducting workshops on Indian classical music.</p>
+                                        </div>
+                                    </div>
+                                    <div class="border-t border-gray-200 dark:border-gray-700"></div>
+                                    <div class="flex gap-4">
+                                        <div class="flex-shrink-0 size-12 rounded-lg bg-indigo-100 dark:bg-indigo-900/40 flex items-center justify-center"> <span class="material-symbols-outlined text-indigo-600 dark:text-indigo-400">movie</span> </div>
+                                        <div>
+                                            <h3 class="font-bold text-heading-light dark:text-heading-dark">Visiting Artist / Composer</h3>
+                                            <p class="font-medium">Various Film Studios & Universities</p>
+                                            <p class="text-sm text-subtle-light dark:text-subtle-dark">Ongoing (Project-based)</p>
+                                            <p class="mt-2 text-base">Composed background scores and thematic music for award-winning documentaries and feature films. Delivered guest lectures and masterclasses on sitar and composition at music conservatories.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bg-surface-light dark:bg-surface-dark rounded-2xl shadow-lg p-6 border border-gray-200/50 dark:border-gray-700/50">
+                                <h2 class="text-heading-light dark:text-heading-dark text-xl font-bold leading-tight tracking-[-0.015em] pb-4">Featured Works</h2>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div class="group border border-gray-200/80 dark:border-gray-700/80 rounded-xl overflow-hidden transition-all duration-300 ease-in-out hover:shadow-xl hover:-translate-y-1">
+                                        <div class="w-full bg-center bg-no-repeat aspect-video bg-cover" data-alt="Album cover for 'Mumbai Midnight'" style='background-image: url("https://picsum.photos/seed/RohanKapoorAlbum1/400/225");'></div>
+                                        <div class="p-4">
+                                            <h3 class="font-bold text-heading-light dark:text-heading-dark">Album: Mumbai Midnight</h3>
+                                            <p class="text-sm mt-1">A fusion album blending classical sitar melodies with electronic soundscapes, inspired by the city's nightlife.</p>
+                                            <a class="inline-flex items-center gap-1 text-indigo-600 dark:text-indigo-500 text-sm font-medium mt-3 group-hover:underline" href="#">Listen on Spotify <span class="material-symbols-outlined text-base transition-transform group-hover:translate-x-1">arrow_forward</span></a>
+                                        </div>
+                                    </div>
+                                    <div class="group border border-gray-200/80 dark:border-gray-700/80 rounded-xl overflow-hidden transition-all duration-300 ease-in-out hover:shadow-xl hover:-translate-y-1">
+                                         <div class="w-full bg-center bg-no-repeat aspect-video bg-cover" data-alt="Film poster for 'Ganges Echoes'" style='background-image: url("https://picsum.photos/seed/RohanKapoorFilm1/400/225");'></div>
+                                        <div class="p-4">
+                                            <h3 class="font-bold text-heading-light dark:text-heading-dark">Film Score: Ganges Echoes</h3>
+                                            <p class="text-sm mt-1">Original soundtrack composed for the documentary exploring life along the Ganges river.</p>
+                                            <a class="inline-flex items-center gap-1 text-indigo-600 dark:text-indigo-500 text-sm font-medium mt-3 group-hover:underline" href="#">View Film Details <span class="material-symbols-outlined text-base transition-transform group-hover:translate-x-1">arrow_forward</span></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="lg:col-span-1 flex flex-col gap-8">
+                            <div class="bg-surface-light dark:bg-surface-dark rounded-2xl shadow-lg p-6 border border-gray-200/50 dark:border-gray-700/50">
+                                <h2 class="text-heading-light dark:text-heading-dark text-xl font-bold leading-tight tracking-[-0.015em] pb-4">Musical Skills</h2>
+                                <div class="flex flex-wrap gap-2">
+                                    <span class="bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 font-medium px-3 py-1.5 rounded-full text-sm hover:bg-indigo-200 dark:hover:bg-indigo-800/70 transition-colors cursor-default">Sitar Performance</span>
+                                    <span class="bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 font-medium px-3 py-1.5 rounded-full text-sm hover:bg-indigo-200 dark:hover:bg-indigo-800/70 transition-colors cursor-default">Hindustani Classical</span>
+                                    <span class="bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 font-medium px-3 py-1.5 rounded-full text-sm hover:bg-indigo-200 dark:hover:bg-indigo-800/70 transition-colors cursor-default">Composition</span>
+                                    <span class="bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 font-medium px-3 py-1.5 rounded-full text-sm hover:bg-indigo-200 dark:hover:bg-indigo-800/70 transition-colors cursor-default">Improvisation</span>
+                                    <span class="bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 font-medium px-3 py-1.5 rounded-full text-sm hover:bg-indigo-200 dark:hover:bg-indigo-800/70 transition-colors cursor-default">Fusion Music</span>
+                                    <span class="bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 font-medium px-3 py-1.5 rounded-full text-sm hover:bg-indigo-200 dark:hover:bg-indigo-800/70 transition-colors cursor-default">Film Scoring</span>
+                                    <span class="bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 font-medium px-3 py-1.5 rounded-full text-sm hover:bg-indigo-200 dark:hover:bg-indigo-800/70 transition-colors cursor-default">Music Theory</span>
+                                    <span class="bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 font-medium px-3 py-1.5 rounded-full text-sm hover:bg-indigo-200 dark:hover:bg-indigo-800/70 transition-colors cursor-default">Teaching</span>
+                                </div>
+                            </div>
+                            <div class="bg-surface-light dark:bg-surface-dark rounded-2xl shadow-lg p-6 border border-gray-200/50 dark:border-gray-700/50">
+                                <h2 class="text-heading-light dark:text-heading-dark text-xl font-bold leading-tight tracking-[-0.015em] pb-4">Activity</h2>
+                                <div class="flex items-center gap-3">
+                                    <div class="flex-shrink-0 bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="Profile picture of Rohan Kapoor" style='background-image: url("https://picsum.photos/seed/RohanKapoorProfileSmall/100/100");'></div>
+                                     <input type="text" placeholder="Share a musical update..." class="w-full rounded-full bg-background-light dark:bg-background-dark border-gray-300 dark:border-gray-700 px-4 py-2 text-sm focus:ring-indigo-500 focus:border-indigo-500" />
+                                </div>
+                                <div class="border-t border-gray-200 dark:border-gray-700 my-5"></div>
+                                <div class="flex flex-col gap-5">
+                                    <div class="flex gap-3">
+                                         <div class="flex-shrink-0 bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="Profile picture of Rohan Kapoor" style='background-image: url("https://picsum.photos/seed/RohanKapoorProfileSmall/100/100");'></div>
+                                        <div>
+                                            <p class="text-sm font-medium text-heading-light dark:text-heading-dark"> Rohan Kapoor <span class="text-subtle-light dark:text-subtle-dark font-normal">shared a performance clip</span> </p>
+                                            <p class="text-xs text-subtle-light dark:text-subtle-dark">18h ago</p>
+                                            <p class="text-sm mt-2"> A short clip from last night's concert in London. Such an amazing audience! Playing Raag Yaman tonight. #Sitar #LiveMusic #IndianClassical </p>
+                                            <div class="flex items-center gap-4 mt-3">
+                                                <button class="flex items-center gap-1 text-sm text-subtle-light dark:text-subtle-dark hover:text-indigo-600 dark:hover:text-indigo-500 transition-colors"> <span class="material-symbols-outlined text-base">thumb_up</span> <span>Like</span> </button>
+                                                <button class="flex items-center gap-1 text-sm text-subtle-light dark:text-subtle-dark hover:text-indigo-600 dark:hover:text-indigo-500 transition-colors"> <span class="material-symbols-outlined text-base">chat_bubble</span> <span>Comment</span> </button>
+                                                <button class="flex items-center gap-1 text-sm text-subtle-light dark:text-subtle-dark hover:text-indigo-600 dark:hover:text-indigo-500 transition-colors"> <span class="material-symbols-outlined text-base">share</span> <span>Share</span> </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="border-t border-gray-200 dark:border-gray-700"></div>
+                                    <div class="flex gap-3">
+                                        <div class="flex-shrink-0 bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="Profile picture of Rohan Kapoor" style='background-image: url("https://picsum.photos/seed/RohanKapoorProfileSmall/100/100");'></div>
+                                        <div>
+                                            <p class="text-sm font-medium text-heading-light dark:text-heading-dark"> Rohan Kapoor <span class="text-subtle-light dark:text-subtle-dark font-normal">is working on a new composition</span> </p>
+                                            <p class="text-xs text-subtle-light dark:text-subtle-dark">3d ago</p>
+                                            <p class="text-sm mt-2"> Deep in the studio working on a new piece blending sitar with orchestral elements. Exploring some interesting harmonies! #Composition #NewMusic </p>
+                                            <div class="flex items-center gap-4 mt-3">
+                                                <button class="flex items-center gap-1 text-sm text-subtle-light dark:text-subtle-dark hover:text-indigo-600 dark:hover:text-indigo-500 transition-colors"> <span class="material-symbols-outlined text-base">thumb_up</span> <span>Like</span> </button>
+                                                <button class="flex items-center gap-1 text-sm text-subtle-light dark:text-subtle-dark hover:text-indigo-600 dark:hover:text-indigo-500 transition-colors"> <span class="material-symbols-outlined text-base">chat_bubble</span> <span>Comment</span> </button>
+                                                <button class="flex items-center gap-1 text-sm text-subtle-light dark:text-subtle-dark hover:text-indigo-600 dark:hover:text-indigo-500 transition-colors"> <span class="material-symbols-outlined text-base">share</span> <span>Share</span> </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bg-surface-light dark:bg-surface-dark rounded-2xl shadow-lg p-6 border border-gray-200/50 dark:border-gray-700/50">
+                                <h2 class="text-heading-light dark:text-heading-dark text-xl font-bold leading-tight tracking-[-0.015em] pb-4">Find me on</h2>
+                                <div class="flex items-center gap-5">
+                                     <a class="text-subtle-light dark:text-subtle-dark hover:text-indigo-600 dark:hover:text-indigo-500 transition-all hover:scale-110" href="#" aria-label="YouTube Channel">
+                                         <svg aria-hidden="true" class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+                                    </a>
+                                     <a class="text-subtle-light dark:text-subtle-dark hover:text-indigo-600 dark:hover:text-indigo-500 transition-all hover:scale-110" href="#" aria-label="Spotify Profile">
+                                          <svg aria-hidden="true" class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.486 2 2 6.486 2 12s4.486 10 10 10 10-4.486 10-10S17.514 2 12 2zm4.188 14.127c-.203.315-.603.42-.917.217-2.58-1.58-5.798-1.94-9.596-1.06-.39.09-.78-.14-.87-.53-.09-.39.14-.78.53-.87 4.145-.96 7.695-.55 10.59 1.18.315.202.42.603.217.917zm.864-2.31c-.24.37-.71.49-1.08.25-2.85-1.74-7.22-2.22-10.73-1.21-.45.13-.93-.14-1.05-.59-.13-.45.14-.93.59-1.05 4.02-1.12 8.81-.57 12.05 1.37.37.24.49.71.25 1.08v.01zm.105-2.42c-.29.45-.84.59-1.29.3-3.21-1.97-8.52-2.43-11.95-1.33-.53.16-1.1-.13-1.26-.66s.13-1.1.66-1.26c3.92-1.22 9.77-.7 13.47 1.48.45.28.59.84.3 1.29v-.01z"/></svg>
+                                    </a>
+                                    <a class="text-subtle-light dark:text-subtle-dark hover:text-indigo-600 dark:hover:text-indigo-500 transition-all hover:scale-110" href="#" aria-label="Personal Website">
+                                        <span class="material-symbols-outlined">link</span>
+                                    </a>
+                                    <a class="text-subtle-light dark:text-subtle-dark hover:text-indigo-600 dark:hover:text-indigo-500 transition-all hover:scale-110" href="#" aria-label="Instagram Profile">
+                                         <svg aria-hidden="true" class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 1.172.053 1.803.249 2.228.415.562.217.96.477 1.382.896.419.42.679.819.896 1.381.164.426.36 1.057.413 2.228.057 1.266.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.053 1.17-.249 1.802-.413 2.228-.217.562-.477.96-.896 1.381-.42.419-.819.679-1.381.896-.426.164-1.057.36-2.228.413-1.266.057-1.645.069-4.849.069-3.205 0-3.584-.012-4.849-.069-1.17-.053-1.802-.249-2.228-.413-.562-.217-.96-.477-1.381-.896-.419-.42-.679-.819-.896-1.381-.164-.426-.36-1.057-.413-2.228-.057-1.266-.069-1.645-.069-4.849 0-3.205.012-3.584.069-4.849.053-1.17.249-1.802.413-2.228.217-.562.477.96.896-1.381.42-.419.819-.679 1.381-.896.426-.164 1.057-.36 2.228-.413 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-1.356.06-2.327.248-3.163.575-.863.329-1.564.764-2.24 1.44s-1.111 1.377-1.44 2.24c-.328.836-.515 1.807-.575 3.163-.058 1.281-.072 1.688-.072 4.947s.014 3.667.072 4.947c.06 1.356.248 2.327.575 3.163.329.863.764 1.564 1.44 2.24s1.377 1.111 2.24 1.44c.836.328 1.807.515 3.163.575 1.281.058 1.688.072 4.947.072s3.667-.014 4.947-.072c1.356-.06 2.327-.248 3.163-.575.863-.329 1.564-.764 2.24-1.44s1.111-1.377 1.44-2.24c.328-.836.515-1.807.575-3.163.058-1.281.072-1.688.072-4.947s-.014-3.667-.072-4.947c-.06-1.356-.248-2.327-.575-3.163-.329-.863-.764-1.564-1.44-2.24s-1.377-1.111-2.24-1.44c-.836-.328-1.807-.515-3.163-.575-1.281-.058-1.688-.072-4.947-.072zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.162 6.162 6.162 6.162-2.759 6.162-6.162-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.791-4-4s1.791-4 4-4 4 1.791 4 4-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.441 1.441 1.441 1.441-.645 1.441-1.441-.645-1.44-1.441-1.44z"/></svg>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+            <footer class="bg-surface-light dark:bg-surface-dark border-t border-gray-200/80 dark:border-gray-700/80">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+                        <div>
+                            <h3 class="text-sm font-semibold text-heading-light dark:text-heading-dark tracking-wider uppercase"> Product</h3>
+                            <ul class="mt-4 space-y-3">
+                                <li><a href="#" class="text-base text-subtle-light dark:text-subtle-dark hover:text-indigo-600 dark:hover:text-indigo-500 transition-colors">Features</a></li>
+                                <li><a href="#" class="text-base text-subtle-light dark:text-subtle-dark hover:text-indigo-600 dark:hover:text-indigo-500 transition-colors">Pricing</a></li>
+                                <li><a href="#" class="text-base text-subtle-light dark:text-subtle-dark hover:text-indigo-600 dark:hover:text-indigo-500 transition-colors">Showcase</a></li>
+                                <li><a href="#" class="text-base text-subtle-light dark:text-subtle-dark hover:text-indigo-600 dark:hover:text-indigo-500 transition-colors">Integrations</a></li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3 class="text-sm font-semibold text-heading-light dark:text-heading-dark tracking-wider uppercase"> Company</h3>
+                            <ul class="mt-4 space-y-3">
+                                <li><a href="#" class="text-base text-subtle-light dark:text-subtle-dark hover:text-indigo-600 dark:hover:text-indigo-500 transition-colors">About Us</a></li>
+                                <li><a href="#" class="text-base text-subtle-light dark:text-subtle-dark hover:text-indigo-600 dark:hover:text-indigo-500 transition-colors">Careers</a></li>
+                                <li><a href="#" class="text-base text-subtle-light dark:text-subtle-dark hover:text-indigo-600 dark:hover:text-indigo-500 transition-colors">Press</a></li>
+                                <li><a href="#" class="text-base text-subtle-light dark:text-subtle-dark hover:text-indigo-600 dark:hover:text-indigo-500 transition-colors">Blog</a></li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3 class="text-sm font-semibold text-heading-light dark:text-heading-dark tracking-wider uppercase"> Resources</h3>
+                            <ul class="mt-4 space-y-3">
+                                <li><a href="#" class="text-base text-subtle-light dark:text-subtle-dark hover:text-indigo-600 dark:hover:text-indigo-500 transition-colors">Support</a></li>
+                                <li><a href="#" class="text-base text-subtle-light dark:text-subtle-dark hover:text-indigo-600 dark:hover:text-indigo-500 transition-colors">Help Center</a></li>
+                                <li><a href="#" class="text-base text-subtle-light dark:text-subtle-dark hover:text-indigo-600 dark:hover:text-indigo-500 transition-colors">API Docs</a></li>
+                                <li><a href="#" class="text-base text-subtle-light dark:text-subtle-dark hover:text-indigo-600 dark:hover:text-indigo-500 transition-colors">System Status</a></li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3 class="text-sm font-semibold text-heading-light dark:text-heading-dark tracking-wider uppercase"> Legal</h3>
+                            <ul class="mt-4 space-y-3">
+                                <li><a href="#" class="text-base text-subtle-light dark:text-subtle-dark hover:text-indigo-600 dark:hover:text-indigo-500 transition-colors">Privacy Policy</a></li>
+                                <li><a href="#" class="text-base text-subtle-light dark:text-subtle-dark hover:text-indigo-600 dark:hover:text-indigo-500 transition-colors">Terms of Service</a></li>
+                                <li><a href="#" class="text-base text-subtle-light dark:text-subtle-dark hover:text-indigo-600 dark:hover:text-indigo-500 transition-colors">Cookie Policy</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="mt-12 border-t border-gray-200/80 dark:border-gray-700/80 pt-8 flex flex-col md:flex-row items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div class="size-6 text-indigo-600 dark:text-indigo-500">
+                                <svg fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"> /* SVG Logo */ </svg>
+                            </div>
+                            <span class="text-sm text-subtle-light dark:text-subtle-dark">© 2025 ProFolio, Inc. All rights reserved.</span>
+                        </div>
+                        <div class="flex items-center gap-5 mt-4 md:mt-0">
+                            <a class="text-subtle-light dark:text-subtle-dark hover:text-indigo-600 dark:hover:text-indigo-500 transition-all hover:scale-110" href="#" aria-label="LinkedIn Profile">
+                                <svg aria-hidden="true" class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path clip-rule="evenodd" d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" fill-rule="evenodd"></path></svg>
+                            </a>
+                            <a class="text-subtle-light dark:text-subtle-dark hover:text-indigo-600 dark:hover:text-indigo-500 transition-all hover:scale-110" href="#" aria-label="GitHub Profile">
+                                <svg aria-hidden="true" class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"></path></svg>
+                            </a>
+                            <a class="text-subtle-light dark:text-subtle-dark hover:text-indigo-600 dark:hover:text-indigo-500 transition-all hover:scale-110" href="#" aria-label="Pinterest Profile">
+                                <svg aria-hidden="true" class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm-2.433 17.337c-.333.15-.755-.166-.628-.529.21-1.078 1.488-5.839 1.488-5.839s-.37-.741-.37-1.833c0-1.722 1-3.003 2.251-3.003 1.065 0 1.562.795 1.562 1.748 0 1.066-.684 2.658-1.034 4.128-.288 1.222.613 2.221 1.832 2.221 2.19 0 3.842-2.313 3.842-5.688 0-2.985-2.14-5.111-5.263-5.111-3.627 0-5.733 2.71-5.733 5.367 0 .991.383 2.061.884 2.657.103.123.118.232.083.371-.101.42-.333 1.378-.372 1.542-.05.155-.18.204-.325.077-1.252-.56-2.035-2.023-2.035-3.595 0-2.731 2.016-5.228 5.928-5.228 3.12 0 5.488 2.223 5.488 5.011 0 3.082-1.968 5.451-4.722 5.451-1.523 0-2.95-.776-3.447-1.652z"></path></svg>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </div>
+</body>
+</html>

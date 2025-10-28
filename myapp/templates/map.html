@@ -1,0 +1,1032 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skill Match India - Geo-Location Skill Sharing</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        :root {
+            --primary-color: #FF6B35;
+            --secondary-color: #004E89;
+            --accent-color: #F7931E;
+            --success-color: #00A878;
+            --text-dark: #1A1A1A;
+            --text-light: #666;
+            --bg-light: #F8F9FA;
+            --border-color: #DDD;
+            --shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-dark);
+            background: var(--bg-light);
+        }
+        
+        .header {
+            background: linear-gradient(135deg, var(--secondary-color) 0%, #003865 100%);
+            color: white;
+            padding: 1.5rem 2rem;
+            box-shadow: var(--shadow);
+        }
+        
+        .header h1 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .header p {
+            opacity: 0.9;
+            font-size: 0.95rem;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1.5rem;
+        }
+        
+        .search-panel {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            margin-bottom: 1.5rem;
+        }
+        
+        .search-row {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: end;
+            margin-bottom: 1rem;
+        }
+        
+        .form-group {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            font-size: 0.9rem;
+        }
+        
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+        
+        .radius-group {
+            flex: 1.5;
+            min-width: 250px;
+        }
+        
+        .radius-display {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+        
+        .radius-value {
+            font-weight: 700;
+            color: var(--primary-color);
+            font-size: 1.1rem;
+        }
+        
+        input[type="range"] {
+            width: 100%;
+            height: 6px;
+            border-radius: 5px;
+            background: #DDD;
+            outline: none;
+        }
+        
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            cursor: pointer;
+        }
+        
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #E85A2A;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255,107,53,0.3);
+        }
+        
+        .btn-secondary {
+            background: var(--secondary-color);
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #003865;
+        }
+        
+        .btn-outline {
+            background: white;
+            color: var(--secondary-color);
+            border: 2px solid var(--secondary-color);
+        }
+        
+        .btn-outline:hover {
+            background: var(--secondary-color);
+            color: white;
+        }
+        
+        .filters-row {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .stats-panel {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 1.25rem;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .stat-card.secondary {
+            border-left-color: var(--secondary-color);
+        }
+        
+        .stat-card.success {
+            border-left-color: var(--success-color);
+        }
+        
+        .stat-card.accent {
+            border-left-color: var(--accent-color);
+        }
+        
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+        
+        .map-container {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            height: 600px;
+            position: relative;
+        }
+        
+        #map {
+            width: 100%;
+            height: 100%;
+        }
+        
+        .view-toggle {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .list-view {
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            padding: 1.5rem;
+            display: none;
+        }
+        
+        .list-view.active {
+            display: block;
+        }
+        
+        .user-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+        
+        .user-card {
+            background: white;
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            padding: 1.25rem;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        
+        .user-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+            border-color: var(--primary-color);
+        }
+        
+        .user-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .user-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+        
+        .user-info h3 {
+            font-size: 1.1rem;
+            margin-bottom: 0.25rem;
+            color: var(--text-dark);
+        }
+        
+        .user-location {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+        
+        .distance-badge {
+            display: inline-block;
+            background: var(--accent-color);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-top: 0.25rem;
+        }
+        
+        .user-skills {
+            margin-bottom: 1rem;
+        }
+        
+        .skill-tag {
+            display: inline-block;
+            background: var(--bg-light);
+            color: var(--secondary-color);
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            margin: 0.25rem;
+            border: 1px solid var(--border-color);
+        }
+        
+        .user-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .rating {
+            color: var(--accent-color);
+            font-weight: 600;
+        }
+        
+        .price {
+            color: var(--success-color);
+            font-weight: 700;
+        }
+        
+        .type-badge {
+            padding: 0.35rem 0.8rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .type-badge.offering {
+            background: #D4EDDA;
+            color: #155724;
+        }
+        
+        .type-badge.seeking {
+            background: #D1ECF1;
+            color: #0C5460;
+        }
+        
+        .type-badge.both {
+            background: #E7D7F5;
+            color: #5A287E;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(4px);
+        }
+        
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+        
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 2px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-light);
+            padding: 0.5rem;
+        }
+        
+        .modal-body {
+            padding: 1.5rem;
+        }
+        
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            font-weight: 700;
+        }
+        
+        .profile-details h2 {
+            margin-bottom: 0.5rem;
+        }
+        
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin: 1.5rem 0 1rem 0;
+            color: var(--secondary-color);
+        }
+        
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--bg-light);
+        }
+        
+        .info-label {
+            font-weight: 600;
+            color: var(--text-light);
+        }
+        
+        .info-value {
+            color: var(--text-dark);
+            font-weight: 600;
+        }
+        
+        .modal-footer {
+            padding: 1.5rem;
+            border-top: 2px solid var(--border-color);
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-light);
+        }
+        
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.3;
+        }
+        
+        @media (max-width: 768px) {
+            .search-row {
+                flex-direction: column;
+            }
+            
+            .form-group {
+                min-width: 100%;
+            }
+            
+            .stats-panel {
+                grid-template-columns: 1fr;
+            }
+            
+            .user-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .leaflet-popup-content-wrapper {
+            border-radius: 10px;
+        }
+        
+        .popup-card {
+            min-width: 200px;
+        }
+        
+        .popup-card h4 {
+            margin-bottom: 0.5rem;
+            color: var(--secondary-color);
+        }
+        
+        .popup-card .skill-tag {
+            margin: 0.25rem 0.25rem 0.25rem 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🇮🇳 Skill Match India - Bhubaneswar & Beyond</h1>
+        <p>Connect with skilled professionals and learners in your locality | Connecting India's Talent</p>
+    </div>
+    
+    <div class="container">
+        <div class="search-panel">
+            <div class="search-row">
+                <div class="form-group">
+                    <label for="citySearch">🔍 Search Location</label>
+                    <select id="citySearch">
+                        <option value="">Select a city...</option>
+                        <option value="20.2961,85.8245" selected>Bhubaneswar, Odisha</option>
+                        <option value="20.5124,85.8830">Cuttack, Odisha</option>
+                        <option value="19.8135,85.8312">Puri, Odisha</option>
+                        <option value="19.3150,84.7941">Berhampur, Odisha</option>
+                        <option value="22.2604,84.8536">Rourkela, Odisha</option>
+                        <option value="22.5726,88.3639">Kolkata, West Bengal</option>
+                        <option value="12.9716,77.5946">Bangalore, Karnataka</option>
+                        <option value="17.3850,78.4867">Hyderabad, Telangana</option>
+                        <option value="13.0827,80.2707">Chennai, Tamil Nadu</option>
+                        <option value="19.0760,72.8777">Mumbai, Maharashtra</option>
+                    </select>
+                </div>
+                
+                <div class="form-group radius-group">
+                    <div class="radius-display">
+                        <label>📍 Search Radius</label>
+                        <span class="radius-value"><span id="radiusValue">25</span> km</span>
+                    </div>
+                    <input type="range" id="radiusSlider" min="1" max="100" value="25">
+                </div>
+                
+                <div class="form-group">
+                    <label>&nbsp;</label>
+                    <button class="btn btn-primary" onclick="performSearch()">Search</button>
+                </div>
+                
+                <div class="form-group">
+                    <label>&nbsp;</label>
+                    <button class="btn btn-outline" onclick="resetFilters()">Reset</button>
+                </div>
+            </div>
+            
+            <div class="filters-row">
+                <div class="form-group">
+                    <label for="skillFilter">🎯 Filter by Skill</label>
+                    <select id="skillFilter" onchange="applyFilters()">
+                        <option value="">All Skills</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="typeFilter">👥 User Type</label>
+                    <select id="typeFilter" onchange="applyFilters()">
+                        <option value="">All Types</option>
+                        <option value="offering">Offering</option>
+                        <option value="seeking">Seeking</option>
+                        <option value="both">Both</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="ratingFilter">⭐ Minimum Rating</label>
+                    <select id="ratingFilter" onchange="applyFilters()">
+                        <option value="0">Any Rating</option>
+                        <option value="3.5">3.5+</option>
+                        <option value="4.0">4.0+</option>
+                        <option value="4.5">4.5+</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="rateFilter">💰 Max Rate (₹/hour)</label>
+                    <select id="rateFilter" onchange="applyFilters()">
+                        <option value="999999">Any Price</option>
+                        <option value="0">Free/Exchange</option>
+                        <option value="500">₹500 or less</option>
+                        <option value="1000">₹1000 or less</option>
+                        <option value="1500">₹1500 or less</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        
+        <div class="stats-panel">
+            <div class="stat-card">
+                <div class="stat-label">Total Users</div>
+                <div class="stat-value" id="totalUsers">50</div>
+            </div>
+            <div class="stat-card secondary">
+                <div class="stat-label">Within Radius</div>
+                <div class="stat-value" id="radiusUsers">-</div>
+            </div>
+            <div class="stat-card success">
+                <div class="stat-label">Average Rating</div>
+                <div class="stat-value" id="avgRating">4.2</div>
+            </div>
+            <div class="stat-card accent">
+                <div class="stat-label">Active Search</div>
+                <div class="stat-value" id="searchStatus">All India</div>
+            </div>
+        </div>
+        
+        <div class="view-toggle">
+            <button class="btn btn-secondary" id="mapViewBtn" onclick="switchView('map')">🗺️ Map View</button>
+            <button class="btn btn-outline" id="listViewBtn" onclick="switchView('list')">📋 List View</button>
+        </div>
+        
+        <div class="main-content">
+            <div class="map-container" id="mapView">
+                <div id="map"></div>
+            </div>
+            
+            <div class="list-view" id="listView">
+                <h2>User Directory</h2>
+                <div class="user-grid" id="userGrid"></div>
+                <div class="empty-state" id="emptyState" style="display: none;">
+                    <div class="empty-state-icon">🔍</div>
+                    <h3>No users found</h3>
+                    <p>Try adjusting your search criteria or expanding the radius</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="modal" id="userModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>User Profile</h2>
+                <button class="modal-close" onclick="closeModal()">×</button>
+            </div>
+            <div class="modal-body" id="modalBody"></div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="alert('Contact feature coming soon!')">📞 Contact User</button>
+                <button class="btn btn-outline" onclick="closeModal()">Close</button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        // Demo user data for India
+        const users = [{"id": 1, "name": "Divya Malhotra", "city": "Cuttack", "latitude": 20.584133, "longitude": 85.80457, "skills": ["Gardening", "Mobile App Development", "Pranayama"], "user_type": "offering", "rating": 5.0, "years_experience": 13, "hourly_rate": 1000, "bio": "Passionate about gardening and helping others learn.", "currency": "INR"}, {"id": 2, "name": "Arjun Verma", "city": "Cuttack", "latitude": 20.469694, "longitude": 85.814203, "skills": ["French Lessons", "SEO", "Math Tutoring", "Mehendi Design"], "user_type": "seeking", "rating": 4.6, "years_experience": 5, "hourly_rate": 0, "bio": "Passionate about french lessons and helping others learn.", "currency": "INR"}, {"id": 3, "name": "Amit Kapoor", "city": "Puri", "latitude": 19.897666, "longitude": 85.775208, "skills": ["Yoga Instruction", "Mehendi Design", "Video Editing", "Illustration"], "user_type": "seeking", "rating": 4.1, "years_experience": 1, "hourly_rate": 0, "bio": "Passionate about yoga instruction and helping others learn.", "currency": "INR"}, {"id": 4, "name": "Meera Iyer", "city": "Puri", "latitude": 19.853294, "longitude": 85.8343, "skills": ["Web Development", "Resume Writing", "Photography"], "user_type": "seeking", "rating": 4.6, "years_experience": 7, "hourly_rate": 0, "bio": "Passionate about web development and helping others learn.", "currency": "INR"}, {"id": 5, "name": "Simran Rao", "city": "Cuttack", "latitude": 20.585549, "longitude": 85.808406, "skills": ["Telugu Lessons", "French Lessons", "German Classes"], "user_type": "both", "rating": 3.9, "years_experience": 4, "hourly_rate": 500, "bio": "Passionate about telugu lessons and helping others learn.", "currency": "INR"}, {"id": 6, "name": "Ishaan Swain", "city": "Puri", "latitude": 19.893395, "longitude": 85.753517, "skills": ["UPSC Guidance", "Graphic Design", "Career Coaching"], "user_type": "offering", "rating": 3.5, "years_experience": 12, "hourly_rate": 1500, "bio": "Passionate about upsc guidance and helping others learn.", "currency": "INR"}, {"id": 7, "name": "Pooja Pandey", "city": "Bangalore", "latitude": 13.027119, "longitude": 77.683518, "skills": ["Mobile App Development", "Math Tutoring", "Tailoring"], "user_type": "offering", "rating": 4.3, "years_experience": 6, "hourly_rate": 1000, "bio": "Passionate about mobile app development and helping others learn.", "currency": "INR"}, {"id": 8, "name": "Dhruv Kulkarni", "city": "Puri", "latitude": 19.813886, "longitude": 85.804736, "skills": ["Interior Design", "Pottery", "Painting"], "user_type": "seeking", "rating": 4.9, "years_experience": 10, "hourly_rate": 0, "bio": "Passionate about interior design and helping others learn.", "currency": "INR"}, {"id": 9, "name": "Advait Chopra", "city": "Kolkata", "latitude": 22.612994, "longitude": 88.374663, "skills": ["UPSC Guidance", "Cybersecurity"], "user_type": "both", "rating": 3.7, "years_experience": 14, "hourly_rate": 2000, "bio": "Passionate about upsc guidance and helping others learn.", "currency": "INR"}, {"id": 10, "name": "Kiara Iyer", "city": "Hyderabad", "latitude": 17.35783, "longitude": 78.583024, "skills": ["Interior Design", "Tax Advisory", "Telugu Lessons"], "user_type": "seeking", "rating": 4.1, "years_experience": 2, "hourly_rate": 0, "bio": "Passionate about interior design and helping others learn.", "currency": "INR"}, {"id": 11, "name": "Karan Bhatt", "city": "Puri", "latitude": 19.829652, "longitude": 85.751018, "skills": ["Data Analysis", "Competitive Exam Coaching"], "user_type": "offering", "rating": 4.6, "years_experience": 9, "hourly_rate": 800, "bio": "Passionate about data analysis and helping others learn.", "currency": "INR"}, {"id": 12, "name": "Dhruv Malhotra", "city": "Mumbai", "latitude": 19.124481, "longitude": 72.901346, "skills": ["SEO", "English Grammar", "Public Speaking"], "user_type": "offering", "rating": 3.8, "years_experience": 15, "hourly_rate": 1500, "bio": "Passionate about seo and helping others learn.", "currency": "INR"}, {"id": 13, "name": "Pari Nair", "city": "Berhampur", "latitude": 19.233047, "longitude": 84.711302, "skills": ["Digital Marketing", "Business Consulting"], "user_type": "offering", "rating": 4.9, "years_experience": 3, "hourly_rate": 500, "bio": "Passionate about digital marketing and helping others learn.", "currency": "INR"}, {"id": 14, "name": "Kiara Joshi", "city": "Cuttack", "latitude": 20.575481, "longitude": 85.963074, "skills": ["Pattachitra Painting", "Spanish Teaching", "Content Writing", "Competitive Exam Coaching"], "user_type": "offering", "rating": 4.4, "years_experience": 11, "hourly_rate": 1000, "bio": "Passionate about pattachitra painting and helping others learn.", "currency": "INR"}, {"id": 15, "name": "Meera Sahu", "city": "Kolkata", "latitude": 22.496858, "longitude": 88.334938, "skills": ["Pattachitra Painting", "CA Services", "Math Tutoring"], "user_type": "seeking", "rating": 4.7, "years_experience": 7, "hourly_rate": 0, "bio": "Passionate about pattachitra painting and helping others learn.", "currency": "INR"}, {"id": 16, "name": "Arjun Pandey", "city": "Bangalore", "latitude": 12.896832, "longitude": 77.522, "skills": ["Odia Lessons", "Tax Advisory", "Illustration"], "user_type": "offering", "rating": 4.2, "years_experience": 13, "hourly_rate": 1500, "bio": "Passionate about odia lessons and helping others learn.", "currency": "INR"}, {"id": 17, "name": "Anushka Rao", "city": "Cuttack", "latitude": 20.564326, "longitude": 85.939697, "skills": ["Ayurveda Consultation", "Bamboo Crafts", "Tamil Tutoring", "Terracotta Work"], "user_type": "seeking", "rating": 4.8, "years_experience": 5, "hourly_rate": 0, "bio": "Passionate about ayurveda consultation and helping others learn.", "currency": "INR"}, {"id": 18, "name": "Neha Iyer", "city": "Bhubaneswar", "latitude": 20.292845, "longitude": 85.752931, "skills": ["Cooking Classes", "Classical Dance", "German Classes"], "user_type": "offering", "rating": 3.6, "years_experience": 8, "hourly_rate": 500, "bio": "Passionate about cooking classes and helping others learn.", "currency": "INR"}, {"id": 19, "name": "Nikhil Reddy", "city": "Berhampur", "latitude": 19.290406, "longitude": 84.764086, "skills": ["Nutrition Coaching", "Pattachitra Painting", "Sanskrit Teaching", "Weaving"], "user_type": "seeking", "rating": 4.5, "years_experience": 2, "hourly_rate": 0, "bio": "Passionate about nutrition coaching and helping others learn.", "currency": "INR"}, {"id": 20, "name": "Simran Biswal", "city": "Kolkata", "latitude": 22.615419, "longitude": 88.401881, "skills": ["Bengali Classes", "Resume Writing"], "user_type": "both", "rating": 4.3, "years_experience": 12, "hourly_rate": 1000, "bio": "Passionate about bengali classes and helping others learn.", "currency": "INR"}, {"id": 21, "name": "Diya Iyer", "city": "Cuttack", "latitude": 20.571313, "longitude": 85.797064, "skills": ["Cooking Classes", "Business Consulting", "Painting"], "user_type": "both", "rating": 3.9, "years_experience": 6, "hourly_rate": 800, "bio": "Passionate about cooking classes and helping others learn.", "currency": "INR"}, {"id": 22, "name": "Simran Mohanty", "city": "Berhampur", "latitude": 19.405804, "longitude": 84.780606, "skills": ["Event Planning", "JavaScript", "Pranayama"], "user_type": "offering", "rating": 4.1, "years_experience": 14, "hourly_rate": 1500, "bio": "Passionate about event planning and helping others learn.", "currency": "INR"}, {"id": 23, "name": "Navya Rao", "city": "Chennai", "latitude": 13.111966, "longitude": 80.186494, "skills": ["Personal Training", "Music Production"], "user_type": "offering", "rating": 4.4, "years_experience": 9, "hourly_rate": 800, "bio": "Passionate about personal training and helping others learn.", "currency": "INR"}, {"id": 24, "name": "Aditi Chatterjee", "city": "Puri", "latitude": 19.832695, "longitude": 85.919491, "skills": ["NEET Coaching", "Spanish Teaching"], "user_type": "both", "rating": 4.8, "years_experience": 4, "hourly_rate": 500, "bio": "Passionate about neet coaching and helping others learn.", "currency": "INR"}, {"id": 25, "name": "Reyansh Rao", "city": "Bhubaneswar", "latitude": 20.279421, "longitude": 85.754968, "skills": ["Zumba Classes", "Competitive Exam Coaching"], "user_type": "seeking", "rating": 3.5, "years_experience": 11, "hourly_rate": 0, "bio": "Passionate about zumba classes and helping others learn.", "currency": "INR"}, {"id": 26, "name": "Pari Sharma", "city": "Cuttack", "latitude": 20.572316, "longitude": 85.822619, "skills": ["Public Speaking", "Tax Advisory"], "user_type": "offering", "rating": 4.6, "years_experience": 3, "hourly_rate": 300, "bio": "Passionate about public speaking and helping others learn.", "currency": "INR"}, {"id": 27, "name": "Nikhil Kulkarni", "city": "Mumbai", "latitude": 19.123479, "longitude": 72.882394, "skills": ["Pottery", "Competitive Exam Coaching", "Handicrafts"], "user_type": "both", "rating": 4.2, "years_experience": 7, "hourly_rate": 500, "bio": "Passionate about pottery and helping others learn.", "currency": "INR"}, {"id": 28, "name": "Ishaan Chatterjee", "city": "Bangalore", "latitude": 13.02748, "longitude": 77.494976, "skills": ["Business Consulting", "Handicrafts", "Painting"], "user_type": "seeking", "rating": 3.7, "years_experience": 15, "hourly_rate": 0, "bio": "Passionate about business consulting and helping others learn.", "currency": "INR"}, {"id": 29, "name": "Divya Sharma", "city": "Chennai", "latitude": 13.042878, "longitude": 80.261966, "skills": ["Spanish Teaching", "Graphic Design", "Tax Advisory", "JavaScript"], "user_type": "offering", "rating": 4.9, "years_experience": 10, "hourly_rate": 1000, "bio": "Passionate about spanish teaching and helping others learn.", "currency": "INR"}, {"id": 30, "name": "Ishaan Gupta", "city": "Cuttack", "latitude": 20.52026, "longitude": 85.884388, "skills": ["Tax Advisory", "UI/UX Design", "Bamboo Crafts"], "user_type": "seeking", "rating": 4.3, "years_experience": 5, "hourly_rate": 0, "bio": "Passionate about tax advisory and helping others learn.", "currency": "INR"}, {"id": 31, "name": "Avni Banerjee", "city": "Kolkata", "latitude": 22.608953, "longitude": 88.462803, "skills": ["Pattachitra Painting", "Odia Lessons"], "user_type": "seeking", "rating": 4.7, "years_experience": 1, "hourly_rate": 0, "bio": "Passionate about pattachitra painting and helping others learn.", "currency": "INR"}, {"id": 32, "name": "Ananya Das", "city": "Cuttack", "latitude": 20.594827, "longitude": 85.908621, "skills": ["JEE Preparation", "JavaScript", "Yoga Instruction", "Gardening"], "user_type": "offering", "rating": 3.8, "years_experience": 12, "hourly_rate": 1500, "bio": "Passionate about jee preparation and helping others learn.", "currency": "INR"}, {"id": 33, "name": "Vihaan Desai", "city": "Cuttack", "latitude": 20.45655, "longitude": 85.896685, "skills": ["CA Services", "Web Development", "JEE Preparation", "Animation"], "user_type": "both", "rating": 4.5, "years_experience": 8, "hourly_rate": 1000, "bio": "Passionate about ca services and helping others learn.", "currency": "INR"}, {"id": 34, "name": "Aditya Banerjee", "city": "Puri", "latitude": 19.721893, "longitude": 85.914076, "skills": ["Cloud Computing", "Graphic Design", "Painting"], "user_type": "offering", "rating": 4.1, "years_experience": 6, "hourly_rate": 800, "bio": "Passionate about cloud computing and helping others learn.", "currency": "INR"}, {"id": 35, "name": "Neha Reddy", "city": "Bhubaneswar", "latitude": 20.275653, "longitude": 85.859438, "skills": ["JavaScript", "SEO", "UPSC Guidance"], "user_type": "offering", "rating": 4.4, "years_experience": 14, "hourly_rate": 1500, "bio": "Passionate about javascript and helping others learn.", "currency": "INR"}, {"id": 36, "name": "Aadhya Gupta", "city": "Chennai", "latitude": 13.11682, "longitude": 80.354916, "skills": ["German Classes", "Pranayama", "Photography"], "user_type": "both", "rating": 3.9, "years_experience": 3, "hourly_rate": 300, "bio": "Passionate about german classes and helping others learn.", "currency": "INR"}, {"id": 37, "name": "Tanvi Kulkarni", "city": "Cuttack", "latitude": 20.514577, "longitude": 85.858522, "skills": ["Pattachitra Painting", "French Lessons"], "user_type": "offering", "rating": 4.6, "years_experience": 9, "hourly_rate": 800, "bio": "Passionate about pattachitra painting and helping others learn.", "currency": "INR"}, {"id": 38, "name": "Nikhil Sharma", "city": "Hyderabad", "latitude": 17.375473, "longitude": 78.436119, "skills": ["Business Consulting", "Legal Advice"], "user_type": "offering", "rating": 4.2, "years_experience": 11, "hourly_rate": 1000, "bio": "Passionate about business consulting and helping others learn.", "currency": "INR"}, {"id": 39, "name": "Saanvi Rao", "city": "Rourkela", "latitude": 22.203485, "longitude": 84.891936, "skills": ["Plumbing", "Math Tutoring", "SEO"], "user_type": "both", "rating": 3.6, "years_experience": 7, "hourly_rate": 500, "bio": "Passionate about plumbing and helping others learn.", "currency": "INR"}, {"id": 40, "name": "Pari Verma", "city": "Berhampur", "latitude": 19.408473, "longitude": 84.797726, "skills": ["Martial Arts", "Tax Advisory"], "user_type": "seeking", "rating": 4.8, "years_experience": 2, "hourly_rate": 0, "bio": "Passionate about martial arts and helping others learn.", "currency": "INR"}, {"id": 41, "name": "Ananya Ghosh", "city": "Cuttack", "latitude": 20.601945, "longitude": 85.954163, "skills": ["Meditation", "Competitive Exam Coaching", "CA Services"], "user_type": "offering", "rating": 4.3, "years_experience": 13, "hourly_rate": 1500, "bio": "Passionate about meditation and helping others learn.", "currency": "INR"}, {"id": 42, "name": "Aryan Singh", "city": "Bhubaneswar", "latitude": 20.207686, "longitude": 85.752755, "skills": ["Rangoli Art", "UPSC Guidance"], "user_type": "seeking", "rating": 4.7, "years_experience": 5, "hourly_rate": 0, "bio": "Passionate about rangoli art and helping others learn.", "currency": "INR"}, {"id": 43, "name": "Shreya Nair", "city": "Puri", "latitude": 19.903764, "longitude": 85.770943, "skills": ["Tailoring", "Science Tutoring", "Web Development"], "user_type": "seeking", "rating": 3.5, "years_experience": 10, "hourly_rate": 0, "bio": "Passionate about tailoring and helping others learn.", "currency": "INR"}, {"id": 44, "name": "Tanvi Reddy", "city": "Mumbai", "latitude": 19.167033, "longitude": 72.784018, "skills": ["Electrical Work", "Mobile App Development"], "user_type": "seeking", "rating": 4.5, "years_experience": 4, "hourly_rate": 0, "bio": "Passionate about electrical work and helping others learn.", "currency": "INR"}, {"id": 45, "name": "Avni Joshi", "city": "Kolkata", "latitude": 22.650611, "longitude": 88.271408, "skills": ["Yoga Instruction", "Home Tutoring"], "user_type": "offering", "rating": 4.1, "years_experience": 12, "hourly_rate": 1000, "bio": "Passionate about yoga instruction and helping others learn.", "currency": "INR"}, {"id": 46, "name": "Arnav Rao", "city": "Bhubaneswar", "latitude": 20.381604, "longitude": 85.74308, "skills": ["Embroidery", "Bengali Classes"], "user_type": "both", "rating": 4.4, "years_experience": 8, "hourly_rate": 800, "bio": "Passionate about embroidery and helping others learn.", "currency": "INR"}, {"id": 47, "name": "Siddharth Sharma", "city": "Hyderabad", "latitude": 17.387556, "longitude": 78.405064, "skills": ["Cloud Computing", "Nutrition Coaching"], "user_type": "offering", "rating": 3.7, "years_experience": 15, "hourly_rate": 2000, "bio": "Passionate about cloud computing and helping others learn.", "currency": "INR"}, {"id": 48, "name": "Dhruv Patel", "city": "Rourkela", "latitude": 22.173825, "longitude": 84.784506, "skills": ["UI/UX Design", "Graphic Design"], "user_type": "offering", "rating": 4.9, "years_experience": 6, "hourly_rate": 800, "bio": "Passionate about ui/ux design and helping others learn.", "currency": "INR"}, {"id": 49, "name": "Kavya Iyer", "city": "Bhubaneswar", "latitude": 20.340206, "longitude": 85.820683, "skills": ["German Classes", "Animation", "Terracotta Work"], "user_type": "offering", "rating": 4.2, "years_experience": 11, "hourly_rate": 1000, "bio": "Passionate about german classes and helping others learn.", "currency": "INR"}, {"id": 50, "name": "Shreya Mohanty", "city": "Cuttack", "latitude": 20.603476, "longitude": 85.955918, "skills": ["Hindi Teaching", "Video Editing", "Career Coaching", "Calligraphy"], "user_type": "offering", "rating": 4.6, "years_experience": 9, "hourly_rate": 800, "bio": "Passionate about hindi teaching and helping others learn.", "currency": "INR"}];
+        
+        let map, searchCircle, searchMarker;
+        let currentView = 'map';
+        let filteredUsers = [...users];
+        let searchCenter = null;
+        
+        // Initialize map
+        function initMap() {
+            map = L.map('map').setView([20.2961, 85.8245], 7);
+            
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors'
+            }).addTo(map);
+            
+            displayUsersOnMap(users);
+            populateSkillFilter();
+            updateStats();
+        }
+        
+        // Haversine formula to calculate distance
+        function calculateDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371; // Earth's radius in km
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLon = (lon2 - lon1) * Math.PI / 180;
+            const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                      Math.sin(dLon/2) * Math.sin(dLon/2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+            return R * c;
+        }
+        
+        // Display users on map
+        function displayUsersOnMap(usersToDisplay) {
+            // Clear existing markers
+            map.eachLayer(layer => {
+                if (layer instanceof L.Marker) {
+                    map.removeLayer(layer);
+                }
+            });
+            
+            usersToDisplay.forEach(user => {
+                const markerColor = user.user_type === 'offering' ? '#00A878' : 
+                                  user.user_type === 'seeking' ? '#004E89' : '#9B59B6';
+                
+                const icon = L.divIcon({
+                    className: 'custom-marker',
+                    html: `<div style="background: ${markerColor}; width: 30px; height: 30px; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 6px rgba(0,0,0,0.3);"></div>`,
+                    iconSize: [30, 30],
+                    iconAnchor: [15, 15]
+                });
+                
+                const marker = L.marker([user.latitude, user.longitude], {icon}).addTo(map);
+                
+                let popupContent = `
+                    <div class="popup-card">
+                        <h4>${user.name}</h4>
+                        <p style="color: #666; font-size: 0.85rem; margin-bottom: 0.5rem;">📍 ${user.city}</p>
+                        ${user.distance ? `<span class="distance-badge">${user.distance.toFixed(1)} km away</span>` : ''}
+                        <p style="margin: 0.5rem 0;"><strong>Skills:</strong></p>
+                        <div>
+                            ${user.skills.slice(0, 2).map(skill => `<span class="skill-tag">${skill}</span>`).join('')}
+                        </div>
+                        <div style="margin-top: 0.75rem;">
+                            <span class="type-badge ${user.user_type}">${user.user_type}</span>
+                            <span style="margin-left: 0.5rem;">⭐ ${user.rating}</span>
+                        </div>
+                        <button onclick="showUserProfile(${user.id})" class="btn btn-primary" style="margin-top: 0.75rem; width: 100%; padding: 0.5rem;">
+                            View Full Profile
+                        </button>
+                    </div>
+                `;
+                
+                marker.bindPopup(popupContent, {maxWidth: 250});
+            });
+        }
+        
+        // Perform search
+        function performSearch() {
+            const citySelect = document.getElementById('citySearch');
+            const radiusKm = parseInt(document.getElementById('radiusSlider').value);
+            
+            if (!citySelect.value) {
+                alert('Please select a city');
+                return;
+            }
+            
+            const [lat, lng] = citySelect.value.split(',').map(Number);
+            searchCenter = {lat, lng};
+            
+            // Add distance to each user
+            users.forEach(user => {
+                user.distance = calculateDistance(lat, lng, user.latitude, user.longitude);
+            });
+            
+            // Filter by radius
+            filteredUsers = users.filter(user => user.distance <= radiusKm);
+            
+            // Apply other filters
+            applyFilters();
+            
+            // Update map
+            map.setView([lat, lng], 9);
+            
+            // Remove old circle and marker
+            if (searchCircle) map.removeLayer(searchCircle);
+            if (searchMarker) map.removeLayer(searchMarker);
+            
+            // Add search center marker
+            searchMarker = L.marker([lat, lng], {
+                icon: L.divIcon({
+                    className: 'search-center',
+                    html: '<div style="background: #FF6B35; width: 20px; height: 20px; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 8px rgba(255,107,53,0.5);"></div>',
+                    iconSize: [20, 20]
+                })
+            }).addTo(map);
+            
+            // Add radius circle
+            searchCircle = L.circle([lat, lng], {
+                color: '#FF6B35',
+                fillColor: '#FF6B35',
+                fillOpacity: 0.1,
+                radius: radiusKm * 1000
+            }).addTo(map);
+            
+            displayUsersOnMap(filteredUsers);
+            updateStats();
+            
+            const cityName = citySelect.options[citySelect.selectedIndex].text;
+            document.getElementById('searchStatus').textContent = cityName.split(',')[0];
+        }
+        
+        // Apply filters
+        function applyFilters() {
+            const skillFilter = document.getElementById('skillFilter').value.toLowerCase();
+            const typeFilter = document.getElementById('typeFilter').value;
+            const ratingFilter = parseFloat(document.getElementById('ratingFilter').value);
+            const rateFilter = parseInt(document.getElementById('rateFilter').value);
+            
+            let baseUsers = searchCenter ? users.filter(u => u.distance !== undefined) : users;
+            
+            filteredUsers = baseUsers.filter(user => {
+                if (searchCenter && user.distance > parseInt(document.getElementById('radiusSlider').value)) {
+                    return false;
+                }
+                if (skillFilter && !user.skills.some(s => s.toLowerCase().includes(skillFilter))) {
+                    return false;
+                }
+                if (typeFilter && user.user_type !== typeFilter) {
+                    return false;
+                }
+                if (user.rating < ratingFilter) {
+                    return false;
+                }
+                if (rateFilter < 999999 && user.hourly_rate > rateFilter) {
+                    return false;
+                }
+                return true;
+            });
+            
+            displayUsersOnMap(filteredUsers);
+            if (currentView === 'list') {
+                displayUsersList();
+            }
+            updateStats();
+        }
+        
+        // Reset filters
+        function resetFilters() {
+            document.getElementById('citySearch').value = '';
+            document.getElementById('radiusSlider').value = 25;
+            document.getElementById('radiusValue').textContent = 25;
+            document.getElementById('skillFilter').value = '';
+            document.getElementById('typeFilter').value = '';
+            document.getElementById('ratingFilter').value = 0;
+            document.getElementById('rateFilter').value = 999999;
+            
+            searchCenter = null;
+            users.forEach(user => delete user.distance);
+            filteredUsers = [...users];
+            
+            if (searchCircle) map.removeLayer(searchCircle);
+            if (searchMarker) map.removeLayer(searchMarker);
+            
+            map.setView([20.2961, 85.8245], 7);
+            displayUsersOnMap(users);
+            updateStats();
+            document.getElementById('searchStatus').textContent = 'All India';
+        }
+        
+        // Populate skill filter
+        function populateSkillFilter() {
+            const skills = new Set();
+            users.forEach(user => user.skills.forEach(skill => skills.add(skill)));
+            const sortedSkills = Array.from(skills).sort();
+            
+            const select = document.getElementById('skillFilter');
+            sortedSkills.forEach(skill => {
+                const option = document.createElement('option');
+                option.value = skill;
+                option.textContent = skill;
+                select.appendChild(option);
+            });
+        }
+        
+        // Update stats
+        function updateStats() {
+            document.getElementById('totalUsers').textContent = users.length;
+            document.getElementById('radiusUsers').textContent = searchCenter ? filteredUsers.length : '-';
+            
+            const avgRating = filteredUsers.reduce((sum, u) => sum + u.rating, 0) / filteredUsers.length;
+            document.getElementById('avgRating').textContent = avgRating.toFixed(1);
+        }
+        
+        // Switch view
+        function switchView(view) {
+            currentView = view;
+            const mapView = document.getElementById('mapView');
+            const listView = document.getElementById('listView');
+            const mapBtn = document.getElementById('mapViewBtn');
+            const listBtn = document.getElementById('listViewBtn');
+            
+            if (view === 'map') {
+                mapView.style.display = 'block';
+                listView.classList.remove('active');
+                mapBtn.className = 'btn btn-secondary';
+                listBtn.className = 'btn btn-outline';
+                setTimeout(() => map.invalidateSize(), 100);
+            } else {
+                mapView.style.display = 'none';
+                listView.classList.add('active');
+                mapBtn.className = 'btn btn-outline';
+                listBtn.className = 'btn btn-secondary';
+                displayUsersList();
+            }
+        }
+        
+        // Display users list
+        function displayUsersList() {
+            const grid = document.getElementById('userGrid');
+            const emptyState = document.getElementById('emptyState');
+            
+            if (filteredUsers.length === 0) {
+                grid.innerHTML = '';
+                emptyState.style.display = 'block';
+                return;
+            }
+            
+            emptyState.style.display = 'none';
+            grid.innerHTML = filteredUsers.map(user => `
+                <div class="user-card" onclick="showUserProfile(${user.id})">
+                    <div class="user-header">
+                        <div class="user-avatar">${user.name.charAt(0)}</div>
+                        <div class="user-info">
+                            <h3>${user.name}</h3>
+                            <div class="user-location">📍 ${user.city}</div>
+                            ${user.distance ? `<span class="distance-badge">${user.distance.toFixed(1)} km away</span>` : ''}
+                        </div>
+                    </div>
+                    <div class="user-skills">
+                        ${user.skills.map(skill => `<span class="skill-tag">${skill}</span>`).join('')}
+                    </div>
+                    <div class="user-meta">
+                        <div>
+                            <span class="type-badge ${user.user_type}">${user.user_type}</span>
+                        </div>
+                        <div>
+                            <div class="rating">⭐ ${user.rating}</div>
+                            <div class="price">${user.hourly_rate > 0 ? '₹' + user.hourly_rate + '/hr' : 'Free'}</div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        // Show user profile
+        function showUserProfile(userId) {
+            const user = users.find(u => u.id === userId);
+            if (!user) return;
+            
+            const modal = document.getElementById('userModal');
+            const modalBody = document.getElementById('modalBody');
+            
+            modalBody.innerHTML = `
+                <div class="profile-header">
+                    <div class="profile-avatar">${user.name.charAt(0)}</div>
+                    <div class="profile-details">
+                        <h2>${user.name}</h2>
+                        <p style="color: #666;">📍 ${user.city}</p>
+                        <span class="type-badge ${user.user_type}">${user.user_type}</span>
+                    </div>
+                </div>
+                
+                <div class="section-title">About</div>
+                <p>${user.bio}</p>
+                
+                <div class="section-title">Skills</div>
+                <div>
+                    ${user.skills.map(skill => `<span class="skill-tag">${skill}</span>`).join('')}
+                </div>
+                
+                <div class="section-title">Details</div>
+                <div class="info-row">
+                    <span class="info-label">Experience</span>
+                    <span class="info-value">${user.years_experience} years</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Rating</span>
+                    <span class="info-value">⭐ ${user.rating}/5.0</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Hourly Rate</span>
+                    <span class="info-value">${user.hourly_rate > 0 ? '₹' + user.hourly_rate : 'Free/Exchange'}</span>
+                </div>
+                ${user.distance ? `
+                <div class="info-row">
+                    <span class="info-label">Distance</span>
+                    <span class="info-value">${user.distance.toFixed(1)} km away</span>
+                </div>` : ''}
+                <div class="info-row">
+                    <span class="info-label">Location</span>
+                    <span class="info-value">${user.latitude.toFixed(4)}, ${user.longitude.toFixed(4)}</span>
+                </div>
+            `;
+            
+            modal.classList.add('active');
+        }
+        
+        // Close modal
+        function closeModal() {
+            document.getElementById('userModal').classList.remove('active');
+        }
+        
+        // Update radius display
+        document.getElementById('radiusSlider').addEventListener('input', function() {
+            document.getElementById('radiusValue').textContent = this.value;
+        });
+        
+        // Close modal on outside click
+        document.getElementById('userModal').addEventListener('click', function(e) {
+            if (e.target === this) closeModal();
+        });
+        
+        // Initialize on load
+        window.onload = initMap;
+    </script>
+</body>
+</html>

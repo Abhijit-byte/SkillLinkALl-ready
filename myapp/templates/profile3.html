@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>ProFolio - Meena Devi</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#4f46e5", // Indigo
+                        "background-light": "#f4f5f7",
+                        "background-dark": "#111827",
+                        "surface-light": "#ffffff",
+                        "surface-dark": "#1f2937",
+                        "heading-light": "#111827",
+                        "heading-dark": "#f9fafb",
+                        "body-light": "#374151",
+                        "body-dark": "#d1d5db",
+                        "subtle-light": "#6b7280",
+                        "subtle-dark": "#9ca3af"
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "2xl": "1rem", "full": "9999px" },
+                    boxShadow: {
+                        'lg': '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)',
+                        'xl': '0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)',
+                        'inner-lg': 'inset 0 2px 4px 0 rgb(0 0 0 / 0.05)',
+                    },
+                },
+            },
+        }
+    </script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+
+<body
+    class="bg-background-light dark:bg-background-dark font-display text-body-light dark:text-body-dark leading-relaxed antialiased">
+    <div class="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden">
+        <div class="layout-container flex h-full grow flex-col">
+            <header
+                class="sticky top-0 z-50 w-full bg-surface-light/90 dark:bg-surface-dark/90 backdrop-blur-lg border-b border-gray-200/80 dark:border-gray-700/80 shadow-sm">
+                <div class="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+                    <div class="flex items-center justify-between whitespace-nowrap h-16">
+                        <div class="flex items-center gap-4 text-heading-light dark:text-heading-dark">
+                            <div class="size-6 text-indigo-600 dark:text-indigo-500">
+                                <svg fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"> /* SVG Logo */ </svg>
+                            </div>
+                            <h2 class="text-xl font-bold leading-tight tracking-[-0.015em]">SkillLink</h2>
+                        </div>
+                        <div class="flex flex-1 justify-end items-center gap-4">
+                            <div class="hidden sm:flex items-center gap-8">
+                                <a class="text-sm font-medium text-subtle-light dark:text-subtle-dark hover:text-indigo-600 dark:hover:text-indigo-500 transition-colors" href="#">Home</a>
+                                <a class="text-sm font-medium text-subtle-light dark:text-subtle-dark hover:text-indigo-600 dark:hover:text-indigo-500 transition-colors" href="#">Network</a>
+                                <a class="text-sm font-medium text-subtle-light dark:text-subtle-dark hover:text-indigo-600 dark:hover:text-indigo-500 transition-colors" href="#">Jobs</a>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <button class="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 w-10 bg-transparent text-subtle-light dark:text-subtle-dark hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors" aria-label="Notifications">
+                                    <span class="material-symbols-outlined">notifications</span>
+                                </button>
+                                <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10"
+                                    data-alt="User profile picture"
+                                    style='background-image: url("https://picsum.photos/seed/MeenaDeviHeader/100/100");'>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+            <main class="flex-1 px-4 sm:px-6 lg:px-8 py-12 md:py-16">
+                <div class="max-w-7xl mx-auto flex flex-col gap-8">
+                    <div class="bg-surface-light dark:bg-surface-dark rounded-2xl shadow-lg overflow-hidden border border-gray-200/50 dark:border-gray-700/50">
+                        <div class="w-full bg-center bg-no-repeat bg-cover flex flex-col justify-end min-h-[250px]"
+                            data-alt="Clean home interior banner"
+                            style='background-image: url("https://picsum.photos/seed/MeenaDeviBanner/1200/300");'>
+                        </div>
+                        <div class="p-6">
+                            <div class="flex flex-col sm:flex-row gap-6 -mt-28 items-start">
+                                <div class="relative">
+                                     <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full h-36 w-36 border-4 border-surface-light dark:border-surface-dark shadow-xl"
+                                        data-alt="Profile picture of Meena Devi"
+                                        style='background-image: url("https://picsum.photos/seed/MeenaDeviProfile/150/150");'>
+                                    </div>
+                                    <div class="absolute bottom-3 right-3 size-7 bg-green-500 rounded-full border-4 border-surface-light dark:border-surface-dark flex items-center justify-center text-white text-xs font-bold"></div>
+                                </div>
+                                <div class="flex-1 pt-16 sm:pt-4">
+                                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                                        <div>
+                                            <p class="text-heading-light dark:text-heading-dark text-3xl font-bold leading-tight tracking-[-0.015em]">Meena Devi</p>
+                                            <p class="text-subtle-light dark:text-subtle-dark text-lg font-normal leading-normal">Experienced Housekeeping Staff | Meena's Cleaning Services</p>
+                                            <p class="text-subtle-light dark:text-subtle-dark text-sm font-normal leading-normal mt-1">Bangalore, India</p>
+                                        </div>
+                                        <div class="flex w-full sm:w-auto gap-3">
+                                            <button class="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-5 bg-indigo-600 dark:bg-indigo-500 text-white hover:bg-indigo-700 dark:hover:bg-indigo-600 transition-colors shadow-md hover:shadow-lg text-sm font-bold leading-normal tracking-[0.015em] flex-1 sm:flex-auto"> <span class="truncate">Dashboard</span> </button>
+                                            <button class="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-5 bg-surface-light dark:bg-surface-dark border border-gray-300 dark:border-gray-600 text-heading-light dark:text-heading-dark hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-sm font-bold leading-normal tracking-[0.015em] flex-1 sm:flex-auto"> <span class="truncate">Contact Me</span> </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-surface-light dark:bg-surface-dark rounded-2xl shadow-lg p-6 border border-gray-200/50 dark:border-gray-700/50">
+                        <h2 class="text-heading-light dark:text-heading-dark text-xl font-bold leading-tight tracking-[-0.015em] pb-4">Key Stats</h2>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                            <div class="flex flex-col items-center justify-center p-4 bg-indigo-50 dark:bg-indigo-900/40 rounded-2xl hover:shadow-lg transition-shadow"> <span class="text-3xl font-bold text-indigo-600 dark:text-indigo-400">10+</span> <p class="text-sm font-medium text-subtle-light dark:text-subtle-dark mt-1">Years Experience</p> </div>
+                            <div class="flex flex-col items-center justify-center p-4 bg-indigo-50 dark:bg-indigo-900/40 rounded-2xl hover:shadow-lg transition-shadow"> <span class="text-3xl font-bold text-indigo-600 dark:text-indigo-400">100+</span> <p class="text-sm font-medium text-subtle-light dark:text-subtle-dark mt-1">Happy Clients</p> </div>
+                            <div class="flex flex-col items-center justify-center p-4 bg-indigo-50 dark:bg-indigo-900/40 rounded-2xl hover:shadow-lg transition-shadow"> <span class="text-3xl font-bold text-indigo-600 dark:text-indigo-400">500+</span> <p class="text-sm font-medium text-subtle-light dark:text-subtle-dark mt-1">Homes Cleaned</p> </div>
+                            <div class="flex flex-col items-center justify-center p-4 bg-indigo-50 dark:bg-indigo-900/40 rounded-2xl hover:shadow-lg transition-shadow"> <span class="text-3xl font-bold text-indigo-600 dark:text-indigo-400">4.8<span class="text-xl">/5</span></span> <p class="text-sm font-medium text-subtle-light dark:text-subtle-dark mt-1">Rating</p> </div>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                        <div class="lg:col-span-2 flex flex-col gap-8">
+                            <div class="bg-surface-light dark:bg-surface-dark rounded-2xl shadow-lg p-6 border border-gray-200/50 dark:border-gray-700/50">
+                                <h2 class="text-heading-light dark:text-heading-dark text-xl font-bold leading-tight tracking-[-0.015em] pb-3">About</h2>
+                                <p class="text-base font-normal leading-relaxed">
+                                    Hardworking and trustworthy housekeeping professional with over 10 years of experience providing high-quality cleaning services for homes and apartments in Bangalore. I take pride in my attention to detail, efficiency, and ability to create a clean, organized, and welcoming environment for my clients. Experienced in all aspects of home cleaning, laundry, and organization. Reliable, punctual, and respectful of clients' privacy and property. Owner of Meena's Cleaning Services, available for regular or one-time deep cleaning jobs.
+                                </p>
+                            </div>
+                            <div class="bg-surface-light dark:bg-surface-dark rounded-2xl shadow-lg p-6 border border-gray-200/50 dark:border-gray-700/50">
+                                <h2 class="text-heading-light dark:text-heading-dark text-xl font-bold leading-tight tracking-[-0.015em] pb-4">Experience</h2>
+                                <div class="flex flex-col gap-6">
+                                    <div class="flex gap-4">
+                                        <div class="flex-shrink-0 size-12 rounded-lg bg-indigo-100 dark:bg-indigo-900/40 flex items-center justify-center"> <span class="material-symbols-outlined text-indigo-600 dark:text-indigo-400">cleaning_services</span> </div>
+                                        <div>
+                                            <h3 class="font-bold text-heading-light dark:text-heading-dark">Owner / Housekeeper</h3>
+                                            <p class="font-medium">Meena's Cleaning Services</p>
+                                            <p class="text-sm text-subtle-light dark:text-subtle-dark">Mar 2015 - Present · 10 yrs+</p>
+                                            <p class="mt-2 text-base">Providing independent housekeeping services to residential clients. Managing scheduling, supplies, client communication, and performing all cleaning duties including deep cleaning, regular maintenance, laundry, and organization.</p>
+                                        </div>
+                                    </div>
+                                    <div class="border-t border-gray-200 dark:border-gray-700"></div>
+                                    <div class="flex gap-4">
+                                        <div class="flex-shrink-0 size-12 rounded-lg bg-indigo-100 dark:bg-indigo-900/40 flex items-center justify-center"> <span class="material-symbols-outlined text-indigo-600 dark:text-indigo-400">hotel</span> </div>
+                                        <div>
+                                            <h3 class="font-bold text-heading-light dark:text-heading-dark">Housekeeping Staff</h3>
+                                            <p class="font-medium">The Grand Lotus Hotel</p>
+                                            <p class="text-sm text-subtle-light dark:text-subtle-dark">Jul 2010 - Feb 2015 · 4 yrs 8 mos</p>
+                                            <p class="mt-2 text-base">Responsible for cleaning and maintaining guest rooms according to hotel standards. Handled laundry services and restocking amenities. Consistently received positive guest feedback for cleanliness.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bg-surface-light dark:bg-surface-dark rounded-2xl shadow-lg p-6 border border-gray-200/50 dark:border-gray-700/50">
+                                <h2 class="text-heading-light dark:text-heading-dark text-xl font-bold leading-tight tracking-[-0.015em] pb-4">Specialized Services</h2>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div class="group border border-gray-200/80 dark:border-gray-700/80 rounded-xl overflow-hidden transition-all duration-300 ease-in-out hover:shadow-xl hover:-translate-y-1">
+                                         <div class="w-full bg-center bg-no-repeat aspect-video bg-cover" data-alt="Deep cleaning a kitchen" style='background-image: url("https://picsum.photos/seed/MeenaDeviService1/400/225");'></div>
+                                        <div class="p-4">
+                                            <h3 class="font-bold text-heading-light dark:text-heading-dark">Deep Cleaning Services</h3>
+                                            <p class="text-sm mt-1">Thorough top-to-bottom cleaning for homes, including kitchens, bathrooms, appliances, and windows.</p>
+                                            <a class="inline-flex items-center gap-1 text-indigo-600 dark:text-indigo-500 text-sm font-medium mt-3 group-hover:underline" href="#">Request Quote <span class="material-symbols-outlined text-base transition-transform group-hover:translate-x-1">arrow_forward</span></a>
+                                        </div>
+                                    </div>
+                                    <div class="group border border-gray-200/80 dark:border-gray-700/80 rounded-xl overflow-hidden transition-all duration-300 ease-in-out hover:shadow-xl hover:-translate-y-1">
+                                        <div class="w-full bg-center bg-no-repeat aspect-video bg-cover" data-alt="Organized closet" style='background-image: url("https://picsum.photos/seed/MeenaDeviService2/400/225");'></div>
+                                        <div class="p-4">
+                                            <h3 class="font-bold text-heading-light dark:text-heading-dark">Home Organization</h3>
+                                            <p class="text-sm mt-1">Helping clients declutter and organize closets, pantries, and living spaces for better functionality.</p>
+                                            <a class="inline-flex items-center gap-1 text-indigo-600 dark:text-indigo-500 text-sm font-medium mt-3 group-hover:underline" href="#">Request Quote <span class="material-symbols-outlined text-base transition-transform group-hover:translate-x-1">arrow_forward</span></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="lg:col-span-1 flex flex-col gap-8">
+                            <div class="bg-surface-light dark:bg-surface-dark rounded-2xl shadow-lg p-6 border border-gray-200/50 dark:border-gray-700/50">
+                                <h2 class="text-heading-light dark:text-heading-dark text-xl font-bold leading-tight tracking-[-0.015em] pb-4">Cleaning Skills</h2>
+                                <div class="flex flex-wrap gap-2">
+                                    <span class="bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 font-medium px-3 py-1.5 rounded-full text-sm hover:bg-indigo-200 dark:hover:bg-indigo-800/70 transition-colors cursor-default">Residential Cleaning</span>
+                                    <span class="bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 font-medium px-3 py-1.5 rounded-full text-sm hover:bg-indigo-200 dark:hover:bg-indigo-800/70 transition-colors cursor-default">Deep Cleaning</span>
+                                    <span class="bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 font-medium px-3 py-1.5 rounded-full text-sm hover:bg-indigo-200 dark:hover:bg-indigo-800/70 transition-colors cursor-default">Organization</span>
+                                    <span class="bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 font-medium px-3 py-1.5 rounded-full text-sm hover:bg-indigo-200 dark:hover:bg-indigo-800/70 transition-colors cursor-default">Laundry & Ironing</span>
+                                    <span class="bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 font-medium px-3 py-1.5 rounded-full text-sm hover:bg-indigo-200 dark:hover:bg-indigo-800/70 transition-colors cursor-default">Bathroom Sanitization</span>
+                                    <span class="bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 font-medium px-3 py-1.5 rounded-full text-sm hover:bg-indigo-200 dark:hover:bg-indigo-800/70 transition-colors cursor-default">Kitchen Cleaning</span>
+                                    <span class="bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 font-medium px-3 py-1.5 rounded-full text-sm hover:bg-indigo-200 dark:hover:bg-indigo-800/70 transition-colors cursor-default">Time Management</span>
+                                    <span class="bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 font-medium px-3 py-1.5 rounded-full text-sm hover:bg-indigo-200 dark:hover:bg-indigo-800/70 transition-colors cursor-default">Attention to Detail</span>
+                                </div>
+                            </div>
+                            <div class="bg-surface-light dark:bg-surface-dark rounded-2xl shadow-lg p-6 border border-gray-200/50 dark:border-gray-700/50">
+                                <h2 class="text-heading-light dark:text-heading-dark text-xl font-bold leading-tight tracking-[-0.015em] pb-4">Activity</h2>
+                                <div class="flex items-center gap-3">
+                                    <div class="flex-shrink-0 bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="Profile picture of Meena Devi" style='background-image: url("https://picsum.photos/seed/MeenaDeviProfileSmall/100/100");'></div>
+                                    <input type="text" placeholder="Share a cleaning tip..." class="w-full rounded-full bg-background-light dark:bg-background-dark border-gray-300 dark:border-gray-700 px-4 py-2 text-sm focus:ring-indigo-500 focus:border-indigo-500" />
+                                </div>
+                                <div class="border-t border-gray-200 dark:border-gray-700 my-5"></div>
+                                <div class="flex flex-col gap-5">
+                                    <div class="flex gap-3">
+                                         <div class="flex-shrink-0 bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="Profile picture of Meena Devi" style='background-image: url("https://picsum.photos/seed/MeenaDeviProfileSmall/100/100");'></div>
+                                        <div>
+                                            <p class="text-sm font-medium text-heading-light dark:text-heading-dark"> Meena Devi <span class="text-subtle-light dark:text-subtle-dark font-normal">shared a tip</span> </p>
+                                            <p class="text-xs text-subtle-light dark:text-subtle-dark">10h ago</p>
+                                            <p class="text-sm mt-2"> Tip for sparkling windows: Mix equal parts white vinegar and water in a spray bottle. Works wonders and is eco-friendly! #CleaningTips #Housekeeping </p>
+                                            <div class="flex items-center gap-4 mt-3">
+                                                <button class="flex items-center gap-1 text-sm text-subtle-light dark:text-subtle-dark hover:text-indigo-600 dark:hover:text-indigo-500 transition-colors"> <span class="material-symbols-outlined text-base">thumb_up</span> <span>Like</span> </button>
+                                                <button class="flex items-center gap-1 text-sm text-subtle-light dark:text-subtle-dark hover:text-indigo-600 dark:hover:text-indigo-500 transition-colors"> <span class="material-symbols-outlined text-base">chat_bubble</span> <span>Comment</span> </button>
+                                                <button class="flex items-center gap-1 text-sm text-subtle-light dark:text-subtle-dark hover:text-indigo-600 dark:hover:text-indigo-500 transition-colors"> <span class="material-symbols-outlined text-base">share</span> <span>Share</span> </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="border-t border-gray-200 dark:border-gray-700"></div>
+                                    <div class="flex gap-3">
+                                        <div class="flex-shrink-0 bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="Profile picture of Meena Devi" style='background-image: url("https://picsum.photos/seed/MeenaDeviProfileSmall/100/100");'></div>
+                                        <div>
+                                            <p class="text-sm font-medium text-heading-light dark:text-heading-dark"> Meena Devi <span class="text-subtle-light dark:text-subtle-dark font-normal">is available for bookings</span> </p>
+                                            <p class="text-xs text-subtle-light dark:text-subtle-dark">1d ago</p>
+                                            <p class="text-sm mt-2"> Have a few openings next week for deep cleaning services in the Koramangala area. Contact me for a quote! #Bangalore #HousekeepingServices </p>
+                                            <div class="flex items-center gap-4 mt-3">
+                                                <button class="flex items-center gap-1 text-sm text-subtle-light dark:text-subtle-dark hover:text-indigo-600 dark:hover:text-indigo-500 transition-colors"> <span class="material-symbols-outlined text-base">thumb_up</span> <span>Like</span> </button>
+                                                <button class="flex items-center gap-1 text-sm text-subtle-light dark:text-subtle-dark hover:text-indigo-600 dark:hover:text-indigo-500 transition-colors"> <span class="material-symbols-outlined text-base">chat_bubble</span> <span>Comment</span> </button>
+                                                <button class="flex items-center gap-1 text-sm text-subtle-light dark:text-subtle-dark hover:text-indigo-600 dark:hover:text-indigo-500 transition-colors"> <span class="material-symbols-outlined text-base">share</span> <span>Share</span> </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bg-surface-light dark:bg-surface-dark rounded-2xl shadow-lg p-6 border border-gray-200/50 dark:border-gray-700/50">
+                                <h2 class="text-heading-light dark:text-heading-dark text-xl font-bold leading-tight tracking-[-0.015em] pb-4">Find me on</h2>
+                                <div class="flex items-center gap-5">
+                                    <a class="text-subtle-light dark:text-subtle-dark hover:text-indigo-600 dark:hover:text-indigo-500 transition-all hover:scale-110" href="#" aria-label="WhatsApp Contact">
+                                        <svg aria-hidden="true" class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.273-.099-.471-.148-.67.15-.197.297-.768.967-.941 1.164-.173.197-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.67-1.611-.916-2.206-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01s-.521.074-.794.372c-.273.296-1.046 1.016-1.046 2.479 0 1.462 1.07 2.867 1.219 3.064.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+                                    </a>
+                                    <a class="text-subtle-light dark:text-subtle-dark hover:text-indigo-600 dark:hover:text-indigo-500 transition-all hover:scale-110" href="#" aria-label="Local Service Directory">
+                                        <span class="material-symbols-outlined">map</span>
+                                    </a>
+                                    <a class="text-subtle-light dark:text-subtle-dark hover:text-indigo-600 dark:hover:text-indigo-500 transition-all hover:scale-110" href="#" aria-label="LinkedIn Profile">
+                                        <svg aria-hidden="true" class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path clip-rule="evenodd" d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" fill-rule="evenodd"></path></svg>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+            <footer class="bg-surface-light dark:bg-surface-dark border-t border-gray-200/80 dark:border-gray-700/80">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+                        <div>
+                            <h3 class="text-sm font-semibold text-heading-light dark:text-heading-dark tracking-wider uppercase"> Product</h3>
+                            <ul class="mt-4 space-y-3">
+                                <li><a href="#" class="text-base text-subtle-light dark:text-subtle-dark hover:text-indigo-600 dark:hover:text-indigo-500 transition-colors">Features</a></li>
+                                <li><a href="#" class="text-base text-subtle-light dark:text-subtle-dark hover:text-indigo-600 dark:hover:text-indigo-500 transition-colors">Pricing</a></li>
+                                <li><a href="#" class="text-base text-subtle-light dark:text-subtle-dark hover:text-indigo-600 dark:hover:text-indigo-500 transition-colors">Showcase</a></li>
+                                <li><a href="#" class="text-base text-subtle-light dark:text-subtle-dark hover:text-indigo-600 dark:hover:text-indigo-500 transition-colors">Integrations</a></li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3 class="text-sm font-semibold text-heading-light dark:text-heading-dark tracking-wider uppercase"> Company</h3>
+                            <ul class="mt-4 space-y-3">
+                                <li><a href="#" class="text-base text-subtle-light dark:text-subtle-dark hover:text-indigo-600 dark:hover:text-indigo-500 transition-colors">About Us</a></li>
+                                <li><a href="#" class="text-base text-subtle-light dark:text-subtle-dark hover:text-indigo-600 dark:hover:text-indigo-500 transition-colors">Careers</a></li>
+                                <li><a href="#" class="text-base text-subtle-light dark:text-subtle-dark hover:text-indigo-600 dark:hover:text-indigo-500 transition-colors">Press</a></li>
+                                <li><a href="#" class="text-base text-subtle-light dark:text-subtle-dark hover:text-indigo-600 dark:hover:text-indigo-500 transition-colors">Blog</a></li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3 class="text-sm font-semibold text-heading-light dark:text-heading-dark tracking-wider uppercase"> Resources</h3>
+                            <ul class="mt-4 space-y-3">
+                                <li><a href="#" class="text-base text-subtle-light dark:text-subtle-dark hover:text-indigo-600 dark:hover:text-indigo-500 transition-colors">Support</a></li>
+                                <li><a href="#" class="text-base text-subtle-light dark:text-subtle-dark hover:text-indigo-600 dark:hover:text-indigo-500 transition-colors">Help Center</a></li>
+                                <li><a href="#" class="text-base text-subtle-light dark:text-subtle-dark hover:text-indigo-600 dark:hover:text-indigo-500 transition-colors">API Docs</a></li>
+                                <li><a href="#" class="text-base text-subtle-light dark:text-subtle-dark hover:text-indigo-600 dark:hover:text-indigo-500 transition-colors">System Status</a></li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3 class="text-sm font-semibold text-heading-light dark:text-heading-dark tracking-wider uppercase"> Legal</h3>
+                            <ul class="mt-4 space-y-3">
+                                <li><a href="#" class="text-base text-subtle-light dark:text-subtle-dark hover:text-indigo-600 dark:hover:text-indigo-500 transition-colors">Privacy Policy</a></li>
+                                <li><a href="#" class="text-base text-subtle-light dark:text-subtle-dark hover:text-indigo-600 dark:hover:text-indigo-500 transition-colors">Terms of Service</a></li>
+                                <li><a href="#" class="text-base text-subtle-light dark:text-subtle-dark hover:text-indigo-600 dark:hover:text-indigo-500 transition-colors">Cookie Policy</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="mt-12 border-t border-gray-200/80 dark:border-gray-700/80 pt-8 flex flex-col md:flex-row items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div class="size-6 text-indigo-600 dark:text-indigo-500">
+                                <svg fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"> /* SVG Logo */ </svg>
+                            </div>
+                            <span class="text-sm text-subtle-light dark:text-subtle-dark">© 2025 ProFolio, Inc. All rights reserved.</span>
+                        </div>
+                        <div class="flex items-center gap-5 mt-4 md:mt-0">
+                            <a class="text-subtle-light dark:text-subtle-dark hover:text-indigo-600 dark:hover:text-indigo-500 transition-all hover:scale-110" href="#" aria-label="LinkedIn Profile">
+                                <svg aria-hidden="true" class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path clip-rule="evenodd" d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" fill-rule="evenodd"></path></svg>
+                            </a>
+                            <a class="text-subtle-light dark:text-subtle-dark hover:text-indigo-600 dark:hover:text-indigo-500 transition-all hover:scale-110" href="#" aria-label="GitHub Profile">
+                                <svg aria-hidden="true" class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"></path></svg>
+                            </a>
+                            <a class="text-subtle-light dark:text-subtle-dark hover:text-indigo-600 dark:hover:text-indigo-500 transition-all hover:scale-110" href="#" aria-label="Pinterest Profile">
+                                <svg aria-hidden="true" class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm-2.433 17.337c-.333.15-.755-.166-.628-.529.21-1.078 1.488-5.839 1.488-5.839s-.37-.741-.37-1.833c0-1.722 1-3.003 2.251-3.003 1.065 0 1.562.795 1.562 1.748 0 1.066-.684 2.658-1.034 4.128-.288 1.222.613 2.221 1.832 2.221 2.19 0 3.842-2.313 3.842-5.688 0-2.985-2.14-5.111-5.263-5.111-3.627 0-5.733 2.71-5.733 5.367 0 .991.383 2.061.884 2.657.103.123.118.232.083.371-.101.42-.333 1.378-.372 1.542-.05.155-.18.204-.325.077-1.252-.56-2.035-2.023-2.035-3.595 0-2.731 2.016-5.228 5.928-5.228 3.12 0 5.488 2.223 5.488 5.011 0 3.082-1.968 5.451-4.722 5.451-1.523 0-2.95-.776-3.447-1.652z"></path></svg>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </div>
+</body>
+</html>

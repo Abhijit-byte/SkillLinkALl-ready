@@ -1,0 +1,2297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Bookings - SkillShare</title>
+    <!-- Use Inter font for a modern, clean look -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- Global Styles --- */
+        :root {
+            /* Palette from previous version */
+            --primary-color: #4F46E5; /* Indigo */
+            --primary-light-bg: #EEF2FF;
+            --primary-border-light: #C7D2FE;
+            --secondary-color: #6B7280; /* Gray 500 */
+            --success-color: #10B981; /* Emerald 500 */
+            --danger-color: #EF4444; /* Red 500 */
+            --warning-bg: #FFFBEB;
+            --warning-border: #FDE68A;
+            --light-color: #F9FAFB; /* Gray 50 */
+            --white-color: #FFFFFF;
+            --dark-color: #1F2937; /* Gray 800 */
+            --border-color: #E5E7EB; /* Gray 200 */
+            
+            --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -1px rgba(0, 0, 0, 0.04);
+            --card-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.07), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --nav-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+        }
+        
+        /* Respect reduced motion */
+        @media (prefers-reduced-motion: reduce) {
+          *, *::before, *::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+            scroll-behavior: auto !important;
+          }
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--light-color);
+            margin: 0;
+            padding: 0;
+            color: var(--dark-color);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        /* Visible focus outline for accessibility */
+        :focus-visible {
+            outline: 3px solid var(--primary-border-light);
+            outline-offset: 2px;
+            box-shadow: 0 0 0 4px var(--primary-light-bg);
+            border-radius: 4px;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 32px auto;
+            padding: 0 24px;
+        }
+
+        h1, h2, h3, h4 {
+            color: var(--dark-color);
+            line-height: 1.3;
+            font-weight: 600;
+        }
+        h1 { font-size: 2.25rem; font-weight: 700; }
+        h3 { font-size: 1.125rem; }
+        p { color: var(--secondary-color); margin: 0; }
+
+        /* --- Navigation --- */
+        .navbar {
+            background-color: var(--white-color);
+            padding: 1rem 2rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--nav-shadow);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        .navbar .logo { font-size: 1.75rem; font-weight: 700; color: var(--primary-color); text-decoration: none; }
+        .navbar nav { display: flex; align-items: center; gap: 1.75rem; }
+        .navbar nav a { text-decoration: none; color: var(--secondary-color); font-weight: 500; font-size: 0.95rem; padding: 0.5rem 0; border-bottom: 2px solid transparent; transition: all 0.2s ease; }
+        .navbar nav a:hover { color: var(--dark-color); }
+        .navbar nav a.active-nav { color: var(--primary-color); font-weight: 600; border-bottom-color: var(--primary-color); }
+
+        /* --- Utility Classes --- */
+        .btn { display: inline-block; padding: 0.65rem 1.25rem; border: 1px solid transparent; border-radius: 8px; font-weight: 600; cursor: pointer; text-decoration: none; font-size: 0.9rem; transition: all 0.2s ease; text-align: center; }
+        .btn:active { transform: scale(0.98); }
+        .btn[disabled] { opacity: 0.6; cursor: not-allowed; }
+        .btn-primary { background-color: var(--primary-color); color: #fff; }
+        .btn-primary:hover:not([disabled]) { background-color: #4338CA; }
+        .btn-secondary { background-color: var(--white-color); color: var(--dark-color); border: 1px solid var(--border-color); box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.03); }
+        .btn-secondary:hover:not([disabled]) { background-color: var(--light-color); border-color: #D1D5DB; }
+        .btn-success { background-color: var(--success-color); color: #fff; }
+        .btn-success:hover:not([disabled]) { background-color: #059669; }
+        .btn-danger { background-color: var(--danger-color); color: #fff; }
+        .btn-danger:hover:not([disabled]) { background-color: #DC2626; }
+        .btn-small { padding: 0.4rem 0.8rem; font-size: 0.85rem; }
+        .btn-icon { padding: 0.5rem; line-height: 0; }
+        .btn-link { background: none; border: none; color: var(--primary-color); font-weight: 500; padding: 0; font-size: 0.9rem; cursor: pointer; }
+        .btn-link:hover { text-decoration: underline; }
+        
+        .flex-row { display: flex; align-items: center; }
+        .gap-2 { gap: 0.5rem; }
+        .gap-3 { gap: 0.75rem; }
+        .gap-4 { gap: 1rem; }
+        .w-full { width: 100%; }
+        .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border-width: 0; }
+
+        /* --- Main Layout --- */
+        .main-layout { display: grid; grid-template-columns: 1fr 320px; gap: 32px; margin-top: 32px; }
+        .main-content { background-color: var(--white-color); border-radius: 12px; box-shadow: var(--card-shadow); padding: 1.5rem 2rem; min-height: 400px; }
+        .sidebar { position: sticky; top: 100px; }
+        .sidebar-card { background-color: var(--white-color); border-radius: 12px; box-shadow: var(--card-shadow); padding: 1.75rem; margin-bottom: 24px; }
+        .sidebar-card h3 { margin-top: 0; border-bottom: 1px solid var(--border-color); padding-bottom: 0.75rem; font-size: 1.25rem; }
+
+        /* --- Tabs --- */
+        .tabs { display: flex; border-bottom: 1px solid var(--border-color); margin: 0 -2rem; padding: 0 2rem; }
+        .tabs button { padding: 1rem 1.25rem; border: none; background: none; cursor: pointer; font-size: 1rem; font-weight: 500; color: var(--secondary-color); border-bottom: 3px solid transparent; margin-bottom: -1px; transition: all 0.2s ease; }
+        .tabs button:hover { background-color: var(--light-color); color: var(--dark-color); }
+        .tabs button.active { color: var(--primary-color); font-weight: 600; border-bottom-color: var(--primary-color); }
+        .tab-content-container { padding-top: 1.5rem; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        /* --- Booking Card --- */
+        .booking-card { border: 1px solid var(--border-color); border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; transition: all 0.2s ease; }
+        .booking-card:hover { transform: translateY(-3px); box-shadow: var(--card-shadow-lg); border-color: var(--primary-border-light); }
+        .booking-card-header { display: flex; justify-content: space-between; align-items: center; }
+        .booking-card-details { display: flex; align-items: center; gap: 1.25rem; }
+        .booking-card-details img { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; border: 2px solid var(--white-color); box-shadow: 0 0 0 2px var(--border-color); }
+        .booking-card-details h3 { margin: 0 0 4px 0; font-size: 1.25rem; }
+        .booking-card-details p { font-size: 0.95rem; }
+        .booking-card-details p:last-child { font-weight: 500; color: var(--dark-color); padding-top: 2px; }
+        .booking-card-actions { display: flex; flex-direction: row; gap: 12px; align-items: center; min-width: 180px; justify-content: flex-end; }
+        .booking-card-footer { margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
+
+        /* --- Form Elements --- */
+        .form-group { margin-bottom: 1rem; }
+        .form-group label { display: block; font-weight: 500; font-size: 0.9rem; margin-bottom: 0.5rem; }
+        .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 0.65rem 0.75rem; border: 1px solid var(--border-color); border-radius: 8px; font-size: 0.95rem; font-family: 'Inter', sans-serif; box-sizing: border-box; }
+        .form-group textarea { min-height: 80px; resize: vertical; }
+        .form-group input[type="number"] { max-width: 80px; }
+        
+        /* --- SkillSwap Toggle --- */
+        .skillswap-toggle { display: flex; align-items: center; gap: 0.75rem; }
+        .toggle-switch { position: relative; display: inline-block; width: 44px; height: 24px; }
+        .toggle-switch input { opacity: 0; width: 0; height: 0; }
+        .toggle-slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; border-radius: 34px; transition: .4s; }
+        .toggle-slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; border-radius: 50%; transition: .4s; }
+        input:checked + .toggle-slider { background-color: var(--primary-color); }
+        input:checked + .toggle-slider:before { transform: translateX(20px); }
+        .skillswap-offer { display: none; margin-top: 1rem; padding: 1rem; background-color: var(--primary-light-bg); border: 1px solid var(--primary-border-light); border-radius: 8px; }
+        .skillswap-offer.active { display: block; }
+        
+        /* --- Tooltip --- */
+        .tooltip { position: relative; display: inline-block; }
+        .tooltip .tooltip-icon { width: 16px; height: 16px; color: var(--secondary-color); cursor: help; }
+        .tooltip .tooltip-text { visibility: hidden; width: 220px; background-color: var(--dark-color); color: #fff; text-align: center; border-radius: 6px; padding: 8px; position: absolute; z-index: 1; bottom: 125%; left: 50%; margin-left: -110px; opacity: 0; transition: opacity 0.3s; font-size: 0.85rem; font-weight: 400; line-height: 1.5; }
+        .tooltip:hover .tooltip-text, .tooltip:focus-within .tooltip-text { visibility: visible; opacity: 1; }
+        
+        /* --- Group Booking --- */
+        .group-booking-controls { display: none; margin-top: 1rem; }
+        .group-booking-controls.active { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+        
+        /* --- Smart Suggest Loader & Toast --- */
+        @keyframes smart-suggest-loader {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .smart-suggest-loader { display: none; width: 18px; height: 18px; border: 2px solid var(--primary-border-light); border-top-color: var(--primary-color); border-radius: 50%; animation: smart-suggest-loader 1s linear infinite; }
+        .smart-suggest-loader.active { display: inline-block; }
+        .smart-suggest-slot { padding: 0.5rem 0.75rem; border: 1px solid var(--border-color); border-radius: 6px; cursor: pointer; transition: all 0.2s ease; }
+        .smart-suggest-slot:hover { background-color: var(--light-color); }
+        .smart-suggest-slot.suggested { background-color: var(--primary-light-bg); border-color: var(--primary-border-light); color: var(--primary-color); font-weight: 600; box-shadow: 0 0 8px var(--primary-border-light); }
+        
+        #toast-notification {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translate(-50%, 150%);
+            background-color: var(--dark-color);
+            color: var(--white-color);
+            padding: 0.75rem 1.25rem;
+            border-radius: 8px;
+            box-shadow: var(--card-shadow-lg);
+            font-size: 0.9rem;
+            z-index: 3000;
+            opacity: 0;
+            transition: transform 0.4s ease, opacity 0.4s ease;
+        }
+        #toast-notification.show {
+            transform: translate(-50%, 0);
+            opacity: 1;
+        }
+
+        /* --- Booking Protection Sidebar --- */
+        .secure-payment-card ul { list-style: none; padding-left: 0; font-size: 0.9rem; color: var(--secondary-color); }
+        .secure-payment-card li { position: relative; margin-bottom: 20px; display: flex; align-items: flex-start; gap: 12px; }
+        .secure-payment-card li .icon { flex-shrink: 0; width: 20px; height: 20px; color: var(--success-color); }
+        .secure-payment-card li span { flex-grow: 1; }
+        .secure-payment-card li strong { display: block; color: var(--dark-color); font-weight: 600; margin-bottom: 2px; }
+        .escrow-info { background-color: var(--primary-light-bg); border: 1px solid var(--primary-border-light); padding: 1.25rem; border-radius: 8px; font-size: 0.9rem; margin: 1.5rem 0; display: flex; gap: 12px; align-items: flex-start; }
+        .escrow-info .icon { flex-shrink: 0; width: 24px; height: 24px; color: var(--primary-color); }
+        .escrow-info strong { display: block; color: var(--primary-color); font-weight: 600; margin-bottom: 4px; }
+        .escrow-info p { margin: 0; color: #3730A3; line-height: 1.5; }
+        
+        /* --- Empty State --- */
+        .empty-state { text-align: center; padding: 3rem 1rem; color: var(--secondary-color); border: 2px dashed var(--border-color); border-radius: 12px; }
+        
+        /* --- MODAL (Base) --- */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .modal-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+        .modal-content {
+            background-color: var(--white-color);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            width: 90%;
+            max-width: 500px;
+            transform: scale(0.95);
+            transition: transform 0.3s ease;
+        }
+        .modal-overlay.active .modal-content {
+            transform: scale(1);
+        }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem; margin-bottom: 1rem; }
+        .modal-header h2 { margin: 0; font-size: 1.25rem; }
+        .modal-close-btn { background: none; border: none; font-size: 1.5rem; font-weight: 300; color: var(--secondary-color); cursor: pointer; line-height: 1; }
+        .modal-close-btn:hover { color: var(--dark-color); }
+        .modal-body { margin-bottom: 1.5rem; color: var(--secondary-color); max-height: 60vh; overflow-y: auto; }
+        .modal-footer { display: flex; justify-content: flex-end; gap: 10px; }
+        
+        /* --- Specific Modal Styles --- */
+        
+        /* Escrow Modal Progress Steps */
+        .escrow-steps { display: flex; justify-content: space-between; margin: 1.5rem 0; }
+        .escrow-step { display: flex; flex-direction: column; align-items: center; text-align: center; width: 80px; position: relative; }
+        .escrow-step .step-icon { width: 40px; height: 40px; border-radius: 50%; background-color: var(--light-color); border: 2px solid var(--border-color); color: var(--secondary-color); display: flex; align-items: center; justify-content: center; font-weight: 600; z-index: 1; }
+        .escrow-step.completed .step-icon { background-color: var(--success-color); border-color: var(--success-color); color: white; }
+        .escrow-step .step-label { font-size: 0.8rem; margin-top: 0.5rem; font-weight: 500; }
+        .escrow-step::after { content: ''; width: 100%; height: 2px; background-color: var(--border-color); position: absolute; top: 19px; left: 50%; z-index: 0; }
+        .escrow-step:last-child::after { display: none; }
+        
+        /* Invite Modal List */
+        .invite-list { list-style: none; padding: 0; margin: 0; }
+        .invite-item { display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 0; border-bottom: 1px solid var(--border-color); }
+        .invite-item:last-child { border-bottom: none; }
+        .invite-status { font-size: 0.85rem; padding: 0.2rem 0.5rem; border-radius: 12px; font-weight: 500; }
+        .invite-status.pending { background-color: var(--warning-bg); color: #B45309; }
+        .invite-status.confirmed { background-color: #E0F2F1; color: #059669; }
+        
+        /* AI Summary Modal */
+        #ai-summary-content { background-color: var(--light-color); border-radius: 8px; padding: 1rem; }
+        #ai-summary-content h4 { margin-top: 0; }
+        #ai-summary-content ul { padding-left: 20px; }
+        
+        /* --- Chatbot Widget --- */
+        #chatbot-widget {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            width: 350px;
+            max-width: calc(100% - 48px);
+            z-index: 1500;
+            box-shadow: var(--card-shadow-lg);
+            border-radius: 12px;
+            overflow: hidden;
+            background-color: var(--white-color);
+            transform: translateY(100%);
+            opacity: 0;
+            transition: transform 0.4s ease, opacity 0.4s ease;
+        }
+        #chatbot-widget.active {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        #chatbot-widget.minimized {
+             transform: translateY(calc(100% - 60px)); /* Hide all but header */
+        }
+        
+        .chatbot-header {
+            background-color: var(--primary-color);
+            color: var(--white-color);
+            padding: 0.75rem 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+        }
+        .chatbot-header h3 { color: var(--white-color); margin: 0; font-size: 1.1rem; }
+        .chatbot-header-buttons { display: flex; gap: 0.5rem; }
+        .chatbot-header-buttons button { background: none; border: none; color: white; opacity: 0.8; cursor: pointer; padding: 0.25rem; }
+        .chatbot-header-buttons button:hover { opacity: 1; }
+        .chatbot-header-buttons button svg { width: 20px; height: 20px; }
+        
+        .chatbot-body {
+            height: 400px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .chatbot-history {
+            flex-grow: 1;
+            padding: 1rem;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        .chat-message {
+            max-width: 80%;
+            padding: 0.6rem 0.9rem;
+            border-radius: 12px;
+            line-height: 1.5;
+            font-size: 0.9rem;
+        }
+        .chat-message.user {
+            background-color: var(--primary-color);
+            color: var(--white-color);
+            border-bottom-right-radius: 4px;
+            align-self: flex-end;
+        }
+        .chat-message.bot {
+            background-color: var(--border-color);
+            color: var(--dark-color);
+            border-bottom-left-radius: 4px;
+            align-self: flex-start;
+        }
+        .chat-message.bot.typing {
+            font-style: italic;
+            color: var(--secondary-color);
+        }
+        .chat-message .quick-action {
+            display: block;
+            background-color: var(--white-color);
+            color: var(--primary-color);
+            border: 1px solid var(--primary-border-light);
+            border-radius: 6px;
+            padding: 0.4rem 0.75rem;
+            margin-top: 0.5rem;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        .chat-message .quick-action:hover {
+            background-color: var(--primary-light-bg);
+        }
+        
+        .chatbot-input-area {
+            border-top: 1px solid var(--border-color);
+            padding: 0.75rem;
+            display: flex;
+            gap: 0.5rem;
+        }
+        #chatbot-input {
+            flex-grow: 1;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 0.6rem;
+            font-size: 0.9rem;
+            font-family: 'Inter', sans-serif;
+        }
+        #chatbot-send-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 0 0.75rem;
+            cursor: pointer;
+        }
+        #chatbot-send-btn:hover { background-color: #4338CA; }
+        #chatbot-send-btn svg { width: 20px; height: 20px; }
+
+        /* --- Responsive Styles --- */
+        @media (max-width: 900px) {
+            .main-layout { grid-template-columns: 1fr; }
+            .sidebar { position: static; top: 0; order: -1; }
+            .container { margin: 24px auto; }
+        }
+
+        @media (max-width: 600px) {
+            h1 { font-size: 1.75rem; }
+            .navbar { flex-direction: column; gap: 10px; padding: 1rem; }
+            .navbar nav { gap: 1rem; flex-wrap: wrap; justify-content: center; }
+            .navbar nav a { font-size: 0.9rem; }
+            
+            .main-content { padding: 1rem; }
+            .tabs { margin: 0 -1rem; padding: 0 0.5rem; overflow-x: auto; white-space: nowrap; }
+            .tabs button { padding: 0.75rem; font-size: 0.9rem; }
+
+            .booking-card { flex-direction: column; align-items: stretch; gap: 1.25rem; padding: 1.25rem; }
+            .booking-card-header { flex-direction: column; align-items: flex-start; gap: 1rem; }
+            .booking-card-details { gap: 1rem; align-items: flex-start; }
+            .booking-card-details img { width: 48px; height: 48px; }
+            .booking-card-details h3 { font-size: 1.125rem; }
+            .booking-card-actions { flex-direction: column; width: 100%; gap: 10px; }
+            .booking-card-actions .btn { width: 100%; }
+            .booking-card-footer { flex-direction: column; align-items: flex-start; }
+            
+            #chatbot-widget { bottom: 16px; right: 16px; width: calc(100% - 32px); }
+        }
+        /* Voice Navigation Styles */
+    #voice-mic-btn {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: var(--color-teal-500);
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(var(--color-teal-500-rgb), 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s;
+      z-index: 1000;
+    }
+
+    #voice-mic-btn:hover {
+      transform: scale(1.1);
+      background: var(--color-teal-600);
+    }
+
+    #voice-mic-btn.listening {
+      background: var(--color-green-500);
+      animation: voice-pulse 1s infinite;
+    }
+
+    @keyframes voice-pulse {
+      0%, 100% { box-shadow: 0 4px 12px rgba(34, 197, 94, 0.5); }
+      50% { box-shadow: 0 4px 25px rgba(34, 197, 94, 0.8); }
+    }
+
+    #voice-mic-btn svg {
+      width: 24px;
+      height: 24px;
+      fill: var(--color-white);
+    }
+
+    #voice-status {
+      position: fixed;
+      bottom: 100px;
+      right: 30px;
+      background: var(--color-surface);
+      padding: 15px 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(var(--color-slate-900-rgb), 0.15);
+      border: 1px solid var(--color-card-border);
+      display: none;
+      min-width: 250px;
+      max-width: 350px;
+      z-index: 999;
+      font-size: 14px;
+      color: var(--color-text);
+    }
+
+    #voice-status.show {
+      display: block;
+    }
+     #mic-btn {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: #007bff;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s;
+      z-index: 1000;
+    }
+
+    #mic-btn:hover {
+      transform: scale(1.1);
+    }
+
+    #mic-btn.listening {
+      background: #28a745;
+      animation: pulse 1s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 4px 12px rgba(40, 167, 69, 0.5); }
+      50% { box-shadow: 0 4px 25px rgba(40, 167, 69, 0.8); }
+    }
+
+    #mic-btn svg {
+      width: 24px;
+      height: 24px;
+      fill: white;
+    }
+
+    #status {
+      position: fixed;
+      bottom: 100px;
+      right: 30px;
+      background: white;
+      padding: 15px 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+      display: none;
+      min-width: 250px;
+      max-width: 350px;
+      z-index: 999;
+      font-size: 14px;
+    }
+
+    #status.show {
+      display: block;
+    }
+
+    .command-list {
+      max-width: 800px;
+      margin: 20px auto;
+    }
+
+    .command-section {
+      margin-bottom: 20px;
+      padding: 15px;
+      background: #f8f9fa;
+      border-radius: 8px;
+    }
+
+    .command-section h3 {
+      margin-top: 0;
+      color: #007bff;
+    }
+
+    .command-section ul {
+      margin: 10px 0;
+    }
+
+    .command-section li {
+      margin: 5px 0;
+    }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header class="navbar">
+        <a href="#" class="logo">SkillShare</a>
+        <nav>
+            <a href="{% url 'feed' %}">Community</a>
+            <a href="{% url 'mybookings' %}" class="active-nav">My Bookings</a>
+            <a href="{% url 'dashboard' %}">My Profile</a>
+            <a href="{% url 'index' %}">Logout</a>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <h1>My Bookings</h1>
+
+        <div class="main-layout">
+            
+            <!-- Main Content Area -->
+            <div class="main-content">
+                <div class="tabs">
+                    <!-- Updated tab counts -->
+                    <button class="active" onclick="showTab('upcoming', this)">Upcoming (3)</button>
+                    <button onclick="showTab('pending', this)">Pending (4)</button>
+                    <button onclick="showTab('completed', this)">Completed (3)</button>
+                    <button onclick="showTab('archived', this)">Archived (2)</button>
+                </div>
+
+                <div class="tab-content-container">
+                    <div id="upcoming-content" class="tab-content active">
+                        <!-- Upcoming Booking Card 1 -->
+                        <div class="booking-card" data-booking-id="b-123">
+                            <div class="booking-card-header">
+                                <div class="booking-card-details">
+                                    <img src="https://placehold.co/150/EEF2FF/4F46E5?text=JD&font=inter" alt="Jane D.">
+                                    <div>
+                                        <h3>Acoustic Guitar Lesson</h3>
+                                        <p>With <strong>Jane D.</strong></p>
+                                        <p>Oct 28, 2025 @ 4:00 PM</p>
+                                    </div>
+                                </div>
+                                <div class="booking-card-actions">
+                                    <button class="btn btn-secondary btn-small" onclick="openRescheduleModal('b-123', 'Acoustic Guitar Lesson')">Reschedule</button>
+                                    <button class="btn btn-primary btn-small" onclick="openSimpleModal('Message Jane D.', 'This is where your private messaging window with Jane D. would appear.')">Message</button>
+                                </div>
+                            </div>
+                            <!-- New Features for Upcoming Card -->
+                            <div class="booking-card-footer">
+                                <!-- SkillSwap Toggle -->
+                                <div class="skillswap-toggle">
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="skillswap-toggle-b-123" onchange="toggleSkillSwap('b-123')">
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                    <label for="skillswap-toggle-b-123" style="font-weight: 500; font-size: 0.9rem; cursor: pointer;">
+                                        Offer SkillSwap
+                                    </label>
+                                    <div class="tooltip">
+                                        <svg class="tooltip-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.732-1A3 3 0 0110 5a3 3 0 013 3 1 1 0 11-2 0 1 1 0 00-1-1zM9 12a1 1 0 112 0v1a1 1 0 11-2 0v-1z" clip-rule="evenodd" /></svg>
+                                        <span class="tooltip-text">Offer one of your skills (e.g., 1hr of coding) instead of paying. Credits (150) will be used if accepted.</span>
+                                    </div>
+                                </div>
+                                <!-- Call Buttons -->
+                                <div class="flex-row gap-2">
+                                    <button class="btn btn-secondary btn-small" onclick="openCallModal('Voice Call')">
+                                        <span class="sr-only">Start Voice Call</span>
+                                        <!-- Phone Icon -->
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M3.654 1.328a.678.678 0 0 0-1.015-.063L1.605 2.3c-.483.484-.661 1.169-.45 1.77a17.6 17.6 0 0 0 4.168 6.608 17.6 17.6 0 0 0 6.608 4.168c.601.211 1.286.033 1.77-.45l1.034-1.034a.678.678 0 0 0-.063-1.015l-2.307-1.794a.68.68 0 0 0-.58-.122l-2.19.547a1.75 1.75 0 0 1-1.657-.459L5.482 8.062a1.75 1.75 0 0 1-.46-1.657l.548-2.19a.68.68 0 0 0-.122-.58L3.654 1.328zM1.884.511a1.745 1.745 0 0 1 2.612.163L6.29 2.98c.329.423.445.974.315 1.494l-.547 2.19a.68.68 0 0 0 .178.643l2.457 2.457a.68.68 0 0 0 .644.178l2.189-.547c.52-.13 1.071-.014 1.494.315l2.306 1.794c.829.645.905 1.87.163 2.612l-1.034 1.034c-.74.74-1.846 1.065-2.877.702a18.6 18.6 0 0 1-7.01-4.42 18.6 18.6 0 0 1-4.42-7.009c-.363-1.03-.038-2.137.703-2.877z"/></svg>
+                                    </button>
+                                    <button class="btn btn-secondary btn-small" onclick="openCallModal('Video Call')">
+                                        <span class="sr-only">Start Video Call</span>
+                                        <!-- Video Icon -->
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M0 1a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H1a1 1 0 0 1-1-1zM11.5 4.002h-7a.5.5 0 0 0-.5.5v7a.5.5 0 0 0 .5.5h7a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.5-.5M10.5 8.75a.75.75 0 0 1-1.5 0v-1.5a.75.75 0 0 1 1.5 0z"/></svg>
+                                    </button>
+                                </div>
+                            </div>
+                            <!-- SkillSwap Offer Area -->
+                            <div class="skillswap-offer" id="skillswap-offer-b-123">
+                                <div class="form-group">
+                                    <label for="skillswap-text-b-123">What will you offer in exchange?</label>
+                                    <textarea id="skillswap-text-b-123" placeholder="E.g., 'I can offer 1 hour of Python tutoring' or 'I can help design a logo'." oninput="saveSkillSwapDraft('b-123')"></textarea>
+                                </div>
+                                <button class="btn btn-primary btn-small" onclick="confirmSkillSwap('b-123')">Confirm SkillSwap Offer</button>
+                            </div>
+                        </div>
+                        
+                        <!-- NEW: Upcoming Booking Card 2 -->
+                        <div class="booking-card" data-booking-id="b-124">
+                            <div class="booking-card-header">
+                                <div class="booking-card-details">
+                                    <img src="https://placehold.co/150/FDF2F8/D946EF?text=ML&font=inter" alt="Maria L.">
+                                    <div>
+                                        <h3>Spanish Conversation</h3>
+                                        <p>With <strong>Maria L.</strong></p>
+                                        <p>Oct 29, 2025 @ 10:00 AM</p>
+                                    </div>
+                                </div>
+                                <div class="booking-card-actions">
+                                    <button class="btn btn-secondary btn-small" onclick="openRescheduleModal('b-124', 'Spanish Conversation')">Reschedule</button>
+                                    <button class="btn btn-primary btn-small" onclick="openSimpleModal('Message Maria L.', 'This is where your private messaging window with Maria L. would appear.')">Message</button>
+                                </div>
+                            </div>
+                            <div class="booking-card-footer">
+                                <!-- SkillSwap Toggle -->
+                                <div class="skillswap-toggle">
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="skillswap-toggle-b-124" onchange="toggleSkillSwap('b-124')">
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                    <label for="skillswap-toggle-b-124" style="font-weight: 500; font-size: 0.9rem; cursor: pointer;">
+                                        Offer SkillSwap
+                                    </label>
+                                    <div class="tooltip">
+                                        <svg class="tooltip-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.732-1A3 3 0 0110 5a3 3 0 013 3 1 1 0 11-2 0 1 1 0 00-1-1zM9 12a1 1 0 112 0v1a1 1 0 11-2 0v-1z" clip-rule="evenodd" /></svg>
+                                        <span class="tooltip-text">Offer one of your skills (e.g., 1hr of coding) instead of paying. Credits (150) will be used if accepted.</span>
+                                    </div>
+                                </div>
+                                <!-- Call Buttons -->
+                                <div class="flex-row gap-2">
+                                    <button class="btn btn-secondary btn-small" onclick="openCallModal('Voice Call')">
+                                        <span class="sr-only">Start Voice Call</span>
+                                        <!-- Phone Icon -->
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M3.654 1.328a.678.678 0 0 0-1.015-.063L1.605 2.3c-.483.484-.661 1.169-.45 1.77a17.6 17.6 0 0 0 4.168 6.608 17.6 17.6 0 0 0 6.608 4.168c.601.211 1.286.033 1.77-.45l1.034-1.034a.678.678 0 0 0-.063-1.015l-2.307-1.794a.68.68 0 0 0-.58-.122l-2.19.547a1.75 1.75 0 0 1-1.657-.459L5.482 8.062a1.75 1.75 0 0 1-.46-1.657l.548-2.19a.68.68 0 0 0-.122-.58L3.654 1.328zM1.884.511a1.745 1.745 0 0 1 2.612.163L6.29 2.98c.329.423.445.974.315 1.494l-.547 2.19a.68.68 0 0 0 .178.643l2.457 2.457a.68.68 0 0 0 .644.178l2.189-.547c.52-.13 1.071-.014 1.494.315l2.306 1.794c.829.645.905 1.87.163 2.612l-1.034 1.034c-.74.74-1.846 1.065-2.877.702a18.6 18.6 0 0 1-7.01-4.42 18.6 18.6 0 0 1-4.42-7.009c-.363-1.03-.038-2.137.703-2.877z"/></svg>
+                                    </button>
+                                    <button class="btn btn-secondary btn-small" onclick="openCallModal('Video Call')">
+                                        <span class="sr-only">Start Video Call</span>
+                                        <!-- Video Icon -->
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M0 1a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H1a1 1 0 0 1-1-1zM11.5 4.002h-7a.5.5 0 0 0-.5.5v7a.5.5 0 0 0 .5.5h7a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.5-.5M10.5 8.75a.75.75 0 0 1-1.5 0v-1.5a.75.75 0 0 1 1.5 0z"/></svg>
+                                    </button>
+                                </div>
+                            </div>
+                            <!-- SkillSwap Offer Area -->
+                            <div class="skillswap-offer" id="skillswap-offer-b-124">
+                                <div class="form-group">
+                                    <label for="skillswap-text-b-124">What will you offer in exchange?</label>
+                                    <textarea id="skillswap-text-b-124" placeholder="E.g., 'I can offer 1 hour of Python tutoring' or 'I can help design a logo'." oninput="saveSkillSwapDraft('b-124')"></textarea>
+                                </div>
+                                <button class="btn btn-primary btn-small" onclick="confirmSkillSwap('b-124')">Confirm SkillSwap Offer</button>
+                            </div>
+                        </div>
+
+                        <!-- NEW: Upcoming Booking Card 3 (Indian Name) -->
+                        <div class="booking-card" data-booking-id="b-125">
+                            <div class="booking-card-header">
+                                <div class="booking-card-details">
+                                    <img src="https://placehold.co/150/F3E8FF/7E22CE?text=PS&font=inter" alt="Priya S.">
+                                    <div>
+                                        <h3>Data Science Workshop</h3>
+                                        <p>With <strong>Priya S.</strong></p>
+                                        <p>Nov 1, 2025 @ 1:00 PM</p>
+                                    </div>
+                                </div>
+                                <div class="booking-card-actions">
+                                    <button class="btn btn-secondary btn-small" onclick="openRescheduleModal('b-125', 'Data Science Workshop')">Reschedule</button>
+                                    <button class="btn btn-primary btn-small" onclick="openSimpleModal('Message Priya S.', 'This is where your private messaging window with Priya S. would appear.')">Message</button>
+                                </div>
+                            </div>
+                            <div class="booking-card-footer">
+                                <!-- SkillSwap Toggle -->
+                                <div class="skillswap-toggle">
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="skillswap-toggle-b-125" onchange="toggleSkillSwap('b-125')" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                    <label for="skillswap-toggle-b-125" style="font-weight: 500; font-size: 0.9rem; cursor: pointer;">
+                                        Offer SkillSwap
+                                    </label>
+                                    <div class="tooltip">
+                                        <svg class="tooltip-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.732-1A3 3 0 0110 5a3 3 0 013 3 1 1 0 11-2 0 1 1 0 00-1-1zM9 12a1 1 0 112 0v1a1 1 0 11-2 0v-1z" clip-rule="evenodd" /></svg>
+                                        <span class="tooltip-text">Offer one of your skills (e.g., 1hr of coding) instead of paying. Credits (150) will be used if accepted.</span>
+                                    </div>
+                                </div>
+                                <!-- Call Buttons -->
+                                <div class="flex-row gap-2">
+                                    <button class="btn btn-secondary btn-small" onclick="openCallModal('Voice Call')">
+                                        <span class="sr-only">Start Voice Call</span>
+                                        <!-- Phone Icon -->
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M3.654 1.328a.678.678 0 0 0-1.015-.063L1.605 2.3c-.483.484-.661 1.169-.45 1.77a17.6 17.6 0 0 0 4.168 6.608 17.6 17.6 0 0 0 6.608 4.168c.601.211 1.286.033 1.77-.45l1.034-1.034a.678.678 0 0 0-.063-1.015l-2.307-1.794a.68.68 0 0 0-.58-.122l-2.19.547a1.75 1.75 0 0 1-1.657-.459L5.482 8.062a1.75 1.75 0 0 1-.46-1.657l.548-2.19a.68.68 0 0 0-.122-.58L3.654 1.328zM1.884.511a1.745 1.745 0 0 1 2.612.163L6.29 2.98c.329.423.445.974.315 1.494l-.547 2.19a.68.68 0 0 0 .178.643l2.457 2.457a.68.68 0 0 0 .644.178l2.189-.547c.52-.13 1.071-.014 1.494.315l2.306 1.794c.829.645.905 1.87.163 2.612l-1.034 1.034c-.74.74-1.846 1.065-2.877.702a18.6 18.6 0 0 1-7.01-4.42 18.6 18.6 0 0 1-4.42-7.009c-.363-1.03-.038-2.137.703-2.877z"/></svg>
+                                    </button>
+                                    <button class="btn btn-secondary btn-small" onclick="openCallModal('Video Call')">
+                                        <span class="sr-only">Start Video Call</span>
+                                        <!-- Video Icon -->
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M0 1a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H1a1 1 0 0 1-1-1zM11.5 4.002h-7a.5.5 0 0 0-.5.5v7a.5.5 0 0 0 .5.5h7a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.5-.5M10.5 8.75a.75.75 0 0 1-1.5 0v-1.5a.75.75 0 0 1 1.5 0z"/></svg>
+                                    </button>
+                                </div>
+                            </div>
+                            <!-- SkillSwap Offer Area -->
+                            <div class="skillswap-offer active" id="skillswap-offer-b-125">
+                                <div class="form-group">
+                                    <label for="skillswap-text-b-125">What will you offer in exchange?</label>
+                                    <textarea id="skillswap-text-b-125" placeholder="E.g., 'I can offer 1 hour of Python tutoring' or 'I can help design a logo'." oninput="saveSkillSwapDraft('b-125')">I can offer 1 hour of professional content writing.</textarea>
+                                </div>
+                                <button class="btn btn-primary btn-small" onclick="confirmSkillSwap('b-125')">Confirm SkillSwap Offer</button>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div id="pending-content" class="tab-content">
+                        <!-- Pending Card 1 (with Group Booking) -->
+                        <div class="booking-card" data-booking-id="b-456">
+                            <div class="booking-card-header">
+                                <div class="booking-card-details">
+                                    <img src="https://placehold.co/150/E0F2F1/059669?text=MS&font=inter" alt="Mark S.">
+                                    <div>
+                                        <h3>Request for: C++ Tutoring</h3>
+                                        <p>From <strong>Mark S.</strong></p>
+                                        <p>Wants to book for Oct 29, 2025</p>
+                                    </div>
+                                </div>
+                                <div class="booking-card-actions">
+                                    <button class="btn btn-danger" onclick="openSimpleModal('Decline Request', 'Are you sure you want to decline this booking request from Mark S.?')">Decline</button>
+                                    <button class="btn btn-success" onclick="openSimpleModal('Accept Request', 'You have successfully accepted the booking from Mark S. for C++ Tutoring!')">Accept</button>
+                                </div>
+                            </div>
+                             <!-- Group Booking UI -->
+                            <div class="booking-card-footer">
+                                <div class="flex-row gap-3">
+                                    <label for="group-toggle-b-456" style="font-weight: 500; font-size: 0.9rem; cursor: pointer;">
+                                        <input type="checkbox" id="group-toggle-b-456" onchange="toggleGroupBooking('b-456')">
+                                        Group Booking
+                                    </label>
+                                    <div class="group-booking-controls" id="group-controls-b-456">
+                                        <div class="form-group" style="margin-bottom: 0;">
+                                            <label for="group-seats-b-456" class="sr-only">Seats</label>
+                                            <input type="number" id="group-seats-b-456" value="2" min="2" max="10" style="margin-bottom: 0;">
+                                        </div>
+                                        <button class="btn btn-secondary btn-small" onclick="openInviteModal('b-456', 'C++ Tutoring')">Invite</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Pending Card 2 (Standard) -->
+                        <div class="booking-card" data-booking-id="b-789">
+                            <div class="booking-card-header">
+                                <div class="booking-card-details">
+                                    <img src="https://placehold.co/150/FEF3C7/D97706?text=SL&font=inter" alt="Sarah L.">
+                                    <div>
+                                        <h3>Request for: Yoga Session</h3>
+                                        <p>From <strong>Sarah L.</strong></p>
+                                        <p>Wants to book for Oct 30, 2025</p>
+                                    </div>
+                                </div>
+                                <div class="booking-card-actions">
+                                    <button class="btn btn-danger" onclick="openSimpleModal('Decline Request', 'Are you sure you want to decline this booking request from Sarah L.?')">Decline</button>
+                                    <button class="btn btn-success" onclick="openSimpleModal('Accept Request', 'You have successfully accepted the booking from Sarah L. for a Yoga Session!')">Accept</button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- NEW: Pending Card 3 (Standard) -->
+                        <div class="booking-card" data-booking-id="b-790">
+                            <div class="booking-card-header">
+                                <div class="booking-card-details">
+                                    <img src="https://placehold.co/150/FFFBEB/B45309?text=TK&font=inter" alt="Tom K.">
+                                    <div>
+                                        <h3>Request for: Homebrewing 101</h3>
+                                        <p>From <strong>Tom K.</strong></p>
+                                        <p>Wants to book for Nov 2, 2025</p>
+                                    </div>
+                                </div>
+                                <div class="booking-card-actions">
+                                    <button class="btn btn-danger" onclick="openSimpleModal('Decline Request', 'Are you sure you want to decline this booking request from Tom K.?')">Decline</button>
+                                    <button class="btn btn-success" onclick="openSimpleModal('Accept Request', 'You have successfully accepted the booking from Tom K. for Homebrewing 101!')">Accept</button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- NEW: Pending Card 4 (Indian Name) -->
+                        <div class="booking-card" data-booking-id="b-791">
+                            <div class="booking-card-header">
+                                <div class="booking-card-details">
+                                    <img src="https://placehold.co/150/FFF7ED/F97316?text=RG&font=inter" alt="Rohan G.">
+                                    <div>
+                                        <h3>Request for: Tabla Lessons</h3>
+                                        <p>From <strong>Rohan G.</strong></p>
+                                        <p>Wants to book for Nov 3, 2025</p>
+                                    </div>
+                                </div>
+                                <div class="booking-card-actions">
+                                    <button class="btn btn-danger" onclick="openSimpleModal('Decline Request', 'Are you sure you want to decline this booking request from Rohan G.?')">Decline</button>
+                                    <button class="btn btn-success" onclick="openSimpleModal('Accept Request', 'You have successfully accepted the booking from Rohan G. for Tabla Lessons!')">Accept</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="completed-content" class="tab-content">
+                         <!-- Completed Card (with AI Summary) -->
+                         <div class="booking-card" data-booking-id="b-999">
+                            <div class="booking-card-header">
+                                <div class="booking-card-details">
+                                    <img src="https://placehold.co/150/E5E7EB/4B5563?text=RP&font=inter" alt="Robert P.">
+                                    <div>
+                                        <h3>Completed: Plumbing Fix</h3>
+                                        <p>With <strong>Robert P.</strong></p>
+                                        <p>Oct 15, 2025</p>
+                                    </div>
+                                </div>
+                                <div class="booking-card-actions">
+                                    <button class="btn btn-secondary" onclick="openSimpleModal('Book Again', 'This would take you to Robert P.\'s profile to book a new session.')">Book Again</button>
+                                    <button class="btn btn-primary" onclick="openSimpleModal('Leave a Review', 'This is where you would see a form to leave a rating and a review for Robert P.')">Leave Review</button>
+                                </div>
+                            </div>
+                            <!-- AI Summary Button -->
+                            <div class="booking-card-footer">
+                                <button class="btn btn-primary btn-small" id="ai-summary-btn-b-999" onclick="handleAiSummary('b-999', 'Plumbing Fix')">
+                                    <span id="ai-summary-loader-b-999" class="smart-suggest-loader" style="width:14px; height:14px; border-width: 2px; margin-right: 5px; vertical-align: middle;"></span>
+                                    <span id="ai-summary-btn-text-b-999">✨ Generate AI Summary</span>
+                                </button>
+                                <p style="font-size: 0.85rem; color: var(--secondary-color);">Get key insights from your session.</p>
+                            </div>
+                        </div>
+
+                        <!-- Completed Card 2 (With AI Summary) -->
+                         <div class="booking-card" data-booking-id="b-1000">
+                            <div class="booking-card-header">
+                                <div class="booking-card-details">
+                                    <img src="https://placehold.co/150/ECFDF5/059669?text=AC&font=inter" alt="Alex C.">
+                                    <div>
+                                        <h3>Completed: Website Design Critique</h3>
+                                        <p>With <strong>Alex C.</strong></p>
+                                        <p>Oct 12, 2025</p>
+                                    </div>
+                                </div>
+                                <div class="booking-card-actions">
+                                    <button class="btn btn-secondary" onclick="openSimpleModal('Book Again', 'This would take you to Alex C.\'s profile to book a new session.')">Book Again</button>
+                                    <button class="btn btn-primary" onclick="openSimpleModal('Leave a Review', 'This is where you would see a form to leave a rating and a review for Alex C.')">Leave Review</button>
+                                </div>
+                            </div>
+                            <!-- AI Summary Button -->
+                            <div class="booking-card-footer">
+                                <button class="btn btn-primary btn-small" id="ai-summary-btn-b-1000" onclick="handleAiSummary('b-1000', 'Website Design Critique')">
+                                    <span id="ai-summary-loader-b-1000" class="smart-suggest-loader" style="width:14px; height:14px; border-width: 2px; margin-right: 5px; vertical-align: middle;"></span>
+                                    <span id="ai-summary-btn-text-b-1000">✨ Generate AI Summary</span>
+                                </button>
+                                <p style="font-size: 0.85rem; color: var(--secondary-color);">Get key insights from your session.</p>
+                            </div>
+                        </div>
+                        
+                        <!-- NEW: Completed Card 3 (Indian Name) -->
+                         <div class="booking-card" data-booking-id="b-1001">
+                            <div class="booking-card-header">
+                                <div class="booking-card-details">
+                                    <img src="https://placehold.co/150/F0F9FF/0284C7?text=AK&font=inter" alt="Ananya K.">
+                                    <div>
+                                        <h3>Completed: Yoga Basics</h3>
+                                        <p>With <strong>Ananya K.</strong></p>
+                                        <p>Oct 11, 2025</p>
+                                    </div>
+                                </div>
+                                <div class="booking-card-actions">
+                                    <button class="btn btn-secondary" onclick="openSimpleModal('Book Again', 'This would take you to Ananya K.\'s profile to book a new session.')">Book Again</button>
+                                    <button class="btn btn-primary" onclick="openSimpleModal('Leave a Review', 'This is where you would see a form to leave a rating and a review for Ananya K.')">Leave Review</button>
+                                </div>
+                            </div>
+                            <!-- AI Summary Button -->
+                            <div class="booking-card-footer">
+                                <button class="btn btn-primary btn-small" id="ai-summary-btn-b-1001" onclick="handleAiSummary('b-1001', 'Yoga Basics')">
+                                    <span id="ai-summary-loader-b-1001" class="smart-suggest-loader" style="width:14px; height:14px; border-width: 2px; margin-right: 5px; vertical-align: middle;"></span>
+                                    <span id="ai-summary-btn-text-b-1001">✨ Generate AI Summary</span>
+                                </button>
+                                <p style="font-size: 0.85rem; color: var(--secondary-color);">Get key insights from your session.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="archived-content" class="tab-content">
+                        <!-- Replaced empty state with archived card -->
+                        <div class="booking-card" data-booking-id="b-001" style="opacity: 0.7; border-style: dashed;">
+                            <div class="booking-card-header">
+                                <div class="booking-card-details">
+                                    <img src="https://placehold.co/150/FEE2E2/DC2626?text=DC&font=inter" alt="David C.">
+                                    <div>
+                                        <h3 style="color: var(--danger-color);">Cancelled: 3D Modeling</h3>
+                                        <p>With <strong>David C.</strong></p>
+                                        <p>Was for Oct 10, 2025</p>
+                                    </div>
+                                </div>
+                                <div class="booking-card-actions">
+                                    <button class="btn btn-secondary" onclick="openSimpleModal('Book Again', 'This would take you to David C.\'s profile to book a new session.')">Book Again</T>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- NEW: Archived Card 2 (Indian Name) -->
+                        <div class="booking-card" data-booking-id="b-002" style="opacity: 0.7; border-style: dashed;">
+                            <div class="booking-card-header">
+                                <div class="booking-card-details">
+                                    <img src="https://placehold.co/150/FEF2F2/B91C1C?text=VR&font=inter" alt="Vikram R.">
+                                    <div>
+                                        <h3 style="color: var(--danger-color);">Cancelled: Stock Market Intro</h3>
+                                        <p>With <strong>Vikram R.</strong></p>
+                                        <p>Was for Oct 9, 2025</p>
+                                    </div>
+                                </div>
+                                <div class="booking-card-actions">
+                                    <button class="btn btn-secondary" onclick="openSimpleModal('Book Again', 'This would take you to Vikram R.\'s profile to book a new session.')">Book Again</T>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <div class="sidebar-card secure-payment-card">
+                    <h3>Your Booking Protection</h3>
+                    
+                    <div class="escrow-info">
+                        <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 1.944A11.954 11.954 0 012.166 5C2.056 5.649 2 6.319 2 7c0 5.225 3.34 9.67 8 11.317C14.66 16.67 18 12.225 18 7c0-.682-.057-1.35-.166-2.001A11.954 11.954 0 0110 1.944zM11 14a1 1 0 11-2 0 1 1 0 012 0zm-1-7a1 1 0 00-1 1v3a1 1 0 002 0V8a1 1 0 00-1-1z" clip-rule="evenodd" /></svg>
+                        <div>
+                            <strong>Your payment is held securely in escrow.</strong>
+                            <p>We only release funds 24 hours after you mark the session as complete.</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Escrow Modal Link -->
+                    <button class="btn-link" style="font-size: 0.9rem;" onclick="openEscrowModal()">Why are payments held?</button>
+
+                    <ul style="margin-top: 1.5rem;">
+                        <li>
+                            <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>
+                            <span><strong>Payment Protection</strong> You're protected if the provider doesn't show up.</span>
+                        </li>
+                        <li>
+                            <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>
+                            <span><strong>Clear Record</strong> All messages, payments, and schedules are saved in one place.</span>
+                        </li>
+                        <li>
+                            <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>
+                            <span><strong>Verified Reviews</strong> Only paid bookings can leave a "Verified Review."</span>
+                        </li>
+                        <li>
+                            <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>
+                            <span><strong>Dispute Support</strong> If anything goes wrong, our support team can step in.</span>
+                        </li>
+                    </ul>
+                </div>
+            </aside>
+        </div>
+    </div>
+    
+    <!-- --- MODALS --- -->
+    
+    <!-- Toast Notification -->
+    <div id="toast-notification">Toast message</div>
+
+    <!-- 1. Simple Message Modal (Replaces original) -->
+    <div id="simple-modal" class="modal-overlay" onclick="closeSimpleModal()">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h2 id="simple-modal-title">Modal Title</h2>
+                <button class="modal-close-btn" onclick="closeSimpleModal()" aria-label="Close modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p id="simple-modal-message">This is the modal message.</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeSimpleModal()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. Reschedule Modal (with Smart Suggest) -->
+    <div id="reschedule-modal" class="modal-overlay" onclick="closeModal('reschedule-modal')">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h2 id="reschedule-modal-title">Reschedule Session</h2>
+                <button class="modal-close-btn" onclick="closeModal('reschedule-modal')" aria-label="Close modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Select a new time for your session. (This is a mock calendar).</p>
+                <div class="form-group" style="margin-top: 1rem;">
+                    <label>Available Slots</label>
+                    <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;" id="reschedule-slots-container">
+                        <button class="smart-suggest-slot" data-slot-id="1">Oct 29, 9:00 AM</button>
+                        <button class="smart-suggest-slot" data-slot-id="2">Oct 29, 11:00 AM</button>
+                        <button class="smart-suggest-slot" data-slot-id="3">Oct 29, 2:00 PM</button>
+                        <button class="smart-suggest-slot" data-slot-id="4">Oct 30, 10:00 AM</button>
+                        <button class="smart-suggest-slot" data-slot-id="5">Oct 30, 3:00 PM</button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="triggerSmartSuggest()">
+                    <span id="smart-suggest-loader" class="smart-suggest-loader" style="vertical-align: middle; margin-right: 4px;"></span>
+                    <span id="smart-suggest-btn-text">✨ Smart Suggest</span>
+                </button>
+                <button class="btn btn-secondary" onclick="closeModal('reschedule-modal')">Cancel</button>
+                <button class="btn btn-success" onclick="confirmReschedule()">Confirm New Time</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. Group Invite Modal -->
+    <div id="invite-modal" class="modal-overlay" onclick="closeModal('invite-modal')">
+        <div class="modal-content" onclick="event.stopPropagation()" style="max-width: 550px;">
+            <div class="modal-header">
+                <h2 id="invite-modal-title">Invite to Group Session</h2>
+                <button class="modal-close-btn" onclick="closeModal('invite-modal')" aria-label="Close modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="invite-emails">Enter emails (comma separated)</label>
+                    <input type="text" id="invite-emails" placeholder="friend1@example.com, friend2@example.com">
+                </div>
+                <button class="btn btn-primary btn-small" onclick="sendInvites()">Send Invites</button>
+                
+                <div style="margin: 1.5rem 0; text-align: center; color: var(--secondary-color);">OR</div>
+                
+                <div class="form-group">
+                    <label>Copy Shareable Link</label>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <input type="text" id="invite-link" value="https://meet.skilllink/demo/b-456" readonly>
+                        <button class="btn btn-secondary" onclick="copyInviteLink()">Copy</button>
+                    </div>
+                </div>
+                
+                <h4 style="margin-top: 2rem; margin-bottom: 0.5rem;">Invited (Mock Data)</h4>
+                <ul class="invite-list" id="invite-list-display">
+                    <!-- JS will populate this -->
+                </ul>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('invite-modal')">Done</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 4. Call Modal (Voice/Video) -->
+    <div id="call-modal" class="modal-overlay" onclick="closeModal('call-modal')">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h2 id="call-modal-title">Start Call</h2>
+                <button class="modal-close-btn" onclick="closeModal('call-modal')" aria-label="Close modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Calling features will be enabled 15 minutes before your session.</p>
+                <p style="margin-top: 0.5rem; font-size: 0.9rem;">For now, you can generate a mock meeting link to share.</p>
+                <!-- DJANGO: This button could check if a link already exists for this booking -->
+                <button class="btn btn-primary" style="margin-top: 1rem;" id="generate-meet-link-btn" onclick="generateMockLink()">Generate Meeting Link</button>
+                
+                <div id="mock-link-container" style="display: none; margin-top: 1rem;">
+                    <label>Mock Link:</label>
+                    <input type="text" id="mock-link-display" readonly style="width: 100%; background-color: var(--light-color); margin-bottom: 1rem;">
+                    <!-- DJANGO: This href would be populated by the backend -->
+                    <a href="#" id="join-meet-link" class="btn btn-success w-full" target="_blank" rel="noopener noreferrer">Join Meet</a>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('call-modal')">Close</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 5. Escrow/No-Show Modal -->
+    <div id="escrow-modal" class="modal-overlay" onclick="closeModal('escrow-modal')">
+        <div class="modal-content" onclick="event.stopPropagation()" style="max-width: 550px;">
+            <div class="modal-header">
+                <h2>How Escrow Protects You</h2>
+                <button class="modal-close-btn" onclick="closeModal('escrow-modal')" aria-label="Close modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>To ensure fairness, your payment is held in escrow (by us) and only released to the provider after the session is successfully completed.</p>
+                
+                <div class="escrow-steps">
+                    <div class="escrow-step completed">
+                        <div class="step-icon">1</div>
+                        <div class="step-label">You Book & Pay</div>
+                    </div>
+                    <div class="escrow-step completed">
+                        <div class="step-icon">2</div>
+                        <div class="step-label">Payment Held</div>
+                    </div>
+                    <div class="escrow-step">
+                        <div class="step-icon">3</div>
+                        <div class="step-label">Session Complete</div>
+                    </div>
+                    <div class="escrow-step">
+                        <div class="step-icon">4</div>
+                        <div class="step-label">Provider Paid</div>
+                    </div>
+                </div>
+                
+                <h4 style="margin-top: 1.5rem;">What if there's a problem?</h4>
+                <p style="font-size: 0.9rem;">If the provider is a no-show or the service is not as described, you can report an issue. Our team will review the case and issue a refund if appropriate.</p>
+                
+                <div style="margin-top: 1.5rem; background-color: var(--light-color); padding: 1rem; border-radius: 8px; text-align: center;">
+                    <button class="btn btn-danger" id="report-issue-btn" onclick="mockReportIssue()">Report an Issue (Mock)</button>
+                    <p id="report-issue-status" style="display:none; font-weight: 500; color: var(--success-color);">Your issue has been submitted for review.</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="closeModal('escrow-modal')">Got it</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 6. AI Summary Modal -->
+    <div id="ai-summary-modal" class="modal-overlay" onclick="closeModal('ai-summary-modal')">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h2 id="ai-summary-title">✨ AI Summary</h2>
+                <button class="modal-close-btn" onclick="closeModal('ai-summary-modal')" aria-label="Close modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Here are the key points from your session:</p>
+                <div id="ai-summary-content-wrapper">
+                    <div id="ai-summary-content">(Mock summary will be loaded here)</div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('ai-summary-modal')">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 7. Mocked Chatbot Widget -->
+    <div id="chatbot-widget" class="minimized">
+        <!-- Header -->
+        <div class="chatbot-header" onclick="toggleChatbot()" role="button" aria-expanded="false" aria-controls="chatbot-body" tabindex="0">
+            <h3>✨ SkillShare Assistant</h3>
+            <div class="chatbot-header-buttons">
+                <button id="chatbot-minimize-btn" aria-label="Minimize chat" onclick="minimizeChatbot(event)">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5 10a1 1 0 011-1h8a1 1 0 110 2H6a1 1 0 01-1-1z" clip-rule="evenodd" /></svg>
+                </button>
+                <button id="chatbot-close-btn" aria-label="Close chat" onclick="closeChatbot(event)">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
+                </button>
+            </div>
+        </div>
+        <!-- Body -->
+        <div class="chatbot-body" id="chatbot-body" aria-hidden="true">
+            <div class="chatbot-history" id="chatbot-history">
+                <!-- Chat messages will be added here by JS -->
+            </div>
+            <div class="chatbot-input-area">
+                <input type="text" id="chatbot-input" placeholder="Ask about bookings, skills..." aria-label="Chat input" onkeydown="handleChatKeydown(event)">
+                <button id="chatbot-send-btn" onclick="handleChatSend()" aria-label="Send message">
+                    <!-- Send Icon -->
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009.17 15.57l-1.72-4.9c-.206-.59.141-1.246.74-1.45l9.23-3.11c.7-.235.867-1.11.28-1.567l-3.23-2.48z" /><path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009.17 15.57l1.72-4.9 8.23-2.78c.7-.235.867-1.11.28-1.567l-4.23-3.24z" /></svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        'use strict';
+
+        // --- Global State ---
+        let currentBookingId = null; // Used by modals
+        let currentSessionTitle = null; // Used by modals
+        let lastFocusedElement = null; // For modal accessibility
+        let toastTimeout = null;
+
+        // --- Gemini API Configuration ---
+        const API_KEY = ""; // Leave as-is, will be populated by the environment
+        const GENERATION_MODEL = "gemini-2.5-flash-preview-09-2025";
+        const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/${GENERATION_MODEL}:generateContent?key=${API_KEY}`;
+        
+        // --- LocalStorage Helpers ---
+        // ... (getFromLS, saveToLS - unchanged) ...
+        const getFromLS = (key, defaultValue) => {
+            try {
+                const item = localStorage.getItem(key);
+                return item ? JSON.parse(item) : defaultValue;
+            } catch (e) {
+                console.error("Error reading from LS", e);
+                return defaultValue;
+            }
+        };
+
+        const saveToLS = (key, value) => {
+            try {
+                localStorage.setItem(key, JSON.stringify(value));
+            } catch (e) {
+                console.error("Error saving to LS", e);
+            }
+        };
+        
+        // --- Modal Focus Trap ---
+        // ... (trapFocus, releaseFocus - unchanged) ...
+        const focusableElementsSelector = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
+        
+        function trapFocus(modal) {
+            const focusableElements = modal.querySelectorAll(focusableElementsSelector);
+            const firstElement = focusableElements[0];
+            const lastElement = focusableElements[focusableElements.length - 1];
+
+            lastFocusedElement = document.activeElement;
+            firstElement?.focus();
+
+            modal.addEventListener('keydown', (e) => {
+                if (e.key !== 'Tab') return;
+                
+                if (e.shiftKey) { // Shift + Tab
+                    if (document.activeElement === firstElement) {
+                        lastElement.focus();
+                        e.preventDefault();
+                    }
+                } else { // Tab
+                    if (document.activeElement === lastElement) {
+                        firstElement.focus();
+                        e.preventDefault();
+                    }
+                }
+            });
+        }
+        
+        function releaseFocus() {
+            if (lastFocusedElement) {
+                lastFocusedElement.focus();
+                lastFocusedElement = null;
+            }
+        }
+        
+        // --- General Modal Logic ---
+        // ... (openModal, closeModal, window.addEventListener('keydown') - unchanged) ...
+        function openModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.classList.add('active');
+                trapFocus(modal);
+            }
+        }
+        
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.classList.remove('active');
+                releaseFocus();
+            }
+        }
+        
+        // Handle ESC key for all modals
+        window.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape') {
+                document.querySelectorAll('.modal-overlay.active').forEach(modal => {
+                    closeModal(modal.id);
+                });
+                // Also close chat if open
+                if (chatbotWidget.classList.contains('active') && !chatbotWidget.classList.contains('minimized')) {
+                    minimizeChatbot();
+                }
+            }
+        });
+
+        // --- 1. Simple Modal Logic (Replaces alerts) ---
+        // ... (openSimpleModal, closeSimpleModal - unchanged) ...
+        function openSimpleModal(title, message) {
+            document.getElementById('simple-modal-title').textContent = title;
+            document.getElementById('simple-modal-message').textContent = message;
+            openModal('simple-modal');
+        }
+
+        function closeSimpleModal() {
+            closeModal('simple-modal');
+        }
+
+        // --- 2. Tab Switching Logic ---
+        // ... (showTab - unchanged) ...
+        function showTab(tabId, clickedButton) {
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            document.querySelectorAll('.tabs button').forEach(button => button.classList.remove('active'));
+            
+            const contentToShow = document.getElementById(tabId + '-content');
+            if (contentToShow) contentToShow.classList.add('active');
+            if (clickedButton) clickedButton.classList.add('active');
+        }
+        
+        // --- 3. Toast Notification Logic ---
+        // ... (showToast - unchanged) ...
+        function showToast(message) {
+            const toast = document.getElementById('toast-notification');
+            if (!toast) return;
+            
+            toast.textContent = message;
+            toast.classList.add('show');
+            
+            if (toastTimeout) clearTimeout(toastTimeout);
+            
+            toastTimeout = setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // --- 4. SkillSwap Logic ---
+        // ... (toggleSkillSwap, saveSkillSwapDraft, confirmSkillSwap - unchanged) ...
+        function toggleSkillSwap(bookingId) {
+            const toggle = document.getElementById(`skillswap-toggle-${bookingId}`);
+            const offerArea = document.getElementById(`skillswap-offer-${bookingId}`);
+            if (toggle.checked) {
+                offerArea.classList.add('active');
+            } else {
+                offerArea.classList.remove('active');
+            }
+        }
+        
+        function saveSkillSwapDraft(bookingId) {
+            const text = document.getElementById(`skillswap-text-${bookingId}`).value;
+            // TODO: POST /api/skillswap/draft
+            // DJANGO: Send this draft to be saved on the user's booking object
+            saveToLS(`skillswap-draft-${bookingId}`, text);
+        }
+        
+        function confirmSkillSwap(bookingId) {
+            const text = document.getElementById(`skillswap-text-${bookingId}`).value;
+            if (text.trim() === '') {
+                openSimpleModal('Error', 'Please describe what you will offer in exchange.');
+                return;
+            }
+            // TODO: POST /api/skillswap/confirm
+            // DJANGO: This would submit the offer for the other user to review
+            openSimpleModal('Offer Sent', `Your SkillSwap offer for '${text}' has been sent to the provider for review.`);
+        }
+        
+        // --- 5. Group Booking & Invite Logic ---
+        // ... (all functions unchanged) ...
+        let currentInviteList = []; // Temp state for the modal
+        
+        function toggleGroupBooking(bookingId) {
+            const toggle = document.getElementById(`group-toggle-${bookingId}`);
+            const controls = document.getElementById(`group-controls-${bookingId}`);
+            controls.classList.toggle('active', toggle.checked);
+        }
+        
+        function openInviteModal(bookingId, sessionTitle) {
+            currentBookingId = bookingId;
+            document.getElementById('invite-modal-title').textContent = `Invite to ${sessionTitle}`;
+            document.getElementById('invite-link').value = `https://meet.skilllink/demo/${bookingId}`;
+            
+            // Load invites from LS
+            currentInviteList = getFromLS(`invites-${bookingId}`, [
+                { email: 'demo@example.com', status: 'Confirmed' },
+                { email: 'judge@example.com', status: 'Pending' }
+            ]);
+            renderInviteList();
+            openModal('invite-modal');
+        }
+        
+        function renderInviteList() {
+            const listEl = document.getElementById('invite-list-display');
+            listEl.innerHTML = '';
+            if (currentInviteList.length === 0) {
+                listEl.innerHTML = '<p style="font-size: 0.9rem; color: var(--secondary-color);">No one invited yet.</p>';
+                return;
+            }
+            
+            currentInviteList.forEach((invite, index) => {
+                const item = document.createElement('li');
+                item.className = 'invite-item';
+                item.innerHTML = `
+                    <span style="font-weight: 500;">${invite.email}</span>
+                    <div class="flex-row gap-2">
+                        <span class="invite-status ${invite.status.toLowerCase()}">${invite.status}</span>
+                        ${invite.status === 'Pending' ? `<button class="btn btn-secondary btn-small" onclick="sendReminder(${index})">Reminder</button>` : ''}
+                    </div>
+                `;
+                listEl.appendChild(item);
+            });
+        }
+        
+        function sendInvites() {
+            const emailInput = document.getElementById('invite-emails');
+            const emails = emailInput.value.split(',').map(e => e.trim()).filter(e => e);
+            
+            if (emails.length === 0) return;
+            
+            const newInvites = emails.map(email => ({ email, status: 'Pending' }));
+            currentInviteList.push(...newInvites);
+            
+            // TODO: POST /api/bookings/{bookingId}/invite
+            // DJANGO: Send newInvites array to the backend
+            saveToLS(`invites-${currentBookingId}`, currentInviteList);
+            
+            renderInviteList();
+            emailInput.value = '';
+            showToast(`Sent ${newInvites.length} new invite(s).`);
+        }
+        
+        function sendReminder(index) {
+            const email = currentInviteList[index].email;
+            // TODO: POST /api/invites/{inviteId}/remind
+            showToast(`Reminder sent to ${email} (mock).`);
+        }
+        
+        function copyInviteLink() {
+            const linkInput = document.getElementById('invite-link');
+            try {
+                // Use modern clipboard API if available (requires HTTPS or localhost)
+                // navigator.clipboard.writeText(linkInput.value);
+                // Fallback for environments where clipboard API is restricted (like this one)
+                linkInput.select();
+                document.execCommand('copy');
+                showToast('Invite link copied to clipboard!');
+            } catch (err) {
+                console.error('Failed to copy: ', err);
+                showToast('Failed to copy link.');
+            }
+        }
+        
+        // --- 6. Smart Suggest Logic (NOW USES GEMINI) ---
+        function openRescheduleModal(bookingId, sessionTitle) {
+            currentBookingId = bookingId;
+            currentSessionTitle = sessionTitle;
+            // Clear any previous suggestions
+            document.querySelectorAll('.smart-suggest-slot').forEach(s => s.classList.remove('suggested'));
+            openModal('reschedule-modal');
+        }
+        
+        async function triggerSmartSuggest() {
+            const loader = document.getElementById('smart-suggest-loader');
+            const btnText = document.getElementById('smart-suggest-btn-text');
+            const btn = loader.parentElement;
+
+            loader.classList.add('active');
+            btnText.textContent = 'Thinking...';
+            btn.disabled = true;
+            
+            // Clear old suggestions
+            document.querySelectorAll('.smart-suggest-slot').forEach(s => s.classList.remove('suggested'));
+
+            // --- Gemini API Call ---
+            try {
+                // 1. Gather data
+                const slotsContainer = document.getElementById('reschedule-slots-container');
+                const availableSlots = Array.from(slotsContainer.querySelectorAll('.smart-suggest-slot')).map(slot => ({
+                    id: slot.dataset.slotId,
+                    text: slot.textContent.trim()
+                }));
+                
+                // 2. Create mock history (in a real app, this would come from the server)
+                const mockHistory = [
+                    { session: "Acoustic Guitar Lesson", completed_on: "Oct 1, 2025" },
+                    { session: "Music Theory Basics", completed_on: "Sept 15, 2025" }
+                ];
+
+                // 3. Define System Prompt and User Prompt
+                const systemPrompt = "You are a helpful scheduling assistant for a skill-sharing platform. Your goal is to suggest the best times for a user to reschedule a session. Analyze the user's past booking history and the list of available slots to find the 3 best matches. The user might prefer times close to their past bookings or slots that are generally popular (like evenings or weekends).";
+                
+                const userQuery = `A user needs to reschedule their session: "${currentSessionTitle}".
+                
+                Their past booking history is:
+                ${JSON.stringify(mockHistory, null, 2)}
+                
+                The available new slots are:
+                ${JSON.stringify(availableSlots, null, 2)}
+                
+                Please recommend the three best slot IDs for them.`;
+
+                // 4. Define the desired JSON output schema
+                const schema = {
+                    type: "OBJECT",
+                    properties: {
+                        "suggested_slot_ids": {
+                            type: "ARRAY",
+                            items: { type: "STRING" }
+                        }
+                    },
+                    required: ["suggested_slot_ids"]
+                };
+                
+                // 5. Call the API
+                const payload = {
+                    contents: [{ parts: [{ text: userQuery }] }],
+                    systemInstruction: { parts: [{ text: systemPrompt }] },
+                    generationConfig: {
+                        responseMimeType: "application/json",
+                        responseSchema: schema,
+                        temperature: 0.5
+                    }
+                };
+                
+                const response = await callGeminiApi(payload);
+                
+                if (response && response.suggested_slot_ids) {
+                    // 6. Highlight suggested slots
+                    response.suggested_slot_ids.forEach(slotId => {
+                        const slotEl = document.querySelector(`.smart-suggest-slot[data-slot-id="${slotId}"]`);
+                        if (slotEl) {
+                            slotEl.classList.add('suggested');
+                        }
+                    });
+                    showToast('Found some smart suggestions for you!');
+                } else {
+                    throw new Error("Invalid response from AI.");
+                }
+
+            } catch (error) {
+                console.error("Error triggering Smart Suggest:", error);
+                showToast("Couldn't get AI suggestions. Please try again.");
+                // Mock logic as fallback
+                document.querySelector('.smart-suggest-slot[data-slot-id="1"]').classList.add('suggested');
+                document.querySelector('.smart-suggest-slot[data-slot-id="3"]').classList.add('suggested');
+            } finally {
+                loader.classList.remove('active');
+                btnText.textContent = '✨ Smart Suggest';
+                btn.disabled = false;
+            }
+        }
+        
+        function confirmReschedule() {
+            // TODO: POST /api/bookings/{bookingId}/reschedule
+            closeModal('reschedule-modal');
+            openSimpleModal('Success', 'Your reschedule request has been sent.');
+        }
+
+        // --- 7. Post-Session AI Summary (NOW USES GEMINI) ---
+        function handleAiSummary(bookingId, sessionTitle) {
+            const summary = getFromLS(`ai-summary-${bookingId}`, null);
+            
+            if (summary) {
+                // Show existing summary
+                showAiSummary(summary);
+            } else {
+                // Generate new summary
+                generateAiSummary(bookingId, sessionTitle);
+            }
+        }
+        
+        async function generateAiSummary(bookingId, sessionTitle) {
+            const btn = document.getElementById(`ai-summary-btn-${bookingId}`);
+            const loader = document.getElementById(`ai-summary-loader-${bookingId}`);
+            const btnText = document.getElementById(`ai-summary-btn-text-${bookingId}`);
+            
+            loader.style.display = 'inline-block';
+            btnText.textContent = 'Generating...';
+            btn.disabled = true;
+
+            try {
+                // 1. Create a mock transcript
+                // In a real app, this would be fetched from the server
+                const mockTranscript = `
+                    User: "Hi ${sessionTitle}, thanks for helping me with the ${sessionTitle === 'Plumbing Fix' ? 'sink' : 'design'}."
+                    Provider: "No problem! So, as we discussed, the main issue with the ${sessionTitle === 'Plumbing Fix' ? 'P-trap' : 'homepage layout'} was the ${sessionTitle === 'Plumbing Fix' ? 'blockage from food waste' : 'color contrast'}.
+                    User: "Right, the ${sessionTitle === 'Plumbing Fix' ? 'blockage' : 'contrast'}. What should I do about that?"
+                    Provider: "For now, I've cleared it. But for action items, I'd recommend you ${sessionTitle === 'Plumbing Fix' ? 'use an enzyme-based drain cleaner monthly' : 'increase the font size for body text'}. Also, ${sessionTitle === 'Plumbing Fix' ? 'check for leaks under the sink for the next 24 hours' : 'A/B test the Get Started button color'}.
+                    User: "Got it. So, main topics were the ${sessionTitle === 'Plumbing Fix' ? 'P-trap' : 'homepage layout'} and ${sessionTitle === 'Plumbing Fix' ? 'food waste' : 'color contrast'}. And my action items are to ${sessionTitle === 'Plumbing Fix' ? 'use the enzyme cleaner' : 'increase font size'} and ${sessionTitle === 'Plumbing Fix' ? 'check for leaks' : 'A/B test the button'}."
+                    Provider: "Exactly! You got it."
+                `;
+                
+                // 2. Define System and User Prompts
+                const systemPrompt = "You are a concise meeting summarizer. A user has just completed a skill-sharing session and provides a mock transcript. Your job is to analyze the transcript and provide a brief summary in JSON format. The JSON must contain 'title', 'key_topics' (an array of strings), and 'action_items' (an array of strings).";
+
+                const userQuery = `Please summarize the following session transcript for a session titled "${sessionTitle}":
+                
+                ---
+                ${mockTranscript}
+                ---
+                
+                Provide the summary in the requested JSON format.`;
+
+                // 3. Define the output schema
+                const schema = {
+                    type: "OBJECT",
+                    properties: {
+                        "title": { type: "STRING" },
+                        "key_topics": {
+                            type: "ARRAY",
+                            items: { type: "STRING" }
+                        },
+                        "action_items": {
+                            type: "ARRAY",
+                            items: { type: "STRING" }
+                        }
+                    },
+                    required: ["title", "key_topics", "action_items"]
+                };
+
+                // 4. Call the API
+                const payload = {
+                    contents: [{ parts: [{ text: userQuery }] }],
+                    systemInstruction: { parts: [{ text: systemPrompt }] },
+                    generationConfig: {
+                        responseMimeType: "application/json",
+                        responseSchema: schema,
+                        temperature: 0.3
+                    }
+                };
+                
+                const summary = await callGeminiApi(payload);
+                
+                if (!summary || !summary.key_topics || !summary.action_items) {
+                    throw new Error("Invalid summary format from AI.");
+                }
+
+                // 5. Save and Show Summary
+                saveToLS(`ai-summary-${bookingId}`, summary);
+                showAiSummary(summary);
+
+            } catch (error) {
+                console.error("Error generating AI summary:", error);
+                showToast("Could not generate summary. Please try again.");
+            } finally {
+                loader.style.display = 'none';
+                btnText.textContent = 'View AI Summary';
+                btn.disabled = false;
+            }
+        }
+        
+        function showAiSummary(summary) {
+            document.getElementById('ai-summary-title').textContent = summary.title;
+            const contentEl = document.getElementById('ai-summary-content');
+            
+            contentEl.innerHTML = `
+                <h4>Key Topics Discussed:</h4>
+                <ul>
+                    ${summary.key_topics.map(topic => `<li>${topic}</li>`).join('')}
+                </ul>
+                <h4>Action Items:</h4>
+                <ul>
+                    ${summary.action_items.map(item => `<li>${item}</li>`).join('')}
+                </ul>
+            `;
+            
+            openModal('ai-summary-modal');
+        }
+
+        // --- 8. No-Show / Escrow Modal ---
+        // ... (openEscrowModal, mockReportIssue - unchanged) ...
+        function openEscrowModal() {
+            // Reset mock button
+            document.getElementById('report-issue-btn').style.display = 'block';
+            document.getElementById('report-issue-status').style.display = 'none';
+            openModal('escrow-modal');
+        }
+        
+        function mockReportIssue() {
+            const btn = document.getElementById('report-issue-btn');
+            const status = document.getElementById('report-issue-status');
+            btn.style.display = 'none';
+            status.style.display = 'block';
+            // TODO: POST /api/disputes/create
+        }
+
+        // --- 9. Call/Video Modal ---
+        // ... (openCallModal, generateMockLink - updated) ...
+        function openCallModal(callType) {
+            document.getElementById('call-modal-title').textContent = `Start ${callType}`;
+            // Clear old link
+            document.getElementById('mock-link-container').style.display = 'none';
+            document.getElementById('mock-link-display').value = '';
+            document.getElementById('join-meet-link').href = '#';
+            document.getElementById('generate-meet-link-btn').textContent = 'Generate Meeting Link';
+            document.getElementById('generate-meet-link-btn').disabled = false;
+            openModal('call-modal');
+        }
+        
+        function generateMockLink() {
+            // TODO: This would be a WebRTC signaling server call
+            // DJANGO: Create a unique meeting room and return the URL
+            const mockLink = `https://meet.skilllink/demo/${Math.random().toString(36).substr(2, 9)}`;
+            document.getElementById('mock-link-display').value = mockLink;
+            // DJANGO: This is where you would insert your actual meet link
+            document.getElementById('join-meet-link').href = mockLink; 
+            document.getElementById('mock-link-container').style.display = 'block';
+            
+            const genBtn = document.getElementById('generate-meet-link-btn');
+            genBtn.textContent = 'Link Generated!';
+            genBtn.disabled = true;
+
+            showToast('Mock link generated!');
+        }
+
+
+        // --- 10. Chatbot Widget Logic (NOW USES GEMINI) ---
+        const chatbotWidget = document.getElementById('chatbot-widget');
+        const chatbotHeader = document.querySelector('.chatbot-header');
+        const chatbotBody = document.getElementById('chatbot-body');
+        const chatbotHistory = document.getElementById('chatbot-history');
+        const chatbotInput = document.getElementById('chatbot-input');
+        
+        let chatHistory = []; // This will just be for the session
+        
+        function initChatbot() {
+            // Load history from LS
+            chatHistory = getFromLS('chatbot-history', []);
+            if (chatHistory.length === 0) {
+                // Add welcome message
+                const welcomeMsg = { 
+                    sender: 'bot', 
+                    msg: "Hi! I'm the SkillShare Assistant. How can I help with your bookings or answer questions?",
+                    quickActions: [
+                        { text: "Suggest slots for guitar", action: "suggest:guitar" },
+                        { text: "What is SkillSwap?", action: "help:skillswap" }
+                    ]
+                };
+                chatHistory.push(welcomeMsg);
+                saveToLS('chatbot-history', chatHistory);
+            }
+            renderChatHistory();
+            
+            // Show the widget after a short delay
+            setTimeout(() => {
+                chatbotWidget.classList.add('active');
+            }, 1000);
+        }
+        
+        function renderChatHistory() {
+            chatbotHistory.innerHTML = '';
+            chatHistory.forEach(item => {
+                addMessageToChat(item.sender, item.msg, item.quickActions);
+            });
+            chatbotHistory.scrollTop = chatbotHistory.scrollHeight;
+        }
+        
+        function addMessageToChat(sender, msg, quickActions = []) {
+            const msgEl = document.createElement('div');
+            msgEl.className = `chat-message ${sender}`;
+            
+            // Basic markdown for links
+            msg = msg.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
+            msgEl.innerHTML = msg; // Use innerHTML to render links
+            
+            if (quickActions.length > 0) {
+                quickActions.forEach(qa => {
+                    const qaBtn = document.createElement('button');
+                    qaBtn.className = 'quick-action';
+                    qaBtn.textContent = qa.text;
+                    qaBtn.onclick = () => handleQuickAction(qa.action, qa.text);
+                    msgEl.appendChild(qaBtn);
+                });
+            }
+            
+            chatbotHistory.appendChild(msgEl);
+            chatbotHistory.scrollTop = chatbotHistory.scrollHeight;
+        }
+        
+        async function handleChatSend() {
+            const userInput = chatbotInput.value.trim();
+            if (userInput === '') return;
+            
+            const userMsg = { sender: 'user', msg: userInput };
+            chatHistory.push(userMsg);
+            addMessageToChat(userMsg.sender, userMsg.msg);
+            
+            chatbotInput.value = '';
+            
+            // Show typing indicator
+            const typingEl = document.createElement('div');
+            typingEl.className = 'chat-message bot typing';
+            typingEl.textContent = 'Typing...';
+            chatbotHistory.appendChild(typingEl);
+            chatbotHistory.scrollTop = chatbotHistory.scrollHeight;
+            
+            // Get Gemini response
+            try {
+                const botResponse = await getGeminiBotResponse(userInput);
+                chatHistory.push(botResponse);
+                chatbotHistory.removeChild(typingEl);
+                addMessageToChat(botResponse.sender, botResponse.msg, botResponse.quickActions);
+            } catch (error) {
+                console.error("Chatbot error:", error);
+                chatbotHistory.removeChild(typingEl);
+                const errorMsg = { sender: 'bot', msg: "Sorry, I'm having trouble connecting right now." };
+                chatHistory.push(errorMsg);
+                addMessageToChat(errorMsg.sender, errorMsg.msg);
+            }
+            
+            saveToLS('chatbot-history', chatHistory);
+        }
+        
+        async function getGeminiBotResponse(userInput) {
+            const systemPrompt = "You are 'SkillShare Assistant', a helpful and friendly chatbot for a skill-sharing platform called SkillShare. Your role is to assist users with their bookings. You can answer questions about SkillSwap (a feature to trade skills), help them find booking info, and answer general knowledge questions to help them with their skills. Keep your answers concise (1-3 sentences). You have access to Google Search. If you use it, cite your sources using markdown, e.g., [Title](URL).";
+
+            // Construct payload with Google Search grounding
+            const payload = {
+                contents: [{ parts: [{ text: userInput }] }],
+                systemInstruction: { parts: [{ text: systemPrompt }] },
+                tools: [{ "google_search": {} }] // Enable Google Search
+            };
+
+            const responseText = await callGeminiApi(payload, true); // true for text-only response
+
+            if (!responseText) {
+                 return { sender: 'bot', msg: "I'm not sure about that. Try asking about 'bookings', 'slots', or 'SkillSwap'." };
+            }
+            
+            return { sender: 'bot', msg: responseText };
+        }
+
+
+        function handleChatKeydown(event) {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault();
+                handleChatSend();
+            }
+        }
+        
+        async function handleQuickAction(action, text) {
+            // Add user's click as a message
+            const userMsg = { sender: 'user', msg: text };
+            chatHistory.push(userMsg);
+            addMessageToChat(userMsg.sender, userMsg.msg);
+            
+            // Handle built-in client-side actions
+            if (action === "suggest:guitar") {
+                openRescheduleModal('b-123', 'Acoustic Guitar Lesson');
+                triggerSmartSuggest();
+                minimizeChatbot();
+                // Add a bot response
+                const botMsg = { sender: 'bot', msg: "Sure! I've opened the reschedule modal for your guitar lesson and highlighted some smart suggestions." };
+                chatHistory.push(botMsg);
+                addMessageToChat(botMsg.sender, botMsg.msg);
+            } 
+            // Handle questions that should go to Gemini
+            else if (action === "help:skillswap") {
+                // Show typing indicator
+                const typingEl = document.createElement('div');
+                typingEl.className = 'chat-message bot typing';
+                typingEl.textContent = 'Typing...';
+                chatbotHistory.appendChild(typingEl);
+                chatbotHistory.scrollTop = chatbotHistory.scrollHeight;
+                
+                // Get Gemini response
+                const botResponse = await getGeminiBotResponse("What is SkillSwap?");
+                chatHistory.push(botResponse);
+                chatbotHistory.removeChild(typingEl);
+                addMessageToChat(botResponse.sender, botResponse.msg, botResponse.quickActions);
+            }
+            
+            saveToLS('chatbot-history', chatHistory);
+        }
+        
+        function toggleChatbot() {
+            const isMinimized = chatbotWidget.classList.contains('minimized');
+            if (isMinimized) {
+                chatbotWidget.classList.remove('minimized');
+                chatbotHeader.setAttribute('aria-expanded', 'true');
+                chatbotBody.setAttribute('aria-hidden', 'false');
+                chatbotInput.focus();
+            } else {
+                minimizeChatbot();
+            }
+        }
+        
+        function minimizeChatbot(e) {
+            if (e) e.stopPropagation(); // Prevent toggle
+            chatbotWidget.classList.add('minimized');
+            chatbotHeader.setAttribute('aria-expanded', 'false');
+            chatbotBody.setAttribute('aria-hidden', 'true');
+        }
+        
+        function closeChatbot(e) {
+            if (e) e.stopPropagation(); // Prevent toggle
+            chatbotWidget.classList.remove('active');
+        }
+        
+        // --- NEW: Gemini API Helper Functions ---
+
+        /**
+         * Calls the Gemini API with exponential backoff.
+         * @param {object} payload - The payload to send to the API.
+         * @param {boolean} [returnTextOnly=false] - If true, returns the text part of the response. If false, returns the parsed JSON object.
+         * @returns {Promise<object|string|null>} - The API response.
+         */
+        async function callGeminiApi(payload, returnTextOnly = false) {
+            let retries = 0;
+            const maxRetries = 5;
+            let delay = 1000;
+
+            while (retries < maxRetries) {
+                try {
+                    const response = await fetch(API_URL, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(payload),
+                    });
+
+                    if (!response.ok) {
+                        if (response.status === 429 || response.status >= 500) {
+                            // Rate limit or server error, worth retrying
+                            throw new Error(`API Error ${response.status}: Retrying...`);
+                        } else {
+                            // Client error (e.g., 400), don't retry
+                            console.error("API request failed:", await response.text());
+                            return null;
+                        }
+                    }
+
+                    const result = await response.json();
+                    
+                    if (!result.candidates || result.candidates.length === 0 || !result.candidates[0].content || !result.candidates[0].content.parts) {
+                        console.warn("Invalid API response structure:", result);
+                        throw new Error("Invalid response structure from API. Retrying...");
+                    }
+
+                    const part = result.candidates[0].content.parts[0];
+
+                    if (returnTextOnly) {
+                        return part.text || null;
+                    }
+                    
+                    // For JSON mode
+                    if (part.text) {
+                        return JSON.parse(part.text);
+                    }
+                    
+                    return null;
+
+                } catch (error) {
+                    console.warn(error.message);
+                    retries++;
+                    if (retries >= maxRetries) {
+                        console.error("Max retries reached. API call failed.");
+                        return null;
+                    }
+                    // Exponential backoff
+                    await new Promise(resolve => setTimeout(resolve, delay));
+                    delay *= 2;
+                }
+            }
+            return null;
+        }
+
+
+        // --- Page Load Initialization ---
+        document.addEventListener("DOMContentLoaded", () => {
+            // Set default tab
+            showTab('upcoming', document.querySelector('.tabs button.active'));
+            
+            // --- Add mock AI summary for the new completed item ---
+            const mockSummaryB1000 = {
+                title: `Summary for Website Design Critique`,
+                key_topics: [
+                    "Reviewed homepage layout and color palette.",
+                    "Discussed mobile responsiveness issues.",
+                    "Analyzed user flow for sign-up process."
+                ],
+                action_items: [
+                    "Increase font size for body text.",
+                    "Fix navigation bar overlap on small screens.",
+                    "A/B test the 'Get Started' button color."
+                ]
+            };
+            saveToLS('ai-summary-b-1000', mockSummaryB1000);
+            
+            // --- NEW: Add mock AI summary for Ananya K. ---
+            const mockSummaryB1001 = {
+                title: `Summary for Yoga Basics`,
+                key_topics: [
+                    "Focused on Sun Salutation A (Surya Namaskar A).",
+                    "Breathing techniques (Ujjayi breath).",
+                    "Proper alignment in Warrior II and Triangle Pose."
+                ],
+                action_items: [
+                    "Practice 5 Sun Salutations daily.",
+                    "Focus on deep breathing during stretches."
+                ]
+            };
+            saveToLS('ai-summary-b-1001', mockSummaryB1001);
+            // --- End of new code ---
+
+            // Load SkillSwap drafts
+            document.querySelectorAll('.skillswap-toggle input').forEach(toggle => {
+                const bookingId = toggle.id.split('-')[2];
+                const draft = getFromLS(`skillswap-draft-${bookingId}`, '');
+                if (draft) {
+                    document.getElementById(`skillswap-text-${bookingId}`).value = draft;
+                    toggle.checked = true;
+                    toggleSkillSwap(bookingId);
+                }
+            });
+            
+            // Update AI Summary button text if summary already exists
+            document.querySelectorAll('.booking-card[data-booking-id]').forEach(card => {
+                const bookingId = card.dataset.bookingId;
+                if (getFromLS(`ai-summary-${bookingId}`, null)) {
+                    const btnText = document.getElementById(`ai-summary-btn-text-${bookingId}`);
+                    if (btnText) btnText.textContent = 'View AI Summary';
+                }
+            });
+            
+            // Initialize the chatbot
+            initChatbot();
+        });
+
+    </script>
+<div id="status"></div>
+
+  <button id="mic-btn">
+    <svg viewBox="0 0 24 24">
+      <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/>
+      <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/>
+    </svg>
+  </button>
+
+  <script>
+    const micBtn = document.getElementById('mic-btn');
+    const status = document.getElementById('status');
+
+    // Route configuration with multiple keyword variations
+    const ROUTES = {
+      // Main pages
+      home: {
+        path: '/index',
+        keywords: ['home', 'homepage', 'main page', 'start'],
+        display: 'Home'
+      },
+      dashboard: {
+        path: '/dashboard',
+        keywords: ['dashboard', 'overview', 'main'],
+        display: 'Dashboard'
+      },
+      
+      // Booking
+      booking: {
+        path: '/mybookings',
+        keywords: ['booking', 'book', 'appointment', 'schedule', 'session', 'reserve'],
+        display: 'Booking'
+      },
+      myBookings: {
+        path: '/mybookings',
+        keywords: ['my booking', 'scheduled', 'my session', 'my appointment'],
+        display: 'My Bookings'
+      },
+       map: {
+        path: '/map',
+        keywords: ['map', 'location', 'directions', 'find','nearby'],
+        display: 'Map'
+      },
+      // Community & Communication
+      community: {
+        path: '/feed',
+        keywords: ['community', 'community page', 'members', 'network'],
+        display: 'Community'
+      },
+      chat: {
+        path: '/index',
+        keywords: ['chat', 'message', 'inbox', 'conversation', 'dm'],
+        display: 'Chat'
+      },
+      skillSwap: {
+        path: '/swap',
+        keywords: ['skill swap', 'swap', 'exchange', 'trade skill'],
+        display: 'Skill Swap'
+      },
+      
+      // Resources
+      resources: {
+        path: '/resources',
+        keywords: ['resource', 'learning resource', 'material', 'content'],
+        display: 'Resources'
+      },
+      
+      
+      // Skill Credits
+      skillCredits: {
+        path: '/credits',
+        keywords: ['skill credit', 'credit', 'wallet', 'balance', 'my credit'],
+        display: 'Skill Credits'
+      },
+      earnCredits: {
+        path: '/credits',
+        keywords: ['earn credit', 'get credit', 'buy credit', 'purchase credit'],
+        display: 'Earn Credits'
+      },
+      
+      // Profile & Settings
+      myProfile: {
+        path: '{% url 'profile' %}',
+        keywords: ['my profile', 'profile page', 'my account','profile','my account'],
+        display: 'My Profile'
+      },
+     
+      
+      // Auth
+      login: {
+        path: '/index',
+        keywords: ['login', 'sign in', 'log in'],
+        display: 'Login'
+      },
+      signup: {
+        path: '/signup',
+        keywords: ['signup', 'sign up', 'register', 'create account', 'join'],
+        display: 'Sign Up'
+      },
+      logout: {
+        path: '/index',
+        keywords: ['logout', 'log out', 'sign out'],
+        display: 'Logout'
+      }
+    };
+
+    // Profile routes
+    const PROFILES = {
+      rohanGupta: {
+        path: '/profile/rohan-gupta',
+        keywords: ['rohan', 'rohan gupta', 'gupta'],
+        display: 'Rohan Gupta'
+      },
+      kritiSreyash: {
+        path: '/profile/kriti-sreyash',
+        keywords: ['kriti', 'kriti sreyash', 'sreyash'],
+        display: 'Kriti Sreyash'
+      },
+      aditya: {
+        path: '/profile/aditya',
+        keywords: ['aditya'],
+        display: 'Aditya'
+      },
+      soumya: {
+        path: '/profile/soumya',
+        keywords: ['soumya'],
+        display: 'Soumya'
+      }
+    };
+
+    // Check browser support
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const SpeechSynthesis = window.speechSynthesis;
+    
+    if (!SpeechRecognition) {
+      alert('Voice recognition not supported. Use Chrome or Edge browser.');
+    } else {
+      const recognition = new SpeechRecognition();
+      recognition.lang = 'en-US';
+      recognition.interimResults = false;
+
+      // Function to speak text (voice feedback)
+      function speak(text) {
+        if (SpeechSynthesis) {
+          // Cancel any ongoing speech
+          SpeechSynthesis.cancel();
+          
+          const utterance = new SpeechSynthesisUtterance(text);
+          utterance.rate = 1.1;
+          utterance.pitch = 1;
+          utterance.volume = 1;
+          SpeechSynthesis.speak(utterance);
+        }
+      }
+
+      // Function to match command to route
+      function matchCommand(command) {
+        const lowerCommand = command.toLowerCase().trim();
+        
+        // Check profiles first (more specific)
+        for (const [key, profile] of Object.entries(PROFILES)) {
+          for (const keyword of profile.keywords) {
+            if (lowerCommand.includes(keyword)) {
+              return { path: profile.path, display: profile.display, type: 'profile' };
+            }
+          }
+        }
+        
+        // Check general routes
+        for (const [key, route] of Object.entries(ROUTES)) {
+          for (const keyword of route.keywords) {
+            if (lowerCommand.includes(keyword)) {
+              return { path: route.path, display: route.display, type: 'route' };
+            }
+          }
+        }
+        
+        return null;
+      }
+
+      micBtn.addEventListener('click', () => {
+        recognition.start();
+        micBtn.classList.add('listening');
+        status.textContent = '🎤 Listening...';
+        status.classList.add('show');
+      });
+
+      recognition.onresult = (event) => {
+        const command = event.results[0][0].transcript;
+        console.log('Heard:', command);
+        
+        status.textContent = `Heard: "${command}"`;
+        micBtn.classList.remove('listening');
+
+        const match = matchCommand(command);
+
+        if (match) {
+          const message = `Opening ${match.display}`;
+          status.textContent = `✅ ${message}`;
+          
+          // Voice feedback
+          speak(message);
+          
+          setTimeout(() => {
+            window.location.href = match.path;
+          }, 1500);
+        } else {
+          const errorMsg = 'Command not recognized. Please try again.';
+          status.textContent = `❌ ${errorMsg}`;
+          speak(errorMsg);
+          
+          setTimeout(() => {
+            status.classList.remove('show');
+          }, 2500);
+        }
+      };
+
+      recognition.onerror = (event) => {
+        micBtn.classList.remove('listening');
+        let errorMsg = '';
+        
+        if (event.error === 'no-speech') {
+          errorMsg = 'No speech detected. Please try again.';
+        } else if (event.error === 'not-allowed') {
+          errorMsg = 'Microphone access denied. Please allow microphone permissions.';
+        } else {
+          errorMsg = `Error: ${event.error}`;
+        }
+        
+        status.textContent = `❌ ${errorMsg}`;
+        
+        setTimeout(() => {
+          status.classList.remove('show');
+        }, 3000);
+      };
+
+      recognition.onend = () => {
+        micBtn.classList.remove('listening');
+      };
+    }
+  </script>
+</body>
+</html>
+

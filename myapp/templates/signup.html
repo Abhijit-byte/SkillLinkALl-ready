@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up – SkillLink</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <style>
+        /* Apply the Inter font as the default */
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            @apply text-gray-900;
+        }
+
+        /* Gradient for the design panel */
+        .gradient-bg-panel {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            animation: gradientShift 10s ease infinite alternate;
+            background-size: 200% 200%;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* --- Page Load Animations --- */
+        @keyframes slideInLeft {
+            0% { transform: translateX(-100%); opacity: 0; }
+            100% { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes slideInRight {
+            0% { transform: translateX(100%); opacity: 0; }
+            100% { transform: translateX(0); opacity: 1; }
+        }
+        
+        .panel-left {
+            animation: slideInLeft 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+        }
+        .panel-right {
+            animation: slideInRight 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+        }
+
+        /* --- Floating Skill Card Animations --- */
+        .animation-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            overflow: hidden;
+        }
+
+        .skill-card {
+            position: absolute;
+            bottom: -150px; /* Start off-screen */
+            background-color: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(5px);
+            border-radius: 0.75rem; /* 12px */
+            padding: 0.75rem 1.25rem; /* 12px 20px */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            display: flex;
+            align-items: center;
+            color: white;
+            font-weight: 500;
+            animation: float 20s linear infinite;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 0;
+                bottom: -150px;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) rotate(360deg);
+                opacity: 0;
+                bottom: 100vh;
+            }
+        }
+
+        /* Custom focus styles for inputs */
+        .form-input:focus {
+            @apply ring-2 ring-indigo-300 border-indigo-500;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 overflow-hidden"> <div class="flex min-h-screen">
+        
+        <div class="panel-left flex-1 flex flex-col justify-center py-12 px-4 sm:px-10 lg:px-24 xl:px-32">
+            <div class="mx-auto w-full max-w-md">
+                
+                <div>
+                    <a href="index.html" class="text-4xl font-extrabold text-indigo-700 tracking-tight">
+                        SkillLink
+                    </a>
+                    <h2 class="mt-4 text-3xl font-bold tracking-tight text-gray-900">
+                        Create your account
+                    </h2>
+                    <p class="mt-2 text-sm text-gray-600">
+                        Already have one?
+                        <a href="login.html" class="font-medium text-indigo-600 hover:text-indigo-500 hover:underline">
+                            Log in
+                        </a>
+                    </p>
+                </div>
+
+                <div class="mt-8">
+                    <div class="grid grid-cols-2 gap-3">
+                        <a href="#" class="w-full inline-flex justify-center items-center py-2.5 px-4 border border-gray-300 rounded-lg shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" /><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" /><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" /><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" /></svg>
+                            <span class="ml-2">Google</span>
+                        </a>
+                        <a href="#" class="w-full inline-flex justify-center items-center py-2.5 px-4 border border-gray-300 rounded-lg shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.165 6.839 9.49.5.092.682-.217.682-.483 0-.237-.009-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.026 2.747-1.026.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12c0-5.523-4.477-10-10-10z" clip-rule="evenodd" /></svg>
+                            <span class="ml-2">GitHub</span>
+                        </a>
+                    </div>
+
+                    <div class="relative mt-6">
+                        <div class="absolute inset-0 flex items-center">
+                            <div class="w-full border-t border-gray-300"></div>
+                        </div>
+                        <div class="relative flex justify-center text-sm">
+                            <span class="bg-gray-50 px-2 text-gray-500">Or with your email</span>
+                        </div>
+                    </div>
+
+                    <form class="mt-6 space-y-6" action="#" method="POST">
+                        {% csrf_token %}
+                        
+                        <div>
+                            <label for="name" class="block text-sm font-medium text-gray-700">Full Name</label>
+                            <div class="mt-1">
+                                <input id="name" name="name" type="text" autocomplete="name" required
+                                    class="form-input w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none transition-all duration-200"
+                                    placeholder="Priya Kumar">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label for="email" class="block text-sm font-medium text-gray-700">Email address</label>
+                            <div class="mt-1">
+                                <input id="email" name="email" type="email" autocomplete="email" required
+                                    class="form-input w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none transition-all duration-200"
+                                    placeholder="you@example.com">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+                            <div class="mt-1">
+                                <input id="password" name="password" type="password" autocomplete="new-password" required
+                                    class="form-input w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none transition-all duration-200"
+                                    placeholder="Min. 8 characters">
+                            </div>
+                        </div>
+
+                        <div class="flex items-start">
+                            <div class="flex h-5 items-center">
+                                <input id="terms" name="terms" type="checkbox" required
+                                    class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                            </div>
+                            <div class="ml-3 text-sm">
+                                <label for="terms" class="text-gray-500">
+                                    I agree to the
+                                    <a href="#" class="font-medium text-indigo-600 hover:text-indigo-500 hover:underline">Terms</a>
+                                    and
+                                    <a href="#" class="font-medium text-indigo-600 hover:text-indigo-500 hover:underline">Privacy Policy</a>.
+                                </label>
+                            </div>
+                        </div>
+
+                        <div>
+                            <button type="submit"
+                                class="w-full px-6 py-3 bg-gradient-to-r from-indigo-600 to-violet-700 text-white text-base font-semibold rounded-lg shadow-lg hover:from-indigo-700 hover:to-violet-800 transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                Create Account
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel-right relative hidden w-0 flex-1 lg:block">
+            <div class="absolute inset-0 h-full w-full object-cover gradient-bg-panel">
+                
+                <div class="animation-container">
+                    
+                    <div class="skill-card" style="left: 10%; animation-duration: 22s; animation-delay: -5s;">
+                        <svg class="w-5 h-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2z" /></svg>
+                        Acoustic Guitar
+                    </div>
+
+                    <div class="skill-card" style="left: 60%; animation-duration: 18s; animation-delay: -2s;">
+                        <svg class="w-5 h-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" /></svg>
+                        Python Coding
+                    </div>
+
+                    <div class="skill-card" style="left: 35%; animation-duration: 25s; animation-delay: -10s;">
+                        <svg class="w-5 h-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
+                        Graphic Design
+                    </div>
+                    
+                    <div class="skill-card" style="left: 70%; animation-duration: 20s; animation-delay: -15s;">
+                        <svg classs="w-5 h-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21 15.546c.523 0 .946.423.946.946s-.423.946-.946.946c-.523 0-.946-.423-.946-.946s.423-.946.946-.946zM15.11 15.546c.523 0 .946.423.946.946s-.423.946-.946.946c-.523 0-.946-.423-.946-.946s.423-.946.946-.946zM9.273 15.546c.523 0 .946.423.946.946s-.423.946-.946.946c-.523 0-.946-.423-.946-.946s.423-.946.946-.946zM20.054 7.946c0-4.006-3.248-7.254-7.254-7.254S5.546 3.94 5.546 7.946c0 3.321 2.233 6.109 5.277 6.946v.691h3.953v-.691c3.044-.837 5.277-3.625 5.277-6.946z" /></svg>
+                        Baking
+                    </div>
+
+                </div>
+            </div>
+            
+            <div class="relative z-10 flex flex-col justify-end h-full p-16">
+                <h1 class="text-5xl font-extrabold text-white tracking-tight drop-shadow-lg">
+                    Empower your community.
+                </h1>
+                <p class="mt-6 text-xl text-indigo-100 max-w-lg drop-shadow-sm">
+                    Join a growing network of local learners and teachers. Your next skill is just around the corner.
+                </p>
+            </div>
+        </div>
+
+    </div>
+    <script>
+    // --- SUPABASE CLIENT (GLOBAL) ---
+    // !! REPLACE WITH YOUR ACTUAL SUPABASE CREDENTIALS !!
+   const SUPABASE_URL = 'https://afryvkqspscbvxkfotrl.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFmcnl2a3FzcHNjYnZ4a2ZvdHJsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjEzNjcxOTQsImV4cCI6MjA3Njk0MzE5NH0.TRYFkTHDnQ4_r8aKSn1hu7ES676zVO4WYEl1vpYD9Dc';
+
+    const { createClient } = supabase;
+    const _supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    // --- All Page Logic ---
+    document.addEventListener('DOMContentLoaded', () => {
+
+        // --- Fix @apply directives (Apply these fixes to your <style> block) ---
+        /*
+        Replace:
+        body { @apply text-gray-900; }
+        With:
+        body { color: #1f2937; }
+
+        Replace:
+        .form-input:focus { @apply ring-2 ring-indigo-300 border-indigo-500; }
+        With:
+        .form-input:focus {
+            --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
+            --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);
+            box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000);
+            --tw-ring-color: #a5b4fc; // ring-indigo-300
+            border-color: #6366f1; // border-indigo-500
+        }
+        */
+
+        // --- Element Selection ---
+        const signUpForm = document.querySelector('form'); // More specific ID is better if possible
+        const nameInput = document.getElementById('name');
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+        const termsCheckbox = document.getElementById('terms');
+        const submitButton = signUpForm.querySelector('button[type="submit"]');
+        const googleButton = document.querySelector('a[href="#"] svg[fill="currentColor"][viewBox="0 0 24 24"]'); // Find Google button anchor
+        const githubButton = document.querySelector('a[href="#"] svg[fill="currentColor"][viewBox="0 0 24 24"][fill-rule="evenodd"]'); // Find GitHub button anchor
+
+        // Add elements for displaying messages (if they don't exist in HTML)
+        let generalErrorContainer = signUpForm.querySelector('.general-error');
+        if (!generalErrorContainer) {
+             generalErrorContainer = document.createElement('div');
+             generalErrorContainer.className = 'general-error hidden p-3 my-4 bg-red-100 border border-red-300 rounded-lg text-red-700 text-sm';
+             generalErrorContainer.setAttribute('role', 'alert');
+             signUpForm.insertBefore(generalErrorContainer, signUpForm.firstChild);
+        }
+
+        let successMessageContainer = signUpForm.querySelector('.success-message');
+        if (!successMessageContainer) {
+             successMessageContainer = document.createElement('div');
+             successMessageContainer.className = 'success-message hidden p-3 my-4 bg-green-100 border border-green-300 rounded-lg text-green-800 text-sm';
+             successMessageContainer.setAttribute('role', 'alert');
+             signUpForm.insertBefore(successMessageContainer, signUpForm.firstChild);
+        }
+
+        // --- Helper Functions ---
+        function showFieldError(inputEl, message) {
+            // Find or create an error message element associated with the input
+            let errorEl = inputEl.nextElementSibling;
+            if (!errorEl || !errorEl.classList.contains('error-text')) {
+                errorEl = document.createElement('p');
+                errorEl.className = 'error-text mt-1 text-sm text-red-600';
+                errorEl.setAttribute('aria-live', 'polite');
+                inputEl.parentNode.appendChild(errorEl);
+            }
+            inputEl.classList.add('border-red-500', 'ring-red-500'); // Style input on error
+            inputEl.setAttribute('aria-invalid', 'true');
+            errorEl.textContent = message;
+            errorEl.classList.remove('hidden');
+        }
+
+        function clearFieldError(inputEl) {
+            inputEl.classList.remove('border-red-500', 'ring-red-500');
+            inputEl.setAttribute('aria-invalid', 'false');
+            const errorEl = inputEl.nextElementSibling;
+            if (errorEl && errorEl.classList.contains('error-text')) {
+                errorEl.textContent = '';
+                errorEl.classList.add('hidden');
+            }
+        }
+
+        function showGeneralMessage(message, isError = true) {
+            const container = isError ? generalErrorContainer : successMessageContainer;
+            const otherContainer = isError ? successMessageContainer : generalErrorContainer;
+            container.textContent = message;
+            container.classList.remove('hidden');
+            otherContainer.classList.add('hidden'); // Hide the other message type
+        }
+
+        function clearMessages() {
+            generalErrorContainer.classList.add('hidden');
+            successMessageContainer.classList.add('hidden');
+            generalErrorContainer.textContent = '';
+            successMessageContainer.textContent = '';
+        }
+
+        function setButtonLoading(isLoading) {
+             if (!submitButton) return;
+             submitButton.disabled = isLoading;
+             if (isLoading) {
+                 // Optional: Add spinner or change text
+                 submitButton.innerHTML = `
+                     <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                     </svg>
+                     Processing...
+                 `;
+             } else {
+                 submitButton.textContent = 'Create Account';
+             }
+        }
+
+        // --- Form Validation ---
+        function validateForm() {
+            let isValid = true;
+            clearMessages();
+            clearFieldError(nameInput);
+            clearFieldError(emailInput);
+            clearFieldError(passwordInput);
+            clearFieldError(termsCheckbox); // Use checkbox itself for error association
+
+            // Name validation
+            if (!nameInput.value.trim()) {
+                showFieldError(nameInput, 'Full Name is required.');
+                isValid = false;
+            }
+
+            // Email validation
+            if (!emailInput.value.trim()) {
+                showFieldError(emailInput, 'Email address is required.');
+                isValid = false;
+            } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailInput.value)) {
+                showFieldError(emailInput, 'Please enter a valid email address.');
+                isValid = false;
+            }
+
+            // Password validation
+            if (!passwordInput.value) {
+                showFieldError(passwordInput, 'Password is required.');
+                isValid = false;
+            } else if (passwordInput.value.length < 8) {
+                showFieldError(passwordInput, 'Password must be at least 8 characters long.');
+                isValid = false;
+            }
+
+            // Terms validation
+            if (!termsCheckbox.checked) {
+                // Show error message near the checkbox label
+                let termsErrorEl = termsCheckbox.closest('.flex.items-start').querySelector('.error-text');
+                 if (!termsErrorEl) {
+                     termsErrorEl = document.createElement('p');
+                     termsErrorEl.className = 'error-text text-sm text-red-600 mt-1';
+                     termsCheckbox.closest('.flex.items-start').appendChild(termsErrorEl);
+                 }
+                termsErrorEl.textContent = 'You must agree to the terms and privacy policy.';
+                termsErrorEl.classList.remove('hidden');
+                isValid = false;
+            } else {
+                 let termsErrorEl = termsCheckbox.closest('.flex.items-start').querySelector('.error-text');
+                 if (termsErrorEl) {
+                     termsErrorEl.classList.add('hidden');
+                 }
+            }
+
+
+            return isValid;
+        }
+
+        // --- Event Listeners ---
+
+        // Form Submission
+        signUpForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            if (!validateForm()) {
+                return;
+            }
+
+            setButtonLoading(true);
+            clearMessages();
+
+            const name = nameInput.value.trim();
+            const email = emailInput.value.trim();
+            const password = passwordInput.value;
+
+            // --- SUPABASE HOOK: Sign Up ---
+            try {
+                const { data, error } = await _supabase.auth.signUp({
+                    email: email,
+                    password: password,
+                    options: {
+                        data: {
+                            full_name: name // Store full name in meta data
+                        },
+                         // Optional: Email confirmation redirect URL (if email confirmation is enabled)
+                         // emailRedirectTo: window.location.origin + '/welcome.html'
+                    }
+                });
+
+                if (error) {
+                    throw error; // Let the catch block handle it
+                }
+
+                // --- Success ---
+                 console.log('Sign up successful:', data);
+                 // Check if user needs email confirmation
+                 if (data.user && data.user.identities && data.user.identities.length === 0) {
+                     showGeneralMessage('Sign up successful! Please check your email to verify your account.', false);
+                 } else {
+                     showGeneralMessage('Account created successfully! Redirecting...', false);
+                      // Optional: Redirect immediately if email confirmation is off
+                      
+                      setTimeout(() => { window.location.href = '/'; }, 1500);
+                 }
+                 signUpForm.reset(); // Clear the form on success
+
+
+            } catch (error) {
+                // --- Handle Errors ---
+                console.error('Sign up error:', error);
+                let errorMessage = 'An unexpected error occurred. Please try again.';
+                if (error.message.includes('User already registered') || error.message.includes('already exists')) {
+                    errorMessage = 'An account with this email already exists. Try logging in.';
+                    // Highlight email field specifically
+                    showFieldError(emailInput, 'This email is already taken.');
+                } else if (error.message.includes('Password should be at least')) {
+                     errorMessage = 'Password is too short. Please use at least 8 characters.';
+                     showFieldError(passwordInput, 'Password must be at least 8 characters long.');
+                } else if (error.message.includes('check your connection')) {
+                    errorMessage = 'Network error. Please check your internet connection.';
+                }
+                showGeneralMessage(errorMessage, true);
+            } finally {
+                setButtonLoading(false);
+            }
+        });
+
+         // Add onclick handlers directly to the social buttons in JS
+         // This is generally better practice than inline onclick=""
+         if (googleButton && googleButton.parentElement) {
+             googleButton.parentElement.addEventListener('click', (e) => {
+                 e.preventDefault();
+                 handleSocialSignUp('google');
+             });
+         }
+         if (githubButton && githubButton.parentElement) {
+             githubButton.parentElement.addEventListener('click', (e) => {
+                 e.preventDefault();
+                 handleSocialSignUp('github');
+             });
+         }
+
+
+    }); // End DOMContentLoaded
+
+    // --- Social Sign Up Function (Global) ---
+    async function handleSocialSignUp(provider) {
+        console.log(`Initiating sign up with ${provider}`);
+        clearMessages(); // Clear any previous form messages
+
+        // --- SUPABASE HOOK: Social Sign In/Up ---
+        const { data, error } = await _supabase.auth.signInWithOAuth({
+            provider: provider, // 'google' or 'github'
+            options: {
+                // !! IMPORTANT !!: Set this to where users should go after successful social sign up/in
+                redirectTo: window.location.origin + '/index.html' // Or '/welcome.html' etc.
+            }
+        });
+
+        if (error) {
+            console.error(`Social sign up error (${provider}):`, error.message);
+            // Display error using the general message function if available, otherwise alert
+            const errorContainer = document.querySelector('.general-error');
+             if (errorContainer) {
+                 errorContainer.textContent = `Could not sign up with ${provider}. ${error.message}`;
+                 errorContainer.classList.remove('hidden');
+             } else {
+                 alert(`Error: Could not sign up with ${provider}. ${error.message}`);
+             }
+        }
+        // If successful, Supabase handles the redirect automatically.
+    }
+</script>
+
+</body>
+</html>

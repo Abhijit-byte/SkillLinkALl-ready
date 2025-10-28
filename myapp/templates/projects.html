@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>CommunityHub - Community Projects</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#17cf54",
+              "background-light": "#f6f8f6",
+              "background-dark": "#112116",
+            },
+            fontFamily: {
+              "display": ["Manrope", "sans-serif"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            font-size: inherit; /* Use parent font-size by default */
+        }
+        /* Voice Navigation Styles */
+    #voice-mic-btn {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: var(--color-teal-500);
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(var(--color-teal-500-rgb), 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s;
+      z-index: 1000;
+    }
+
+    #voice-mic-btn:hover {
+      transform: scale(1.1);
+      background: var(--color-teal-600);
+    }
+
+    #voice-mic-btn.listening {
+      background: var(--color-green-500);
+      animation: voice-pulse 1s infinite;
+    }
+
+    @keyframes voice-pulse {
+      0%, 100% { box-shadow: 0 4px 12px rgba(34, 197, 94, 0.5); }
+      50% { box-shadow: 0 4px 25px rgba(34, 197, 94, 0.8); }
+    }
+
+    #voice-mic-btn svg {
+      width: 24px;
+      height: 24px;
+      fill: var(--color-white);
+    }
+
+    #voice-status {
+      position: fixed;
+      bottom: 100px;
+      right: 30px;
+      background: var(--color-surface);
+      padding: 15px 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(var(--color-slate-900-rgb), 0.15);
+      border: 1px solid var(--color-card-border);
+      display: none;
+      min-width: 250px;
+      max-width: 350px;
+      z-index: 999;
+      font-size: 14px;
+      color: var(--color-text);
+    }
+
+    #voice-status.show {
+      display: block;
+    }
+     #mic-btn {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: #007bff;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s;
+      z-index: 1000;
+    }
+
+    #mic-btn:hover {
+      transform: scale(1.1);
+    }
+
+    #mic-btn.listening {
+      background: #28a745;
+      animation: pulse 1s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 4px 12px rgba(40, 167, 69, 0.5); }
+      50% { box-shadow: 0 4px 25px rgba(40, 167, 69, 0.8); }
+    }
+
+    #mic-btn svg {
+      width: 24px;
+      height: 24px;
+      fill: white;
+    }
+
+    #status {
+      position: fixed;
+      bottom: 100px;
+      right: 30px;
+      background: white;
+      padding: 15px 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+      display: none;
+      min-width: 250px;
+      max-width: 350px;
+      z-index: 999;
+      font-size: 14px;
+    }
+
+    #status.show {
+      display: block;
+    }
+
+    .command-list {
+      max-width: 800px;
+      margin: 20px auto;
+    }
+
+    .command-section {
+      margin-bottom: 20px;
+      padding: 15px;
+      background: #f8f9fa;
+      border-radius: 8px;
+    }
+
+    .command-section h3 {
+      margin-top: 0;
+      color: #007bff;
+    }
+
+    .command-section ul {
+      margin: 10px 0;
+    }
+
+    .command-section li {
+      margin: 5px 0;
+    }
+    </style>
+</head>
+<body class="font-display">
+<div class="relative flex h-auto min-h-screen w-full flex-col bg-background-light dark:bg-background-dark group/design-root overflow-x-hidden text-gray-800 dark:text-gray-200">
+<div class="layout-container flex h-full grow flex-col">
+<!-- TopNavBar Component -->
+<header class="sticky top-0 z-50 flex items-center justify-center whitespace-nowrap border-b border-solid border-gray-200/80 dark:border-gray-800/80 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-sm">
+<div class="flex items-center justify-between w-full max-w-7xl px-4 sm:px-6 lg:px-8 py-3">
+<div class="flex items-center gap-8">
+<div class="flex items-center gap-3 text-gray-900 dark:text-white">
+<div class="text-primary" style="font-size: 28px;">
+<span class="material-symbols-outlined">hub</span>
+</div>
+<h2 class="text-xl font-bold leading-tight tracking-[-0.015em]">CommunityHub</h2>
+</div>
+<nav class="hidden md:flex items-center gap-6">
+<a class="text-sm font-medium leading-normal text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white" href="{% url 'dashboard' %}">Home</a>
+<a class="text-sm font-bold leading-normal text-primary" href="{% url 'projects' %}">Projects</a>
+<a class="text-sm font-medium leading-normal text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white" href="{% url 'events' %}">Events</a>
+<a class="text-sm font-medium leading-normal text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white" href="{% url 'explore' %}">Explore</a>
+<a class="text-sm font-medium leading-normal text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white" href="{% url 'resources' %}">Resources</a>
+</nav>
+</div>
+<div class="flex flex-1 justify-end items-center gap-4">
+<label class="hidden sm:flex flex-col min-w-40 !h-10 max-w-64">
+<div class="flex w-full flex-1 items-stretch rounded-lg h-full">
+<div class="text-gray-500 dark:text-gray-400 flex bg-gray-100 dark:bg-white/10 items-center justify-center pl-3 rounded-l-lg border-r-0" style="font-size: 20px;">
+<span class="material-symbols-outlined">search</span>
+</div>
+<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-gray-900 dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary/50 border-none bg-gray-100 dark:bg-white/10 h-full placeholder:text-gray-500 dark:placeholder:text-gray-400 px-4 rounded-l-none border-l-0 pl-2 text-sm font-normal leading-normal" placeholder="Search projects..." value=""/>
+</div>
+</label>
+<button class="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-10 w-10 bg-gray-100 dark:bg-white/10 text-gray-900 dark:text-white hover:bg-gray-200 dark:hover:bg-white/20">
+<div class="text-current" style="font-size: 22px;">
+<span class="material-symbols-outlined">person</span>
+</div>
+</button>
+</div>
+</div>
+</header>
+<main class="flex flex-1 justify-center py-5">
+<div class="layout-content-container flex flex-col w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+<!-- PageHeading Component -->
+<div class="flex flex-wrap justify-between gap-4 py-8">
+<div class="flex flex-col gap-2">
+<p class="text-gray-900 dark:text-white text-4xl font-black leading-tight tracking-[-0.033em]">Community Projects</p>
+<p class="text-gray-500 dark:text-gray-400 text-base font-normal leading-normal">Explore active projects and find ways to get involved in your community.</p>
+</div>
+</div>
+<!-- Chips Component (Filters) -->
+<div class="flex gap-2 p-3 flex-wrap border-b border-gray-200 dark:border-gray-800">
+<button class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-lg bg-gray-100 dark:bg-white/10 hover:bg-gray-200 dark:hover:bg-white/20 px-3">
+<p class="text-gray-800 dark:text-gray-200 text-sm font-medium leading-normal">Category: All</p>
+<div class="text-gray-600 dark:text-gray-400" style="font-size: 20px;">
+<span class="material-symbols-outlined">expand_more</span>
+</div>
+</button>
+<button class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-lg bg-gray-100 dark:bg-white/10 hover:bg-gray-200 dark:hover:bg-white/20 px-3">
+<p class="text-gray-800 dark:text-gray-200 text-sm font-medium leading-normal">Status: New</p>
+<div class="text-gray-600 dark:text-gray-400" style="font-size: 20px;">
+<span class="material-symbols-outlined">expand_more</span>
+</div>
+</button>
+<button class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-lg bg-gray-100 dark:bg-white/10 hover:bg-gray-200 dark:hover:bg-white/20 px-3">
+<p class="text-gray-800 dark:text-gray-200 text-sm font-medium leading-normal">Help Needed: Volunteers</p>
+<div class="text-gray-600 dark:text-gray-400" style="font-size: 20px;">
+<span class="material-symbols-outlined">expand_more</span>
+</div>
+</button>
+</div>
+<!-- ImageGrid Component (Project Cards) -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 py-8">
+<div class="flex flex-col gap-4 bg-white dark:bg-gray-900/50 rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-shadow duration-300">
+<div class="w-full bg-center bg-no-repeat aspect-video bg-cover" data-alt="People planting trees in a park" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCrx5360_2GIMLQKyG-MKmkm55YmAhYzcCI-KYlnR-zSCH-MgkUsjxqKssDj9_XeBcN9J7te33vZAEySz1J4ISHEmEe9UMCHcQhBCeXfAsdtC3u-7IZQOQqNA6z-AxAmAhXUJruGSPREHTOzykDm7_zKrmiZ1SwRJEQQI1fsUds09f92vW-hCUlvzIMW1HhAeqLDm0EtLx3jKBZvn76FXRr9ZUo-aNXGJu0AI-vWDYtRE5f1Pkb93IfIwijAKJvU1UKPjwB9AEkI6Y");'></div>
+<div class="p-5 pt-0 flex flex-col flex-grow">
+<p class="text-gray-900 dark:text-white text-lg font-bold leading-normal">Greenwood Park Restoration</p>
+<p class="text-gray-500 dark:text-gray-400 text-sm font-normal leading-normal mt-1 mb-4 flex-grow">Help us revitalize our local park by planting trees and restoring natural habitats for a greener community.</p>
+<a class="inline-block text-center bg-primary text-white text-sm font-bold leading-normal tracking-[0.015em] py-2.5 px-5 rounded-lg hover:opacity-90 transition-opacity" href="#">Learn More</a>
+</div>
+</div>
+<div class="flex flex-col gap-4 bg-white dark:bg-gray-900/50 rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-shadow duration-300">
+<div class="w-full bg-center bg-no-repeat aspect-video bg-cover" data-alt="A person coding on a laptop" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDxTmToNOs7p40IAr5eLSpaWX5ZCHjMvjJ6Dc0Sl-1O0lgmuniovsJ9J7H81QwNzYzo2lmdwy3nUwVU9FXbxCLJ88oxIKGXRTf20imddWUYL4_ms6E7TROqScLwaXLt23MZxSI4ygGMaz2lxpjYsIcOhI7uD5jvlUsGWVzrKV-awaSSfkGt4TqMlI5r_moqD1F-y8u8voqzkXXzyejaJf7wqOT6sFkApIUsu_7rZuM6rXh3B65VulQWsIWOAqQGXYqcg0Howat9Dm0");'></div>
+<div class="p-5 pt-0 flex flex-col flex-grow">
+<p class="text-gray-900 dark:text-white text-lg font-bold leading-normal">Code for Community</p>
+<p class="text-gray-500 dark:text-gray-400 text-sm font-normal leading-normal mt-1 mb-4 flex-grow">Use your tech skills to build websites and apps for local non-profits and make a digital impact.</p>
+<a class="inline-block text-center bg-primary text-white text-sm font-bold leading-normal tracking-[0.015em] py-2.5 px-5 rounded-lg hover:opacity-90 transition-opacity" href="#">Learn More</a>
+</div>
+</div>
+<div class="flex flex-col gap-4 bg-white dark:bg-gray-900/50 rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-shadow duration-300">
+<div class="w-full bg-center bg-no-repeat aspect-video bg-cover" data-alt="A colorful mural on a brick wall" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDN7vLUnwSLCv6n3vQzjUlhpyU8aImOUvjaKQs33Bbh9JxcR9bEvIYguKJ4XEJgB0IfejhcPrKdfT0ovOqTeT9rYesXx21Z0imN7jE1brXVJHS2RQNTOibY0elj6EZ9lyxXoxL-0eCtI3GNRRs5Va5IWZTtN17uxfXoYDn_G4R5I-j4a98-LTE5asNX68IWFc-mx9GHZdirL97rXCkTASMwYvAuLaZMNJEZJLwmUKzkqjFHpb7IJ9mavm_TNqR4vW84SaNEvHiUWvo");'></div>
+<div class="p-5 pt-0 flex flex-col flex-grow">
+<p class="text-gray-900 dark:text-white text-lg font-bold leading-normal">Downtown Mural Project</p>
+<p class="text-gray-500 dark:text-gray-400 text-sm font-normal leading-normal mt-1 mb-4 flex-grow">Join us in creating a vibrant public art piece that celebrates our community's history and culture.</p>
+<a class="inline-block text-center bg-primary text-white text-sm font-bold leading-normal tracking-[0.015em] py-2.5 px-5 rounded-lg hover:opacity-90 transition-opacity" href="#">Learn More</a>
+</div>
+</div>
+<div class="flex flex-col gap-4 bg-white dark:bg-gray-900/50 rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-shadow duration-300">
+<div class="w-full bg-center bg-no-repeat aspect-video bg-cover" data-alt="A large stack of books" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBxQsFqEPJl5mk3NMgILYfCWkonFHh1LebqtNHRgcQKtHCT9I-YdD_c5vaRZh91gddXP8Qn-lvqCZRIzymRLStxmYm8Kw_RsMCiWp7aG-i3qs8NP_h052FD9SMNHT5tKHzlwj4YVrOa3nqWwnwcp-vbljroihLdE5X6L9Z2P1kQcrGQO8EwC23V2XKS_fMLsoLEU0nl2nVkmViC8Xs7rkfI3a3mo4b4H2xDCuIaMLZJliatx0_UYtisUoUEo_M6ZkxSikX_wI3yBlo");'></div>
+<div class="p-5 pt-0 flex flex-col flex-grow">
+<p class="text-gray-900 dark:text-white text-lg font-bold leading-normal">Neighborhood Book Drive</p>
+<p class="text-gray-500 dark:text-gray-400 text-sm font-normal leading-normal mt-1 mb-4 flex-grow">Help collect and sort book donations for local schools and libraries to promote literacy for all ages.</p>
+<a class="inline-block text-center bg-primary text-white text-sm font-bold leading-normal tracking-[0.015em] py-2.5 px-5 rounded-lg hover:opacity-90 transition-opacity" href="#">Learn More</a>
+</div>
+</div>
+<div class="flex flex-col gap-4 bg-white dark:bg-gray-900/50 rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-shadow duration-300">
+<div class="w-full bg-center bg-no-repeat aspect-video bg-cover" data-alt="A person tutoring a young student" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAlPLm0sFnol0V1ooA9cZ2Jgl5nL77ZmsRM0no2a4l7tDK05Fb1UlTVxo4c5cxJSb0UFT6na8BK0BbuH3OGnJez5ko_YGL_6sXZAthOtUKwaw74QXpvxwHXR3iFjgkxAV1eutsmfns-SldDW52yFEE_DhwiE5MP3VJSsQtDO6oi6TQ2lG43H1MP4UOyByCHYTkKdx5yo3wCcqrVpOG1zFVw0795DWPmtaMfXix33qJMzNgDv0YCEVY1nfNSwesK2YWV6tMMUVayc6U");'></div>
+<div class="p-5 pt-0 flex flex-col flex-grow">
+<p class="text-gray-900 dark:text-white text-lg font-bold leading-normal">Youth Tutoring Program</p>
+<p class="text-gray-500 dark:text-gray-400 text-sm font-normal leading-normal mt-1 mb-4 flex-grow">Mentor and support young students in our community with their schoolwork and build their confidence.</p>
+<a class="inline-block text-center bg-primary text-white text-sm font-bold leading-normal tracking-[0.015em] py-2.5 px-5 rounded-lg hover:opacity-90 transition-opacity" href="#">Learn More</a>
+</div>
+</div>
+<div class="flex flex-col gap-4 bg-white dark:bg-gray-900/50 rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-shadow duration-300">
+<div class="w-full bg-center bg-no-repeat aspect-video bg-cover" data-alt="Volunteers cleaning up a river bank" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDu8t7J73OO8e71v2jmgYLLdW-7WIhblnLLBql8iSVCcelW0cmiampI_yp2KCMcEiTvliLIEKU-WjXEGbTIbsIFn8_y40hFpFFgr9krLRsumDzcB2y8nqjzlYKZuRJpUfbi4y506rTMGi5CBOeNlzWVsaHuYa8H1CSNbofL6ZjBQ_M4ozLU6YWjl1PcMvxEgw9Fbd7Qw3yjEcN-08yvE_y62QbfhQwT0CozwMJb5Vd9KObrcQurOssOEgyXO65QHwVuWyq-iPMlQKw");'></div>
+<div class="p-5 pt-0 flex flex-col flex-grow">
+<p class="text-gray-900 dark:text-white text-lg font-bold leading-normal">River Cleanup Initiative</p>
+<p class="text-gray-500 dark:text-gray-400 text-sm font-normal leading-normal mt-1 mb-4 flex-grow">Join our team to help clean and preserve the beauty of our local river and its surrounding ecosystem.</p>
+<a class="inline-block text-center bg-primary text-white text-sm font-bold leading-normal tracking-[0.015em] py-2.5 px-5 rounded-lg hover:opacity-90 transition-opacity" href="#">Learn More</a>
+</div>
+</div>
+</div>
+<!-- Pagination Component -->
+<div class="flex items-center justify-center py-8">
+<a class="flex size-10 items-center justify-center rounded-lg hover:bg-gray-100 dark:hover:bg-white/10" href="#">
+<div class="text-gray-800 dark:text-gray-200" style="font-size: 20px;">
+<span class="material-symbols-outlined">chevron_left</span>
+</div>
+</a>
+<a class="text-sm font-bold leading-normal tracking-[0.015em] flex size-10 items-center justify-center text-white rounded-full bg-primary" href="#">1</a>
+<a class="text-sm font-normal leading-normal flex size-10 items-center justify-center text-gray-800 dark:text-gray-200 rounded-full hover:bg-gray-100 dark:hover:bg-white/10" href="#">2</a>
+<a class="text-sm font-normal leading-normal flex size-10 items-center justify-center text-gray-800 dark:text-gray-200 rounded-full hover:bg-gray-100 dark:hover:bg-white/10" href="#">3</a>
+<span class="text-sm font-normal leading-normal flex size-10 items-center justify-center text-gray-800 dark:text-gray-200 rounded-full">...</span>
+<a class="text-sm font-normal leading-normal flex size-10 items-center justify-center text-gray-800 dark:text-gray-200 rounded-full hover:bg-gray-100 dark:hover:bg-white/10" href="#">8</a>
+<a class="text-sm font-normal leading-normal flex size-10 items-center justify-center text-gray-800 dark:text-gray-200 rounded-full hover:bg-gray-100 dark:hover:bg-white/10" href="#">9</a>
+<a class="text-sm font-normal leading-normal flex size-10 items-center justify-center text-gray-800 dark:text-gray-200 rounded-full hover:bg-gray-100 dark:hover:bg-white/10" href="#">10</a>
+<a class="flex size-10 items-center justify-center rounded-lg hover:bg-gray-100 dark:hover:bg-white/10" href="#">
+<div class="text-gray-800 dark:text-gray-200" style="font-size: 20px;">
+<span class="material-symbols-outlined">chevron_right</span>
+</div>
+</a>
+</div>
+</div>
+</main>
+</div>
+</div>
+<div id="status"></div>
+
+  <button id="mic-btn">
+    <svg viewBox="0 0 24 24">
+      <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/>
+      <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/>
+    </svg>
+  </button>
+
+  <script>
+    const micBtn = document.getElementById('mic-btn');
+    const status = document.getElementById('status');
+
+    // Route configuration with multiple keyword variations
+    const ROUTES = {
+      // Main pages
+      home: {
+        path: '/index',
+        keywords: ['home', 'homepage', 'main page', 'start'],
+        display: 'Home'
+      },
+      dashboard: {
+        path: '/dashboard',
+        keywords: ['dashboard', 'overview', 'main'],
+        display: 'Dashboard'
+      },
+      
+      // Booking
+      booking: {
+        path: '/mybookings',
+        keywords: ['booking', 'book', 'appointment', 'schedule', 'session', 'reserve'],
+        display: 'Booking'
+      },
+      myBookings: {
+        path: '/mybookings',
+        keywords: ['my booking', 'scheduled', 'my session', 'my appointment'],
+        display: 'My Bookings'
+      },
+       map: {
+        path: '/map',
+        keywords: ['map', 'location', 'directions', 'find','nearby'],
+        display: 'Map'
+      },
+      // Community & Communication
+      community: {
+        path: '/feed',
+        keywords: ['community', 'community page', 'members', 'network'],
+        display: 'Community'
+      },
+      chat: {
+        path: '/index',
+        keywords: ['chat', 'message', 'inbox', 'conversation', 'dm'],
+        display: 'Chat'
+      },
+      skillSwap: {
+        path: '/swap',
+        keywords: ['skill swap', 'swap', 'exchange', 'trade skill'],
+        display: 'Skill Swap'
+      },
+      
+      // Resources
+      resources: {
+        path: '/resources',
+        keywords: ['resource', 'learning resource', 'material', 'content'],
+        display: 'Resources'
+      },
+      
+      
+      // Skill Credits
+      skillCredits: {
+        path: '/credits',
+        keywords: ['skill credit', 'credit', 'wallet', 'balance', 'my credit'],
+        display: 'Skill Credits'
+      },
+      earnCredits: {
+        path: '/credits',
+        keywords: ['earn credit', 'get credit', 'buy credit', 'purchase credit'],
+        display: 'Earn Credits'
+      },
+      
+      // Profile & Settings
+      myProfile: {
+        path: '{% url 'profile' %}',
+        keywords: ['my profile', 'profile page', 'my account','profile','my account'],
+        display: 'My Profile'
+      },
+     
+      
+      // Auth
+      login: {
+        path: '/index',
+        keywords: ['login', 'sign in', 'log in'],
+        display: 'Login'
+      },
+      signup: {
+        path: '/signup',
+        keywords: ['signup', 'sign up', 'register', 'create account', 'join'],
+        display: 'Sign Up'
+      },
+      logout: {
+        path: '/index',
+        keywords: ['logout', 'log out', 'sign out'],
+        display: 'Logout'
+      }
+    };
+
+    // Profile routes
+    const PROFILES = {
+      rohanGupta: {
+        path: '/profile/rohan-gupta',
+        keywords: ['rohan', 'rohan gupta', 'gupta'],
+        display: 'Rohan Gupta'
+      },
+      kritiSreyash: {
+        path: '/profile/kriti-sreyash',
+        keywords: ['kriti', 'kriti sreyash', 'sreyash'],
+        display: 'Kriti Sreyash'
+      },
+      aditya: {
+        path: '/profile/aditya',
+        keywords: ['aditya'],
+        display: 'Aditya'
+      },
+      soumya: {
+        path: '/profile/soumya',
+        keywords: ['soumya'],
+        display: 'Soumya'
+      }
+    };
+
+    // Check browser support
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const SpeechSynthesis = window.speechSynthesis;
+    
+    if (!SpeechRecognition) {
+      alert('Voice recognition not supported. Use Chrome or Edge browser.');
+    } else {
+      const recognition = new SpeechRecognition();
+      recognition.lang = 'en-US';
+      recognition.interimResults = false;
+
+      // Function to speak text (voice feedback)
+      function speak(text) {
+        if (SpeechSynthesis) {
+          // Cancel any ongoing speech
+          SpeechSynthesis.cancel();
+          
+          const utterance = new SpeechSynthesisUtterance(text);
+          utterance.rate = 1.1;
+          utterance.pitch = 1;
+          utterance.volume = 1;
+          SpeechSynthesis.speak(utterance);
+        }
+      }
+
+      // Function to match command to route
+      function matchCommand(command) {
+        const lowerCommand = command.toLowerCase().trim();
+        
+        // Check profiles first (more specific)
+        for (const [key, profile] of Object.entries(PROFILES)) {
+          for (const keyword of profile.keywords) {
+            if (lowerCommand.includes(keyword)) {
+              return { path: profile.path, display: profile.display, type: 'profile' };
+            }
+          }
+        }
+        
+        // Check general routes
+        for (const [key, route] of Object.entries(ROUTES)) {
+          for (const keyword of route.keywords) {
+            if (lowerCommand.includes(keyword)) {
+              return { path: route.path, display: route.display, type: 'route' };
+            }
+          }
+        }
+        
+        return null;
+      }
+
+      micBtn.addEventListener('click', () => {
+        recognition.start();
+        micBtn.classList.add('listening');
+        status.textContent = '🎤 Listening...';
+        status.classList.add('show');
+      });
+
+      recognition.onresult = (event) => {
+        const command = event.results[0][0].transcript;
+        console.log('Heard:', command);
+        
+        status.textContent = `Heard: "${command}"`;
+        micBtn.classList.remove('listening');
+
+        const match = matchCommand(command);
+
+        if (match) {
+          const message = `Opening ${match.display}`;
+          status.textContent = `✅ ${message}`;
+          
+          // Voice feedback
+          speak(message);
+          
+          setTimeout(() => {
+            window.location.href = match.path;
+          }, 1500);
+        } else {
+          const errorMsg = 'Command not recognized. Please try again.';
+          status.textContent = `❌ ${errorMsg}`;
+          speak(errorMsg);
+          
+          setTimeout(() => {
+            status.classList.remove('show');
+          }, 2500);
+        }
+      };
+
+      recognition.onerror = (event) => {
+        micBtn.classList.remove('listening');
+        let errorMsg = '';
+        
+        if (event.error === 'no-speech') {
+          errorMsg = 'No speech detected. Please try again.';
+        } else if (event.error === 'not-allowed') {
+          errorMsg = 'Microphone access denied. Please allow microphone permissions.';
+        } else {
+          errorMsg = `Error: ${event.error}`;
+        }
+        
+        status.textContent = `❌ ${errorMsg}`;
+        
+        setTimeout(() => {
+          status.classList.remove('show');
+        }, 3000);
+      };
+
+      recognition.onend = () => {
+        micBtn.classList.remove('listening');
+      };
+    }
+  </script>
+</body></html>

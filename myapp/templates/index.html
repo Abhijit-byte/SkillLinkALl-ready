@@ -1,0 +1,1196 @@
+<!DOCTYPE html>
+<html lang="en" style="scroll-behavior: smooth;">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkillLink – Empowering Local Communities Through Skill Sharing</title>
+    
+    <!-- TailwindCSS CDN --><script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Font: Inter --><link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Animate on Scroll (AOS) Library --><link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    
+    <style>
+        /* Apply the Inter font as the default */
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            @apply text-gray-900; /* Default text color */
+        }
+
+        /* Custom Colors & Gradients */
+        .gradient-bg-hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); /* Blue-Violet Gradient */
+            animation: gradientShift 10s ease infinite alternate; /* Subtle animation */
+            background-size: 200% 200%;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .gradient-text {
+            background: -webkit-linear-gradient(45deg, #f0f4ff, #e0e7ff, #ffffff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Overhaul for Hero Visual glow */
+        .hero-visual-container {
+            position: relative;
+            z-index: 10;
+        }
+        .hero-visual-glow {
+            position: absolute;
+            top: -20px;
+            left: -20px;
+            right: -20px;
+            bottom: -20px;
+            background: radial-gradient(circle at center, rgba(139, 92, 246, 0.4) 0%, transparent 60%);
+            border-radius: 2rem; /* Matches the mockup border-radius */
+            filter: blur(40px);
+            z-index: -1;
+            animation: pulseGlow 3s ease-out infinite alternate;
+        }
+
+        @keyframes pulseGlow {
+            0% { transform: scale(1); opacity: 0.8; }
+            100% { transform: scale(1.05); opacity: 1; }
+        }
+        
+        /* Pulse/Breathe animation for CTA button */
+        .animate-breathe {
+            animation: breathe 3s ease-in-out infinite;
+        }
+        @keyframes breathe {
+            0%, 100% {
+                box-shadow: 0 0 20px 0px rgba(255, 255, 255, 0.3);
+                transform: scale(1);
+            }
+            50% {
+                box-shadow: 0 0 35px 10px rgba(255, 255, 255, 0.5);
+                transform: scale(1.05);
+            }
+        }
+        
+        /* Pulse animation for chatbot icon */
+        .animate-pulse-live {
+            animation: pulse-live 2s infinite;
+        }
+        @keyframes pulse-live {
+            0% { box-shadow: 0 0 0 0 rgba(79, 70, 229, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(79, 70, 229, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(79, 70, 229, 0); }
+        }
+
+        /* Overlay for subtle texture */
+        .pattern-overlay {
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%239e9e9e' fill-opacity='0.08'%3E%3Cpath d='M36 34.545V44.75h-8.093l-4.223-4.223L20 44.75l-4.223-4.223L11.554 44.75H4V36h8.093l4.223 4.223L20 36l4.223 4.223L28.446 36H36v8.75h-8.093l-4.223-4.223L20 44.75l-4.223-4.223L11.554 44.75H4V52.5h8.093l4.223-4.223L20 52.5l4.223-4.223L28.446 52.5H36v-8.75h-8.093l-4.223-4.223L20 44.75l-4.223-4.223L11.554 44.75H4V60h8.093L20 51.554 28.446 60H36V34.545zM4 21h8.093L20 12.455 28.446 21H36V4h-8.093L20 12.455 11.554 4H4v17zM36 21h-8.093L20 12.455 11.554 21H4V28.75h8.093L20 20.205 28.446 28.75H36V21zM36 44.75h-8.093L20 36.205 11.554 44.75H4V52.5h8.093L20 44.055 28.446 52.5H36V44.75zM44.75 4V36h-8.75l-4.223-4.223L28.75 36l-4.223-4.223L21 36H4V4h8.093L20 12.455 28.446 4H36v8.75h-8.093L20 4.205 11.554 12.75H4V21h8.093L20 12.455 28.446 21H36V4zM44.75 44.75V36h-8.75l-4.223-4.223L28.75 36l-4.223-4.223L21 36H4V44.75h8.093L20 36.205 28.446 44.75H36V52.5h-8.093L20 44.055 11.554 52.5H4V60h8.093L20 51.554 28.446 60H36V44.75zM44.75 44.75V60H60V44.75h-15.25zM60 4h-15.25v32h15.25V4zM44.75 36h15.25v8.75h-15.25V36zM60 4V21h-15.25V4H60zM44.75 21h15.25v8.75h-15.25V21zM60 44.75h-15.25V60H60V44.75z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            background-repeat: repeat;
+            opacity: 0.05;
+            position: absolute;
+            inset: 0;
+            z-index: -2;
+            pointer-events: none;
+        }
+
+        /* Highlighted section background */
+        .section-tint-bg {
+            background-color: #f8faff; /* A lighter, cooler gray */
+        }
+        .section-accent-bg {
+            background: linear-gradient(90deg, #eff6ff 0%, #f0f9ff 100%); /* Light blue gradient */
+        }
+
+
+        /* Styles for the new tabs (More vibrant) */
+        .hero-tab-active {
+            background-color: white;
+            color: #4f46e5; /* indigo-600 */
+            box-shadow: 0 4px 10px -2px rgba(79, 70, 229, 0.2);
+        }
+
+        .feature-tab {
+            @apply flex items-start text-left p-5 bg-white rounded-xl border-2 border-transparent transition-all duration-300 shadow-md;
+        }
+        .feature-tab:hover {
+            @apply shadow-lg transform -translate-y-1;
+        }
+        .feature-tab-active {
+            @apply bg-white text-indigo-700 border-indigo-600 shadow-xl ring-2 ring-indigo-500 transform scale-100 -translate-y-0; /* More pronounced active state */
+        }
+        .feature-tab-active svg {
+            @apply text-indigo-700;
+        }
+
+        /* Subtle glow for feature cards */
+        .feature-card-glow {
+            box-shadow: 0 0 15px rgba(99, 102, 241, 0.05);
+            transition: all 0.3s ease-in-out;
+            @apply bg-white rounded-xl; /* Ensure consistent styling */
+        }
+        .feature-card-glow:hover {
+            box-shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.15);
+            transform: translateY(-4px);
+        }
+
+        /* Icon styling in feature cards */
+        .feature-card-glow svg {
+            @apply text-indigo-500; /* Ensure icons have color */
+        }
+        
+        /* Colorful Icon Backgrounds for "Why Choose Us" */
+        .icon-glow-bg {
+            @apply w-12 h-12 rounded-xl flex items-center justify-center shadow-inner relative;
+        }
+        .icon-glow-bg::before {
+            content: '';
+            @apply absolute inset-0 rounded-xl opacity-30 blur-md;
+            z-index: -1;
+        }
+        .icon-glow-indigo { background-color: #eef2ff; color: #4338ca; }
+        .icon-glow-indigo::before { background-color: #6366f1; }
+        .icon-glow-violet { background-color: #f5f3ff; color: #7c3aed; }
+        .icon-glow-violet::before { background-color: #8b5cf6; }
+        .icon-glow-teal { background-color: #f0fdfa; color: #0d9488; }
+        .icon-glow-teal::before { background-color: #14b8a6; }
+        .icon-glow-amber { background-color: #fffbeb; color: #d97706; }
+        .icon-glow-amber::before { background-color: #f59e0b; }
+
+        /* CTA pattern now with a deeper blend */
+        .cta-pattern {
+            background-image: radial-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+
+        /* Improved Testimonial Cards */
+        .testimonial-card {
+            @apply bg-white p-8 rounded-2xl shadow-xl border border-gray-100 transition-all duration-300 hover:shadow-2xl hover:scale-[1.02] relative;
+        }
+        
+        /* FAQ Accordion Styles */
+        .faq-item summary {
+            @apply flex justify-between items-center py-4 font-semibold text-gray-800 cursor-pointer;
+            list-style: none; /* Remove default arrow */
+        }
+        .faq-item summary::-webkit-details-marker {
+            display: none; /* Hide Safari arrow */
+        }
+        .faq-icon {
+            @apply w-5 h-5 text-gray-400 transition-transform duration-300;
+        }
+        .faq-item[open] summary .faq-icon {
+            @apply transform rotate-45;
+        }
+        .faq-content {
+            @apply pb-4 text-gray-600 leading-relaxed;
+        }
+
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-900">
+
+    <!-- =========== Navigation Bar =========== --><nav id="navbar" class="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm shadow-lg transition-all duration-300 py-4">
+        <div class="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo --><a href="#" class="flex-shrink-0 flex items-center">
+                    <span class="text-3xl font-extrabold text-indigo-700 tracking-tight">SkillLink</span>
+                </a>
+                
+                <!-- Desktop Menu --><div class="hidden md:flex md:items-center md:space-x-8">
+                    <a href="#" class="font-medium text-gray-700 hover:text-indigo-600 transition-colors text-base">Home</a>
+                    <a href="#features" class="font-medium text-gray-700 hover:text-indigo-600 transition-colors text-base">Features</a>
+                    <a href="#how-it-works" class="font-medium text-gray-700 hover:text-indigo-600 transition-colors text-base">How it Works</a>
+                    <a href="#community" class="font-medium text-gray-700 hover:text-indigo-600 transition-colors text-base">Community</a>
+                    <a href="#faq" class="font-medium text-gray-700 hover:text-indigo-600 transition-colors text-base">FAQ</a>
+                </div>
+                
+                <!-- Auth Buttons (Desktop) --><div class="hidden md:flex items-center space-x-4">
+                    <a href="#" class="font-medium text-gray-700 hover:text-indigo-600 transition-colors open-login-modal">Login</a>
+                    <a href="{% url 'signup' %}" class="px-6 py-2 bg-gradient-to-r from-indigo-600 to-violet-700 text-white text-base font-semibold rounded-lg shadow-lg hover:from-indigo-700 hover:to-violet-800 transition-all duration-300 transform hover:scale-105">
+                        Sign Up
+                    </a>
+                </div>
+                
+                <!-- Mobile Menu Button --><div class="md:hidden flex items-center">
+                    <button id="mobile-menu-button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500">
+                        <span class="sr-only">Open main menu</span>
+                        <svg id="menu-open-icon" class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+                        </svg>
+                        <svg id="menu-close-icon" class="hidden h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mobile Menu (Dropdown) --><div id="mobile-menu" class="hidden md:hidden border-t border-gray-200">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <a href="#" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-indigo-600">Home</a>
+                <a href="#features" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-indigo-600">Features</a>
+                <a href="#how-it-works" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-indigo-600">How it Works</a>
+                <a href="#community" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-indigo-600">Community</a>
+                <a href="#faq" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-indigo-600">FAQ</a>
+            </div>
+            <div class="px-5 pb-4 border-t border-gray-200">
+                <a href="{% url 'signup' %}" class="block w-full text-center mt-4 px-5 py-2 bg-gradient-to-r from-indigo-600 to-violet-700 text-white text-base font-semibold rounded-lg shadow-md hover:from-indigo-700 hover:to-violet-800 transition-all">
+                    Sign Up
+                </a>
+                <a href="#" class="block w-full text-center mt-3 font-medium text-gray-700 hover:text-indigo-600 transition-colors open-login-modal">
+    Login
+</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- =========== Hero Section =========== --><section class="relative gradient-bg-hero pt-32 pb-24 md:pt-40 md:pb-32 overflow-hidden text-white">
+        <div class="pattern-overlay"></div> <!-- Subtle pattern overlay --><div class="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 text-center relative z-10">
+            <h1 class="text-4xl md:text-6xl font-extrabold leading-tight tracking-tight drop-shadow-lg" data-aos="fade-up" data-aos-easing="ease-out-cubic">
+                Empowering Local Communities
+                <br class="hidden md:block">
+                Through <span class="gradient-text">Skill Sharing</span>.
+            </h1>
+            <p class="mt-6 text-lg md:text-xl text-indigo-100 max-w-3xl mx-auto drop-shadow-sm" data-aos="fade-up" data-aos-delay="150" data-aos-easing="ease-out-cubic">
+                Discover, teach, or learn skills from people right around you — powered by AI, trust, and collaboration.
+            </p>
+            <div class="mt-10 flex flex-col sm:flex-row justify-center gap-4" data-aos="fade-up" data-aos-delay="300" data-aos-easing="ease-out-cubic">
+                <a href="#" class="px-8 py-3 bg-white text-indigo-700 text-lg font-semibold rounded-lg shadow-xl hover:bg-indigo-50 hover:scale-105 transform transition-all duration-300">
+                    Get Started Free
+                </a>
+                <a href="#how-it-works" class="px-8 py-3 bg-white/20 text-white text-lg font-semibold rounded-lg shadow-md border border-white/30 hover:bg-white/30 hover:scale-105 transform transition-all duration-300">
+                    How it Works
+                </a>
+            </div>
+        </div>
+        
+        <!-- Hero Visual Mockup --><div class="relative max-w-5xl mx-auto mt-16 md:mt-24 hero-visual-container" data-aos="fade-up" data-aos-delay="450" data-aos-duration="1200">
+            <div class="hero-visual-glow"></div>
+            <!-- Mock Browser Frame --><div class="relative w-full bg-white rounded-2xl shadow-2xl overflow-hidden border border-gray-100">
+                <div class="h-10 bg-gray-100 border-b border-gray-200 flex items-center px-4 space-x-2">
+                    <div class="w-3 h-3 bg-red-400 rounded-full"></div>
+                    <div class="w-3 h-3 bg-yellow-400 rounded-full"></div>
+                    <div class="w-3 h-3 bg-green-400 rounded-full"></div>
+                    <div class="flex-grow flex justify-center">
+                        <span class="text-sm text-gray-500">skilllink.app</span>
+                    </div>
+                </div>
+                
+                <!-- App UI Mockup --><div class="p-4 md:p-6 bg-gray-50">
+                    <!-- Tabs --><div class="flex justify-center mb-4">
+                        <div class="bg-indigo-100/50 p-1 rounded-full flex space-x-1 shadow-inner">
+                            <button id="hero-tab-learn" class="hero-tab-active px-6 py-2 text-sm font-semibold rounded-full transition-all text-indigo-700">Learn</button>
+                            <button id="hero-tab-teach" class="text-indigo-600 px-6 py-2 text-sm font-semibold rounded-full transition-all hover:bg-indigo-100/70">Teach</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Tab Content --><div id="hero-content-learn" class="transition-opacity duration-300">
+                        <div class="relative w-full p-4 bg-white rounded-lg shadow-md border border-gray-100">
+                            <!-- Search Bar --><div class="flex items-center bg-indigo-50 rounded-lg p-2 border border-indigo-100">
+                                <svg class="w-5 h-5 text-indigo-400 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+                                <input type="text" class="bg-transparent w-full text-sm font-medium focus:outline-none placeholder-indigo-400" value="What do you want to learn? (e.g. Guitar)" disabled>
+                            </div>
+                            <!-- Category Pills --><div class="flex space-x-2 mt-3 overflow-x-auto pb-2 scrollbar-hide">
+                                <span class="px-3 py-1 bg-teal-100 text-teal-800 text-xs font-medium rounded-full whitespace-nowrap shadow-sm">Music</span>
+                                <span class="px-3 py-1 bg-violet-100 text-violet-800 text-xs font-medium rounded-full whitespace-nowrap shadow-sm">Coding</span>
+                                <span class="px-3 py-1 bg-rose-100 text-rose-800 text-xs font-medium rounded-full whitespace-nowrap shadow-sm">Art & Design</span>
+                                <span class="px-3 py-1 bg-amber-100 text-amber-800 text-xs font-medium rounded-full whitespace-nowrap shadow-sm">Cooking</span>
+                                <span class="px-3 py-1 bg-gray-100 text-gray-700 text-xs font-medium rounded-full whitespace-nowrap shadow-sm">Fitness</span>
+                            </div>
+                            <!-- Profile Cards --><div class="mt-4 space-y-3">
+                                <div class="bg-white p-3 rounded-lg shadow-md border border-gray-100 flex items-center justify-between hover:shadow-lg transition-shadow">
+                                    <div class="flex items-center">
+                                        <img class="w-10 h-10 rounded-full bg-indigo-200" src="https://placehold.co/100x100/A78BFA/FFFFFF?text=PK" alt="Priya K.">
+                                        <div class="ml-3">
+                                            <h4 class="text-sm font-semibold">Priya K. <span class="text-xs font-normal text-gray-500">(1.2km away)</span></h4>
+                                            <p class="text-xs text-indigo-600 font-medium">Teaches: Acoustic Guitar</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center text-xs text-amber-500">
+                                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
+                                        <span class="ml-1 font-bold">4.9</span>
+                                    </div>
+                                </div>
+                                <div class="bg-white p-3 rounded-lg shadow-md border border-gray-100 flex items-center justify-between opacity-80 hover:shadow-lg transition-shadow">
+                                    <div class="flex items-center">
+                                        <img class="w-10 h-10 rounded-full bg-teal-200" src="https://placehold.co/100x100/5EEAD4/FFFFFF?text=RS" alt="Rohit S.">
+                                        <div class="ml-3">
+                                            <h4 class="text-sm font-semibold">Rohit S. <span class="text-xs font-normal text-gray-500">(0.8km away)</span></h4>
+                                            <p class="text-xs text-teal-600 font-medium">Teaches: Digital Painting</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center text-xs text-amber-500">
+                                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
+                                        <span class="ml-1 font-bold">5.0</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="hero-content-teach" class="hidden transition-opacity duration-300">
+                        <div class="relative w-full p-4 bg-white rounded-lg shadow-md border border-gray-100">
+                            <!-- Dashboard Mockup --><div class="text-center">
+                                <h3 class="text-lg font-semibold text-gray-800">Your Teacher Dashboard</h3>
+                                <p class="text-sm text-gray-500">Manage your skills, bookings, and credits.</p>
+                                <div class="mt-4 grid grid-cols-3 gap-3">
+                                    <div class="bg-indigo-50 p-3 rounded-lg text-center shadow-sm">
+                                        <div class="text-2xl font-bold text-indigo-600">12</div>
+                                        <div class="text-xs font-medium text-indigo-800">Active Learners</div>
+                                    </div>
+                                    <div class="bg-violet-50 p-3 rounded-lg text-center shadow-sm">
+                                        <div class="text-2xl font-bold text-violet-600">4</div>
+                                        <div class="text-xs font-medium text-violet-800">Pending Bookings</div>
+                                    </div>
+                                    <div class="bg-teal-50 p-3 rounded-lg text-center shadow-sm">
+                                        <div class="text-2xl font-bold text-teal-600">85</div>
+                                        <div class="text-xs font-medium text-teal-800">Skill Credits</div>
+                                    </div>
+                                </div>
+                                <button class="mt-4 w-full px-4 py-2 bg-gradient-to-r from-indigo-600 to-violet-700 text-white text-sm font-semibold rounded-lg shadow-md hover:from-indigo-700 hover:to-violet-800">
+                                    View Your Profile
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- =========== Trusted By Section =========== --><section class="py-16 bg-white border-b border-gray-100">
+        <div class="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <h3 class="text-center text-sm font-semibold text-gray-500 uppercase tracking-wider" data-aos="fade-up">
+                Trusted by innovators and community leaders
+            </h3>
+            <div class="mt-8 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-8 items-center" data-aos="fade-up" data-aos-delay="100">
+                <!-- Placeholder Logos with a touch more color --><div class="flex justify-center opacity-80 hover:opacity-100 transition-opacity">
+                    <svg class="h-10 text-indigo-400" fill="currentColor" viewBox="0 0 120 40">
+                        <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-family="Inter, sans-serif" font-size="20" font-weight="bold">TechCo</text>
+                    </svg>
+                </div>
+                <div class="flex justify-center opacity-80 hover:opacity-100 transition-opacity">
+                    <svg class="h-10 text-violet-400" fill="currentColor" viewBox="0 0 120 40">
+                        <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-family="Inter, sans-serif" font-size="20" font-weight="bold">Innovate</text>
+                    </svg>
+                </div>
+                <div class="flex justify-center opacity-80 hover:opacity-100 transition-opacity">
+                    <svg class="h-10 text-teal-400" fill="currentColor" viewBox="0 0 120 40">
+                        <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-family="Inter, sans-serif" font-size="20" font-weight="bold">CityHub</text>
+                    </svg>
+                </div>
+                <div class="flex justify-center opacity-80 hover:opacity-100 transition-opacity">
+                    <svg class="h-10 text-rose-400" fill="currentColor" viewBox="0 0 120 40">
+                        <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-family="Inter, sans-serif" font-size="20" font-weight="bold">Localise</text>
+                    </svg>
+                </div>
+                <div class="flex justify-center opacity-80 hover:opacity-100 transition-opacity">
+                    <svg class="h-10 text-amber-400" fill="currentColor" viewBox="0 0 120 40">
+                        <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-family="Inter, sans-serif" font-size="20" font-weight="bold">Impact</text>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- =========== Why Choose SkillLink =========== --><section class="py-24 section-accent-bg overflow-hidden relative">
+        <div class="pattern-overlay opacity-50"></div>
+        <div class="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                <div data-aos="fade-right" data-aos-duration="1000">
+                    <h2 class="text-3xl md:text-4xl font-extrabold text-gray-900 tracking-tight">
+                        A new way to think about "local".
+                    </h2>
+                    <p class="mt-6 text-lg text-gray-700 leading-relaxed">
+                        SkillLink isn't just an app. It's a fundamental shift in how we build community. We leverage technology not to isolate, but to connect you with the amazing, talented people you pass on the street every day.
+                    </p>
+                    <ul class="mt-8 space-y-4">
+                        <li class="flex items-start">
+                            <svg class="w-6 h-6 text-indigo-600 mr-3 mt-1 flex-shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
+                            <span class="text-gray-800 text-lg font-medium">Turn hidden talents into tangible opportunities.</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg class="w-6 h-6 text-indigo-600 mr-3 mt-1 flex-shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
+                            <span class="text-gray-800 text-lg font-medium">Build trust and collaboration in your neighborhood.</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg class="w-6 h-6 text-indigo-600 mr-3 mt-1 flex-shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
+                            <span class="text-gray-800 text-lg font-medium">Create a hyperlocal micro-economy based on skills.</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-6">
+                    <!-- Card 1 --><div class="bg-white p-6 rounded-2xl shadow-lg feature-card-glow" data-aos="zoom-in" data-aos-delay="100">
+                        <div class="icon-glow-bg icon-glow-indigo">
+                            <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.623 0-1.631-.465-3.16-1.262-4.453A11.97 11.97 0 0012 2.75c-2.432 0-4.714.64-6.702 1.714z" /></svg>
+                        </div>
+                        <h3 class="mt-4 text-lg font-semibold text-gray-900">Verified Local Network</h3>
+                        <p class="mt-1 text-sm text-gray-600">Peer-reviewed connections with verified local members.</p>
+                    </div>
+                    <!-- Card 2 --><div class="bg-white p-6 rounded-2xl shadow-lg feature-card-glow" data-aos="zoom-in" data-aos-delay="200">
+                        <div class="icon-glow-bg icon-glow-violet">
+                            <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" /></svg>
+                        </div>
+                        <h3 class="mt-4 text-lg font-semibold text-gray-900">AI-Powered Matching</h3>
+                        <p class="mt-1 text-sm text-gray-600">Gemini-based suggestions for the perfect skill match.</p>
+                    </div>
+                    <!-- Card 3 --><div class="bg-white p-6 rounded-2xl shadow-lg feature-card-glow" data-aos="zoom-in" data-aos-delay="300">
+                        <div class="icon-glow-bg icon-glow-teal">
+                            <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" /></svg>
+                        </div>
+                        <h3 class="mt-4 text-lg font-semibold text-gray-900">Hyperlocal Discovery</h3>
+                        <p class="mt-1 text-sm text-gray-600">Find mentors and learners within your 2km radius.</p>
+                    </div>
+                    <!-- Card 4 --><div class="bg-white p-6 rounded-2xl shadow-lg feature-card-glow" data-aos="zoom-in" data-aos-delay="400">
+                        <div class="icon-glow-bg icon-glow-amber">
+                            <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.75A.75.75 0 013 4.5h.75m0 0H21m-18 6h18M3 12h18M3 15h18M3 18h18" /></svg>
+                        </div>
+                        <h3 class="mt-4 text-lg font-semibold text-gray-900">Skill Credit Economy</h3>
+                        <p class="mt-1 text-sm text-gray-600">A cashless system. Earn by teaching, spend by learning.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- =========== How it Works Section =========== --><section id="how-it-works" class="py-24 bg-white relative">
+        <div class="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div class="text-center" data-aos="fade-up">
+                <h2 class="text-3xl md:text-4xl font-extrabold text-gray-900">How SkillLink Works</h2>
+                <p class="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">Get started in three simple steps. Find your community and start growing.</p>
+            </div>
+            
+            <!-- Steps Timeline --><div class="relative mt-20" data-aos="fade-up" data-aos-delay="100">
+                <!-- Dotted Line (Vertical on mobile, horizontal on desktop) --><div class="hidden md:block absolute left-0 right-0 top-10" aria-hidden="true">
+                    <div class="w-2/3 mx-auto border-t-2 border-dashed border-gray-300"></div>
+                </div>
+                <div class="md:hidden absolute top-0 bottom-0 left-10" aria-hidden="true">
+                    <div class="h-full border-l-2 border-dashed border-gray-300"></div>
+                </div>
+
+                <div class="relative grid grid-cols-1 md:grid-cols-3 gap-16 md:gap-8">
+                    <!-- Step 1: Connect --><div class="relative text-center md:text-left flex md:block items-center">
+                        <div class="flex-shrink-0 w-20 h-20 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center text-3xl font-bold mx-auto shadow-lg z-10 relative border-4 border-white transition-all duration-300 hover:scale-105">
+                            01
+                        </div>
+                        <div class="md:mt-6 ml-6 md:ml-0">
+                            <h3 class="text-2xl font-semibold text-gray-900">Connect</h3>
+                            <p class="mt-2 text-gray-500">Create your profile, add skills you can teach, and list what you want to learn.</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Step 2: Collaborate --><div class="relative text-center md:text-left flex md:block items-center">
+                        <div class="flex-shrink-0 w-20 h-20 bg-violet-100 text-violet-600 rounded-full flex items-center justify-center text-3xl font-bold mx-auto shadow-lg z-10 relative border-4 border-white transition-all duration-300 hover:scale-105">
+                            02
+                        </div>
+                        <div class="md:mt-6 ml-6 md:ml-0">
+                            <h3 class="text-2xl font-semibold text-gray-900">Collaborate</h3>
+                            <p class="mt-2 text-gray-500">Find members nearby using our AI-powered map and send a request to connect or book.</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Step 3: Grow --><div class="relative text-center md:text-left flex md:block items-center">
+                        <div class="flex-shrink-0 w-20 h-20 bg-rose-100 text-rose-600 rounded-full flex items-center justify-center text-3xl font-bold mx-auto shadow-lg z-10 relative border-4 border-white transition-all duration-300 hover:scale-105">
+                            03
+                        </div>
+                        <div class="md:mt-6 ml-6 md:ml-0">
+                            <h3 class="text-2xl font-semibold text-gray-900">Grow</h3>
+                            <p class="mt-2 text-gray-500">Earn Skill Credits for teaching. Use your credits to learn new things from others. It's that simple.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- =========== Key Features Section (Interactive) =========== --><section id="features" class="py-24 section-tint-bg relative">
+        <div class="pattern-overlay opacity-50"></div>
+        <div class="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="text-center" data-aos="fade-up">
+                <h2 class="text-3xl md:text-4xl font-extrabold text-gray-900">A Platform Built for Connection</h2>
+                <p class="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">All the tools you need to build your local skill network, all in one place.</p>
+            </div>
+            
+            <div class="mt-16 grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-16">
+                <!-- Feature Tabs (Vertical) --><div class="flex flex-col space-y-4" data-aos="fade-right" data-aos-duration="1000">
+                    <button class="feature-tab feature-tab-active" data-tab="1">
+                        <svg class="w-8 h-8 mr-4 flex-shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" /></svg>
+                        <div>
+                            <h3 class="text-lg font-semibold">AI Skill Matching</h3>
+                            <p class="mt-1 text-sm text-gray-500">Our Gemini-powered AI understands your needs to suggest the perfect teacher or learner.</p>
+                        </div>
+                    </button>
+                    <button class="feature-tab" data-tab="2">
+                        <svg class="w-8 h-8 text-violet-600 mr-4 flex-shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" /></svg>
+                        <div>
+                            <h3 class="text-lg font-semibold">Geo-Skill Map</h3>
+                            <p class="mt-1 text-sm text-gray-500">A live map showing all available skills and requests right in your neighborhood.</p>
+                        </div>
+                    </button>
+                    <button class="feature-tab" data-tab="3">
+                        <svg class="w-8 h-8 text-teal-600 mr-4 flex-shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.75A.75.75 0 013 4.5h.75m0 0H21m-18 6h18M3 12h18M3 15h18M3 18h18" /></svg>
+                        <div>
+                            <h3 class="text-lg font-semibold">Skill Credit Economy</h3>
+                            <p class="mt-1 text-sm text-gray-500">Our fair, cashless system. Your hour of teaching earns you an hour of learning.</p>
+                        </div>
+                    </button>
+                    <button class="feature-tab" data-tab="4">
+                        <svg class="w-8 h-8 text-rose-600 mr-4 flex-shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m-4.682 2.72a.75.75 0 01-.063-.028A23.952 23.952 0 0112 15.75c-2.66 0-5.18.5-7.38 1.44a.75.75 0 01-.063.028m15.119 2.72a.75.75 0 01-.063.028A23.953 23.953 0 0112 21c-2.66 0-5.18-.5-7.38-1.44a.75.75 0 01-.063.028m15.119-2.72a9.094 9.094 0 00-3.742-.479 3 3 0 00-4.682 2.72m4.682-2.72c.041.02.08.042.118.063a.75.75 0 01.063-.028m-15.119 2.72a.75.75 0 01.063-.028A23.953 23.953 0 0112 21c2.66 0 5.18.5 7.38 1.44a.75.75 0 01.063.028" /></svg>
+                        <div>
+                            <h3 class="text-lg font-semibold">Community Projects</h3>
+                            <p class="mt-1 text-sm text-gray-500">Start or join local projects, from community gardens to coding bootcamps.</p>
+                        </div>
+                    </button>
+                </div>
+
+                <!-- Feature Visuals --><div class="lg:col-span-2 relative w-full aspect-square lg:aspect-[4/3] bg-white rounded-2xl shadow-2xl overflow-hidden border border-gray-200" data-aos="fade-left" data-aos-duration="1000">
+                    <!-- Visual 1: AI Chatbot --><div class="feature-visual p-6 transition-opacity duration-300" data-tab="1">
+                        <h4 class="font-semibold text-gray-800 mb-3">AI Matching Assistant</h4>
+                        <div class="w-full h-full bg-indigo-50 rounded-lg p-4 space-y-4 shadow-inner">
+                            <!-- AI Message --><div class="flex">
+                                <div class="flex-shrink-0 w-8 h-8 bg-indigo-600 text-white rounded-full flex items-center justify-center mr-3">
+                                    <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" /></svg>
+                                </div>
+                                <div class="bg-indigo-100 text-gray-800 p-3 rounded-lg rounded-tl-none shadow-sm">
+                                    <p class="text-sm">Hi there! You mentioned you want to learn Python. I found 3 highly-rated members within 2km who are available on weekends. Would you like to see them?</p>
+                                </div>
+                            </div>
+                            <!-- User Message --><div class="flex justify-end">
+                                <div class="bg-white text-gray-800 p-3 rounded-lg rounded-tr-none shadow-md">
+                                    <p class="text-sm">Yes, please show me!</p>
+                                </div>
+                            </div>
+                            <!-- AI Message --><div class="flex">
+                                <div class="flex-shrink-0 w-8 h-8 bg-indigo-600 text-white rounded-full flex items-center justify-center mr-3">
+                                    <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" /></svg>
+                                </div>
+                                <div class="bg-indigo-100 text-gray-800 p-3 rounded-lg rounded-tl-none shadow-sm">
+                                    <p class="text-sm">Great! Here is Rohit, a senior developer just 3 blocks away...</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Visual 2: Map --><div class="feature-visual hidden p-6 transition-opacity duration-300" data-tab="2">
+                        <h4 class="font-semibold text-gray-800 mb-3">Hyperlocal Skill Map</h4>
+                        <div class="w-full h-full bg-indigo-50 rounded-lg relative overflow-hidden shadow-inner">
+                            <!-- Fake map lines and subtle texture --><div class="pattern-overlay"></div>
+                            <svg class="absolute inset-0 w-full h-full text-indigo-200/50" fill="none">
+                                <defs>
+                                    <pattern id="grid-pattern-2" width="40" height="40" patternUnits="userSpaceOnUse" x="0" y="0">
+                                        <path d="M40 0L0 0L0 40" fill="none" stroke="currentColor" stroke-width="0.5"></path>
+                                    </pattern>
+                                </defs>
+                                <rect width="100%" height="100%" fill="url(#grid-pattern-2)"></rect>
+                            </svg>
+                            <!-- Map Pins --><div class="absolute w-10 h-10 bg-white rounded-full shadow-lg flex items-center justify-center text-indigo-600" style="top: 20%; left: 30%; animation: 2s ease-in-out 0s infinite alternate-reverse both running pulseGlow;">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" /></svg>
+                            </div>
+                            <div class="absolute w-10 h-10 bg-white rounded-full shadow-lg flex items-center justify-center text-rose-600" style="top: 45%; left: 55%; animation: 2s ease-in-out 0.5s infinite alternate-reverse both running pulseGlow;">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" /></svg>
+                            </div>
+                            <div class="absolute w-10 h-10 bg-white rounded-full shadow-lg flex items-center justify-center text-teal-600" style="top: 60%; left: 25%; animation: 2s ease-in-out 1s infinite alternate-reverse both running pulseGlow;">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" /></svg>
+                            </div>
+                            <!-- Pop-up Card --><div class="absolute bg-white p-3 rounded-lg shadow-xl" style="top: 18%; left: 38%;">
+                                <h5 class="text-xs font-semibold">Ananya D.</h5>
+                                <p class="text-xs text-gray-600">Teaches: Baking</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Visual 3: Credits --><div class="feature-visual hidden p-6 transition-opacity duration-300" data-tab="3">
+                        <h4 class="font-semibold text-gray-800 mb-3">Skill Credit Economy</h4>
+                        <div class="w-full h-full bg-gradient-to-br from-indigo-50 to-violet-50 rounded-lg p-4 flex flex-col items-center justify-center text-center shadow-inner">
+                            <div class="w-28 h-28 bg-gradient-to-r from-indigo-600 to-violet-700 text-white rounded-full flex flex-col items-center justify-center shadow-lg transform hover:scale-105 transition-all duration-300">
+                                <span class="text-5xl font-extrabold">85</span>
+                                <span class="text-base font-medium">Credits</span>
+                            </div>
+                            <p class="mt-6 text-gray-700 text-lg font-bold">1 Hour Taught = 1 Credit</p>
+                            <p class="text-gray-700 text-lg font-bold">1 Credit = 1 Hour Learned</p>
+                            <p class="mt-4 text-sm text-gray-500 max-w-xs leading-relaxed">A fair and simple system to reward collaboration and encourage learning.</p>
+                        </div>
+                    </div>
+                    <!-- Visual 4: Projects --><div class="feature-visual hidden p-6 transition-opacity duration-300" data-tab="4">
+                        <h4 class="font-semibold text-gray-800 mb-3">Community Projects</h4>
+                        <div class="w-full h-full bg-gray-100 rounded-lg p-4 space-y-3 shadow-inner">
+                            <div class="bg-white p-4 rounded-lg shadow-md border border-gray-200 hover:shadow-lg transition-shadow">
+                                <span class="px-2 py-0.5 bg-rose-100 text-rose-800 text-xs font-medium rounded-full">Community</span>
+                                <h5 class="mt-2 font-semibold text-gray-800">Local Cleanup Drive</h5>
+                                <p class="text-sm text-gray-500">Looking for 10 volunteers this Sunday to help clean up the park.</p>
+                                <div class="flex items-center justify-between mt-3">
+                                    <div class="flex -space-x-2">
+                                        <img class="w-7 h-7 rounded-full border-2 border-white object-cover bg-gray-200" src="https://placehold.co/60x60/E2E8F0/4A5568?text=A" alt="">
+                                        <img class="w-7 h-7 rounded-full border-2 border-white object-cover bg-gray-200" src="https://placehold.co/60x60/E2E8F0/4A5568?text=B" alt="">
+                                        <img class="w-7 h-7 rounded-full border-2 border-white object-cover bg-gray-200" src="https://placehold.co/60x60/E2E8F0/4A5568?text=C" alt="">
+                                        <div class="w-7 h-7 rounded-full border-2 border-white bg-gray-200 flex items-center justify-center text-xs font-medium text-gray-600">+12</div>
+                                    </div>
+                                    <button class="px-4 py-1.5 bg-indigo-600 text-white text-sm font-semibold rounded-md hover:bg-indigo-700 transition-colors">Join</button>
+                                </div>
+                            </div>
+                            <div class="bg-white p-4 rounded-lg shadow-md border border-gray-200 hover:shadow-lg transition-shadow">
+                                <span class="px-2 py-0.5 bg-violet-100 text-violet-800 text-xs font-medium rounded-full">Tech</span>
+                                <h5 class="mt-2 font-semibold text-gray-800">Build a Library Website</h5>
+                                <p class="text-sm text-gray-500">Need a React developer and a UI/UX designer for a community project.</p>
+                                <div class="flex items-center justify-between mt-3">
+                                    <div class="flex -space-x-2">
+                                        <img class="w-7 h-7 rounded-full border-2 border-white object-cover bg-gray-200" src="https://placehold.co/60x60/E2E8F0/4A5568?text=X" alt="">
+                                        <img class="w-7 h-7 rounded-full border-2 border-white object-cover bg-gray-200" src="https://placehold.co/60x60/E2E8F0/4A5568?text=Y" alt="">
+                                    </div>
+                                    <button class="px-4 py-1.5 bg-violet-600 text-white text-sm font-semibold rounded-md hover:bg-violet-700 transition-colors">View Details</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- "And So Much More..." Grid --><div class="mt-24">
+                <h3 class="text-2xl font-bold text-center text-gray-900" data-aos="fade-up" data-aos-duration="800">And So Much More...</h3>
+                <div class="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Feature --><div class="feature-card-glow p-6 rounded-xl border border-gray-100" data-aos="fade-up" data-aos-delay="100">
+                        <div class="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-full flex items-center justify-center shadow-sm mb-3">
+                            <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" /></svg>
+                        </div>
+                        <h3 class="mt-4 text-lg font-semibold">Real-time Booking</h3>
+                        <p class="mt-1 text-gray-600 text-sm">Integrated calendar to check availability and book sessions instantly.</p>
+                    </div>
+                    <!-- Feature --><div class="feature-card-glow p-6 rounded-xl border border-gray-100" data-aos="fade-up" data-aos-delay="150">
+                        <div class="w-12 h-12 bg-violet-50 text-violet-600 rounded-full flex items-center justify-center shadow-sm mb-3">
+                            <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M19.5 12c0-1.232-.046-2.453-.138-3.662a4.006 4.006 0 00-3.7-3.7C14.453 2.046 13.232 2 12 2S9.547 2.046 8.338 2.138a4.006 4.006 0 00-3.7 3.7C4.546 6.893 4.5 8.114 4.5 9.333V12c0 1.232.046 2.453.138 3.662a4.006 4.006 0 003.7 3.7c1.209.092 2.43.138 3.662.138s2.453-.046 3.662-.138a4.006 4.006 0 003.7-3.7c.092-1.209.138-2.43.138-3.662z" /></svg>
+                        </div>
+                        <h3 class="mt-4 text-lg font-semibold">Gamified Badges</h3>
+                        <p class="mt-1 text-gray-600 text-sm">Earn badges for teaching, learning, and community participation.</p>
+                    </div>
+                    <!-- Feature --><div class="feature-card-glow p-6 rounded-xl border border-gray-100" data-aos="fade-up" data-aos-delay="200">
+                        <div class="w-12 h-12 bg-teal-50 text-teal-600 rounded-full flex items-center justify-center shadow-sm mb-3">
+                            <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19.114 5.636a9 9 0 010 12.728M16.463 8.288a5.25 5.25 0 010 7.424M6.75 8.25l9 7.5 9-7.5" /></svg>
+                        </div>
+                        <h3 class="mt-4 text-lg font-semibold">Accessibility for All</h3>
+                        <p class="mt-1 text-gray-600 text-sm">Voice commands, screen reader support, and multi-language localization.</p>
+                    </div>
+                    <!-- New Feature 1: Secure Chat --><div class="feature-card-glow p-6 rounded-xl border border-gray-100" data-aos="fade-up" data-aos-delay="250">
+                        <div class="w-12 h-12 bg-rose-50 text-rose-600 rounded-full flex items-center justify-center shadow-sm mb-3">
+                            <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0-1.01-.194-1.979-.533-2.905a8.216 8.216 0 00-2.617-2.618C16.979 6.194 16.01 6 15 6s-1.979.194-2.905.533A8.216 8.216 0 009.477 9.477C9.194 10.021 9 10.99 9 12s.194 1.979.533 2.905a8.216 8.216 0 002.617 2.618C13.021 17.806 13.99 18 15 18s1.979-.194 2.905-.533a8.216 8.216 0 002.617-2.618C20.806 13.979 21 13.01 21 12zM3 12c0-1.01.194-1.979.533-2.905A8.216 8.216 0 016.15 6.477C7.021 6.194 7.99 6 9 6c1.01 0 1.979.194 2.905.533A8.216 8.216 0 0115.523 9.477C15.806 10.021 16 10.99 16 12s-.194 1.979-.533 2.905a8.216 8.216 0 01-2.617 2.618C9.021 17.806 8.052 18 7 18s-1.979-.194-2.905-.533A8.216 8.216 0 013.477 14.523C3.194 13.979 3 13.01 3 12z" /></svg>
+                        </div>
+                        <h3 class="mt-4 text-lg font-semibold">Secure In-App Chat</h3>
+                        <p class="mt-1 text-gray-600 text-sm">Communicate safely and easily with other members without sharing personal details.</p>
+                    </div>
+                    <!-- New Feature 2: Progress Tracking --><div class="feature-card-glow p-6 rounded-xl border border-gray-100" data-aos="fade-up" data-aos-delay="300">
+                        <div class="w-12 h-12 bg-amber-50 text-amber-600 rounded-full flex items-center justify-center shadow-sm mb-3">
+                            <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.5l6 6L21 7.5" /></svg>
+                        </div>
+                        <h3 class="mt-4 text-lg font-semibold">Learning Progress Tracking</h3>
+                        <p class="mt-1 text-gray-600 text-sm">Set goals, track your learning journey, and visualize your skill growth over time.</p>
+                    </div>
+                    <!-- New Feature 3: Ratings & Reviews --><div class="feature-card-glow p-6 rounded-xl border border-gray-100" data-aos="fade-up" data-aos-delay="350">
+                        <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center shadow-sm mb-3">
+                            <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385c.11.467-.368.866-.751.649l-4.994-3.008a.563.563 0 00-.586 0L6.098 19.602c-.383.217-.86-.182-.751-.649l1.285-5.386a.562.562 0 00-.182-.557L3.328 8.99c-.381-.325-.18-.948.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.499z" /></svg>
+                        </div>
+                        <h3 class="mt-4 text-lg font-semibold">Ratings & Reviews System</h3>
+                        <p class="mt-1 text-gray-600 text-sm">Build trust and credibility with a transparent peer review system.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- =========== Testimonials Section =========== --><section id="community" class="py-24 bg-white relative">
+        <div class="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <h2 class="text-3xl md:text-4xl font-extrabold text-center text-gray-900" data-aos="fade-up">Hear from our Community</h2>
+            
+            <div class="mt-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Testimonial 1 --><div class="testimonial-card" data-aos="flip-up" data-aos-delay="100">
+                    <svg class="w-16 h-16 text-indigo-100 absolute top-6 right-6 z-0" fill="currentColor" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><path d="M11.313 2.813C9.063 2.813 7.375 3.375 6.25 4.5C5.125 5.625 4.563 7.313 4.563 9.563C4.563 11.813 5.125 13.5 6.25 14.625C7.375 15.75 9.063 16.313 11.313 16.313C13.563 16.313 15.25 15.75 16.375 14.625C17.5 13.5 18.063 11.813 18.063 9.563C18.063 7.313 17.5 5.625 16.375 4.5C15.25 3.375 13.563 2.813 11.313 2.813ZM23.313 2.813C21.063 2.813 19.375 3.375 18.25 4.5C17.125 5.625 16.563 7.313 16.563 9.563C16.563 11.813 17.125 13.5 18.25 14.625C19.375 15.75 21.063 16.313 23.313 16.313C25.563 16.313 27.25 15.75 28.375 14.625C29.5 13.5 30.063 11.813 30.063 9.563C30.063 7.313 29.5 5.625 28.375 4.5C27.25 3.375 25.563 2.813 23.313 2.813Z" /></svg>
+                    <div class="relative z-10">
+                        <div class="flex items-center text-amber-500 mb-4">
+                            <!-- 5 Stars -->
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
+                            <!-- ... 4 more stars ... -->
+                            <span class="ml-1 text-sm font-bold">5.0</span>
+                        </div>
+                        <p class="text-lg font-medium text-gray-800 leading-relaxed">
+                            “I learned guitar from a neighbor I’d only ever waved to — and I taught him Python in return! SkillLink completely changed how I see my local community.”
+                        </p>
+                        <div class="mt-6 flex items-center gap-4">
+                            <img class="w-14 h-14 rounded-full object-cover bg-indigo-200 shadow-md" src="https://placehold.co/100x100/A78BFA/FFFFFF?text=RS" alt="Rohit S.">
+                            <div>
+                                <h4 class="text-base font-semibold text-gray-900">Rohit, Student</h4>
+                                <p class="text-sm text-gray-500">Bangalore</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Testimonial 2 --><div class="testimonial-card" data-aos="flip-up" data-aos-delay="200">
+                    <svg class="w-16 h-16 text-indigo-100 absolute top-6 right-6 z-0" fill="currentColor" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><path d="M11.313 2.813C9.063 2.813 7.375 3.375 6.25 4.5C5.125 5.625 4.563 7.313 4.563 9.563C4.563 11.813 5.125 13.5 6.25 14.625C7.375 15.75 9.063 16.313 11.313 16.313C13.563 16.313 15.25 15.75 16.375 14.625C17.5 13.5 18.063 11.813 18.063 9.563C18.063 7.313 17.5 5.625 16.375 4.5C15.25 3.375 13.563 2.813 11.313 2.813ZM23.313 2.813C21.063 2.813 19.375 3.375 18.25 4.5C17.125 5.625 16.563 7.313 16.563 9.563C16.563 11.813 17.125 13.5 18.25 14.625C19.375 15.75 21.063 16.313 23.313 16.313C25.563 16.313 27.25 15.75 28.375 14.625C29.5 13.5 30.063 11.813 30.063 9.563C30.063 7.313 29.5 5.625 28.375 4.5C27.25 3.375 25.563 2.813 23.313 2.813Z" /></svg>
+                    <div class="relative z-10">
+                        <div class="flex items-center text-amber-500 mb-4">
+                            <!-- 5 Stars -->
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
+                            <!-- ... 4 more stars ... -->
+                            <span class="ml-1 text-sm font-bold">5.0</span>
+                        </div>
+                        <p class="text-lg font-medium text-gray-800 leading-relaxed">
+                            “I needed volunteers for a community cleanup project. I posted it on SkillLink and found 15 passionate helpers from my area in just one day. Incredible!”
+                        </p>
+                        <div class="mt-6 flex items-center gap-4">
+                            <img class="w-14 h-14 rounded-full object-cover bg-teal-200 shadow-md" src="https://placehold.co/100x100/5EEAD4/FFFFFF?text=AD" alt="Ananya D.">
+                            <div>
+                                <h4 class="text-base font-semibold text-gray-900">Ananya, NGO Worker</h4>
+                                <p class="text-sm text-gray-500">Mumbai</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Testimonial 3 --><div class="testimonial-card" data-aos="flip-up" data-aos-delay="300">
+                    <svg class="w-16 h-16 text-indigo-100 absolute top-6 right-6 z-0" fill="currentColor" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><path d="M11.313 2.813C9.063 2.813 7.375 3.375 6.25 4.5C5.125 5.625 4.563 7.313 4.563 9.563C4.563 11.813 5.125 13.5 6.25 14.625C7.375 15.75 9.063 16.313 11.313 16.313C13.563 16.313 15.25 15.75 16.375 14.625C17.5 13.5 18.063 11.813 18.063 9.563C18.063 7.313 17.5 5.625 16.375 4.5C15.25 3.375 13.563 2.813 11.313 2.813ZM23.313 2.813C21.063 2.813 19.375 3.375 18.25 4.5C17.125 5.625 16.563 7.313 16.563 9.563C16.563 11.813 17.125 13.5 18.25 14.625C19.375 15.75 21.063 16.313 23.313 16.313C25.563 16.313 27.25 15.75 28.375 14.625C29.5 13.5 30.063 11.813 30.063 9.563C30.063 7.313 29.5 5.625 28.375 4.5C27.25 3.375 25.563 2.813 23.313 2.813Z" /></svg>
+                    <div class="relative z-10">
+                        <div class="flex items-center text-amber-500 mb-4">
+                            <!-- 4.8 Stars -->
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
+                            <!-- ... 3 more stars ... -->
+                            <svg class="w-5 h-5 text-gray-300" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
+                            <span class="ml-1 text-sm font-bold">4.8</span>
+                        </div>
+                        <p class="text-lg font-medium text-gray-800 leading-relaxed">
+                            “As a freelancer, I use SkillLink to find local collaborators. I traded my UI design skills for professional photography for my portfolio. It's a game-changer.”
+                        </p>
+                        <div class="mt-6 flex items-center gap-4">
+                            <img class="w-14 h-14 rounded-full object-cover bg-violet-200 shadow-md" src="https://placehold.co/100x100/C4B5FD/FFFFFF?text=MJ" alt="Mike J.">
+                            <div>
+                                <h4 class="text-base font-semibold text-gray-900">Mike, Freelancer</h4>
+                                <p class="text-sm text-gray-500">Delhi</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- =========== FAQ Section =========== -->
+     <section id="faq" class="py-24 section-accent-bg">
+        <div class="container mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+            <div class="text-center" data-aos="fade-up">
+                <h2 class="text-3xl md:text-4xl font-extrabold text-gray-900">Frequently Asked Questions</h2>
+                <p class="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">Have questions? We've got answers. If you don't see what you're looking for, contact us.</p>
+            </div>
+            
+            <div class="mt-12 space-y-4" data-aos="fade-up" data-aos-delay="100">
+                
+                <details class="faq-item bg-white p-6 rounded-lg shadow-lg border border-gray-100">
+                    <summary>
+                        <span>
+                            How does the Skill Credit system work?
+                            <svg class="faq-icon w-5 h-5 inline-block ml-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" /></svg>
+                        </span>
+                    </summary>
+                    <div class="faq-content">
+                        <p>It's simple! For every hour you spend teaching a skill to a community member, you earn one Skill Credit. You can then use that credit to 'pay' for one hour of learning from someone else. It's a cashless economy designed to value everyone's time equally.</p>
+                    </div>
+                </details>
+                
+                <details class="faq-item bg-white p-6 rounded-lg shadow-lg border border-gray-100">
+                    <summary>
+                        <span>
+                            Is SkillLink safe to use?
+                            <svg class="faq-icon w-5 h-5 inline-block ml-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" /></svg>
+                        </span>
+                    </summary>
+                    <div class="faq-content">
+                        <p>Safety is our top priority. We have a multi-step verification process for members, including optional background checks for tutors. All communication happens through our secure, in-app chat, and our peer-review system helps maintain a high standard of trust and quality in the community.</p>
+                    </div>
+                </details>
+                
+                <details class="faq-item bg-white p-6 rounded-lg shadow-lg border border-gray-100">
+                    <summary>
+                        <span>
+                            What if I don't think I have a skill to teach?
+                            <svg class="faq-icon w-5 h-5 inline-block ml-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" /></svg>
+                        </span>
+                    </summary>
+                    <div class="faq-content">
+                        <p>You'd be surprised! Skills aren't just about professional qualifications. You can teach anything from baking bread, speaking a language, basic gardening, to how to organize a closet. Our platform is designed to help you identify and share your unique talents.</p>
+                    </div>
+                </details>
+                
+                <details class="faq-item bg-white p-6 rounded-lg shadow-lg border border-gray-100">
+                    <summary>
+                        <span>
+                            How is this different from other learning platforms?
+                            <svg class="faq-icon w-5 h-5 inline-block ml-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" /></svg>
+                        </span>
+                    </summary>
+                    <div class="faq-content">
+                        <p>Most platforms focus on pre-recorded video courses. SkillLink is about live, one-on-one, in-person (or live video) interaction with people in your local community. We focus on building real-world connections, not just consuming content.</p>
+                    </div>
+                </details>
+                
+            </div>
+        </div>
+    </section>
+
+    <!-- =========== Pricing Teaser Section =========== -->
+    <section class="py-24 bg-white">
+        <div class="container mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+            <div class="text-center" data-aos="fade-up">
+                <h2 class="text-3xl md:text-4xl font-extrabold text-gray-900">Get Started Today</h2>
+                <p class="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">Join a growing community of learners and teachers. Choose the plan that's right for you.</p>
+            </div>
+            
+            <div class="mt-16 grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+                <!-- Free Plan -->
+                <div class="bg-white p-8 rounded-2xl shadow-2xl border-2 border-indigo-600" data-aos="zoom-in-right" data-aos-delay="100">
+                    <span class="inline-block px-4 py-1 text-sm font-semibold text-indigo-700 bg-indigo-100 rounded-full">Community</span>
+                    <h3 class="mt-4 text-3xl font-bold text-gray-900">Free</h3>
+                    <p class="mt-2 text-gray-500">For individuals looking to learn and share.</p>
+                    <ul class="mt-6 space-y-3">
+                        <li class="flex items-center"><svg class="w-5 h-5 text-green-500 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg><span>Access to local skill map</span></li>
+                        <li class="flex items-center"><svg class="w-5 h-5 text-green-500 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg><span>Skill Credit Exchange</span></li>
+                        <li class="flex items-center"><svg class="w-5 h-5 text-green-500 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg><span>Community project access</span></li>
+                    </ul>
+                    <a href="{% url 'signup' %}" class="block w-full text-center mt-8 px-6 py-3 bg-gradient-to-r from-indigo-600 to-violet-700 text-white text-base font-semibold rounded-lg shadow-lg hover:from-indigo-700 hover:to-violet-800 transition-all">
+                        Sign Up for Free
+                    </a>
+                </div>
+                <!-- Pro Plan (Teaser) -->
+                <div class="bg-gray-800 text-white p-8 rounded-2xl shadow-2xl" data-aos="zoom-in-left" data-aos-delay="200">
+                    <span class="inline-block px-4 py-1 text-sm font-semibold text-cyan-700 bg-cyan-100 rounded-full">Pro / Business</span>
+                    <h3 class="mt-4 text-3xl font-bold">Coming Soon</h3>
+                    <p class="mt-2 text-gray-300">For tutors, businesses, and organizations.</p>
+                    <ul class="mt-6 space-y-3">
+                        <li class="flex items-center"><svg class="w-5 h-5 text-cyan-400 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg><span>Advanced analytics</span></li>
+                        <li class="flex items-center"><svg class="w-5 h-5 text-cyan-400 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg><span>Priority listing</span></li>
+                        <li class="flex items-center"><svg class="w-5 h-5 text-cyan-400 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg><span>Accept monetary payments</span></li>
+                    </ul>
+                    <a href="#" class="block w-full text-center mt-8 px-6 py-3 bg-white text-gray-800 text-base font-semibold rounded-lg shadow-lg hover:bg-gray-100 transition-all">
+                        Get Notified
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- =========== Call-to-Action (CTA) Section =========== --><section id="contact" class="py-24 bg-gradient-to-r from-indigo-700 to-purple-800 cta-pattern overflow-hidden relative">
+        <div class="container mx-auto max-w-3xl px-4 sm:px-6 lg:px-8 text-center relative z-10">
+            <h2 class="text-3xl md:text-5xl font-extrabold text-white leading-tight drop-shadow-lg" data-aos="fade-up" data-aos-duration="1000">
+                Ready to Join the SkillLink Movement?
+            </h2>
+            <p class="mt-6 text-lg text-indigo-200 max-w-2xl mx-auto drop-shadow-sm" data-aos="fade-up" data-aos-delay="200" data-aos-duration="1000">
+                Join thousands of members in your city who are already teaching, learning, and growing together. Your next skill is right around the corner.
+            </p>
+            <div class="mt-10 flex flex-col sm:flex-row justify-center gap-4" data-aos="fade-up" data-aos-delay="400" data-aos-duration="1000">
+                <a href="{% url 'signup' %}" class="px-8 py-3 bg-white text-indigo-700 text-lg font-semibold rounded-lg shadow-xl hover:bg-gray-100 hover:scale-105 transform transition-all duration-300 animate-breathe">
+                    Sign Up Free, It's Easy
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- =========== Footer =========== --><footer class="bg-gray-900 text-gray-400">
+        <div class="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16">
+            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8">
+                <!-- Column 1: Logo & Tagline --><div class="col-span-2 lg:col-span-2">
+                    <a href="#" class="text-3xl font-extrabold text-white">SkillLink</a>
+                    <p class="mt-3 text-sm leading-relaxed">
+                        Your Neighborhood. Your Network. Your Next Skill.
+                    </p>
+                    <div class="mt-6 flex space-x-5">
+                        <a href="#" class="hover:text-white transition-colors">
+                            <span class="sr-only">Twitter</span>
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84" /></svg>
+                            </a>
+                        <a href="#" class="hover:text-white transition-colors">
+                            <span class="sr-only">LinkedIn</span>
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" clip-rule="evenodd" /></svg>
+                        </a>
+                        <a href="#" class="hover:text-white transition-colors">
+                            <span class="sr-only">GitHub</span>
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.165 6.839 9.49.5.092.682-.217.682-.483 0-.237-.009-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.026 2.747-1.026.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12c0-5.523-4.477-10-10-10z" clip-rule="evenodd" /></svg>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Column 2: Product --><div>
+                    <h4 class="text-sm font-semibold text-gray-100 tracking-wider uppercase">Product</h4>
+                    <ul class="mt-4 space-y-3 text-base">
+                        <li><a href="#features" class="hover:text-white transition-colors">Features</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Pricing</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Demo</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">AI Assistant</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Column 3: Company --><div>
+                    <h4 class="text-sm font-semibold text-gray-100 tracking-wider uppercase">Company</h4>
+                    <ul class="mt-4 space-y-3 text-base">
+                        <li><a href="#about" class="hover:text-white transition-colors">About Us</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Careers</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Blog</a></li>
+                        <li><a href="#contact" class="hover:text-white transition-colors">Contact</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Column 4: Community --><div>
+                    <h4 class="text-sm font-semibold text-gray-100 tracking-wider uppercase">Community</h4>
+                    <ul class="mt-4 space-y-3 text-base">
+                        <li><a href="#community" class="hover:text-white transition-colors">Testimonials</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Guidelines</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Events</a></li>
+                        <li><a href="#faq" class="hover:text-white transition-colors">Help Center</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Bottom Bar --><div class="mt-12 border-t border-gray-800 pt-8 text-center">
+                <p class="text-sm text-gray-500">&copy; 2025 SkillLink. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="login-modal" class="fixed inset-0 z-[100] flex items-center justify-center bg-black bg-opacity-60 backdrop-blur-sm hidden">
+        <div id="modal-overlay" class="absolute inset-0"></div>
+
+        <div id="modal-content" class="relative bg-white w-full max-w-md p-8 rounded-2xl shadow-2xl m-4 transition-all transform scale-95 opacity-0">
+            <button id="close-modal-button" class="absolute top-4 right-4 text-gray-400 hover:text-gray-700 transition-colors">
+                <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+
+            <h2 class="text-2xl font-bold text-center text-gray-900">Login to SkillLink</h2>
+            <p class="text-center text-gray-500 mt-2">Welcome back!</p>
+
+            <div class="mt-6 space-y-4">
+                <form action="#" method="POST" class="space-y-4">
+                    <div>
+                        <label for="modal-email" class="block text-sm font-medium text-gray-700">Email address</label>
+                        <div class="mt-1">
+                            <input id="modal-email" name="email" type="email" autocomplete="email" required class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="modal-password" class="block text-sm font-medium text-gray-700">Password</label>
+                        <div class="mt-1">
+                            <input id="modal-password" name="password" type="password" autocomplete="current-password" required class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between">
+                        <div class="text-sm">
+                            <a href="#" class="font-medium text-indigo-600 hover:text-indigo-500">
+                                Forgot your password?
+                            </a>
+                        </div>
+                    </div>
+
+                    <div>
+                        <button type="submit" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-lg text-base font-semibold text-white bg-gradient-to-r from-indigo-600 to-violet-700 hover:from-indigo-700 hover:to-violet-800 transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transform hover:scale-105">
+                            Log In
+                        </button>
+                    </div>
+                </form>
+
+                <div class="relative flex items-center justify-center my-4">
+                    <div class="absolute inset-0 flex items-center">
+                        <div class="w-full border-t border-gray-300"></div>
+                    </div>
+                    <div class="relative px-3 bg-white text-sm text-gray-500">
+                        Or
+                    </div>
+                </div>
+
+                <button class="w-full flex items-center justify-center px-4 py-3 border border-gray-300 rounded-lg shadow-sm bg-white text-gray-700 font-medium hover:bg-gray-50 transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    <svg class="w-5 h-5 mr-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+                        <path fill="#FFC107" d="M43.611 20.083H42V20H24v8h11.303c-1.649 4.657-6.08 8-11.303 8c-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4C12.955 4 4 12.955 4 24s8.955 20 20 20s20-8.955 20-20c0-1.341-.138-2.65-.389-3.917z"/>
+                        <path fill="#FF3D00" d="M6.306 14.691l6.571 4.819C14.655 15.108 18.961 12 24 12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4C16.318 4 9.656 8.337 6.306 14.691z"/>
+                        <path fill="#4CAF50" d="M24 44c5.166 0 9.86-1.977 13.409-5.192l-6.19-5.238C29.211 35.091 26.715 36 24 36c-5.223 0-9.64-3.657-11.303-8H6.306C9.656 39.663 16.318 44 24 44z"/>
+                        <path fill="#1976D2" d="M43.611 20.083H42V20H24v8h11.303c-.792 2.237-2.231 4.166-4.087 5.571l6.19 5.238C42.012 34.471 44 29.579 44 24c0-1.341-.138-2.65-.389-3.917z"/>
+                    </svg>
+                    Sign in with Google
+                </button>
+
+                <p class="text-center text-sm text-gray-600 pt-2">
+                    Don't have an account?
+                    <a href="{% url 'signup' %}" class="font-medium text-indigo-600 hover:text-indigo-500">
+                        Sign Up
+                    </a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- =========== Chatbot Icon (Bonus) =========== --><button class="fixed bottom-6 right-6 z-50 w-16 h-16 bg-gradient-to-r from-indigo-600 to-violet-700 text-white rounded-full shadow-xl flex items-center justify-center hover:scale-110 hover:shadow-2xl transition-all duration-300 transform focus:outline-none focus:ring-4 focus:ring-indigo-300 animate-pulse-live">
+        <span class="sr-only">Open AI Assistant</span>
+        <svg class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456zM16.898 20.624l-.218.682-.218-.682a3.375 3.375 0 00-2.455-2.456L13.5 17.25l.682-.218a3.375 3.375 0 002.455-2.456l.218-.682.218.682a3.375 3.375 0 002.456 2.456l.682.218-.682.218a3.375 3.375 0 00-2.456 2.456z" /></svg>
+    </button>
+    
+    <!-- AOS Initialization Script --><script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init({
+            duration: 1000,  // Animation duration
+            once: true,      // Whether animation should happen only once
+            offset: 80,      // Offset (in px) from the original trigger point
+        });
+
+        // Mobile Menu Toggle
+        const menuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const openIcon = document.getElementById('menu-open-icon');
+        const closeIcon = document.getElementById('menu-close-icon');
+
+        menuButton.addEventListener('click', () => {
+            const isOpen = mobileMenu.classList.contains('hidden');
+            mobileMenu.classList.toggle('hidden');
+            openIcon.classList.toggle('hidden', isOpen);
+            closeIcon.classList.toggle('hidden', !isOpen);
+        });
+
+        // Simple Navbar shrink on scroll
+        const navbar = document.getElementById('navbar');
+        window.onscroll = () => {
+            if (window.scrollY > 50) { // Increased threshold for subtle shrink
+                navbar.classList.add('shadow-xl');
+                navbar.classList.remove('shadow-lg');
+            } else {
+                navbar.classList.remove('shadow-xl');
+                navbar.classList.add('shadow-lg');
+            }
+        };
+
+        // --- Hero Tabs ---
+        const heroTabLearn = document.getElementById('hero-tab-learn');
+        const heroTabTeach = document.getElementById('hero-tab-teach');
+        const heroContentLearn = document.getElementById('hero-content-learn');
+        const heroContentTeach = document.getElementById('hero-content-teach');
+
+        heroTabLearn.addEventListener('click', () => {
+            heroTabLearn.classList.add('hero-tab-active');
+            heroTabLearn.classList.remove('text-indigo-600', 'hover:bg-indigo-100/70');
+            heroTabTeach.classList.remove('hero-tab-active');
+            heroTabTeach.classList.add('text-indigo-600', 'hover:bg-indigo-100/70');
+            heroContentLearn.classList.remove('hidden');
+            heroContentTeach.classList.add('hidden');
+        });
+
+        heroTabTeach.addEventListener('click', () => {
+            heroTabTeach.classList.add('hero-tab-active');
+            heroTabTeach.classList.remove('text-indigo-600', 'hover:bg-indigo-100/70');
+            heroTabLearn.classList.remove('hero-tab-active');
+            heroTabLearn.classList.add('text-indigo-600', 'hover:bg-indigo-100/70');
+            heroContentTeach.classList.remove('hidden');
+            heroContentLearn.classList.add('hidden');
+        });
+
+        // --- Feature Tabs ---
+        const featureTabs = document.querySelectorAll('.feature-tab');
+        const featureVisuals = document.querySelectorAll('.feature-visual');
+
+        featureTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const tabNumber = tab.dataset.tab;
+
+                // Update tab styles
+                featureTabs.forEach(t => {
+                    t.classList.remove('feature-tab-active');
+                    t.classList.add('border-transparent'); // Reset to transparent border
+                    // Reset icon color
+                    const icon = t.querySelector('svg');
+                    icon.classList.remove('text-indigo-700', 'text-violet-700', 'text-teal-700', 'text-rose-700');
+                    if(icon.classList.contains('text-violet-600') === false) icon.classList.add('text-violet-600');
+                    if(icon.classList.contains('text-teal-600') === false) icon.classList.add('text-teal-600');
+                    if(icon.classList.contains('text-rose-600') === false) icon.classList.add('text-rose-600');
+                });
+                
+                tab.classList.add('feature-tab-active'); // Apply active style
+                
+                // Apply specific active icon color based on tab number
+                const activeIcon = tab.querySelector('svg');
+                if (tabNumber === '1') activeIcon.classList.add('text-indigo-700');
+                if (tabNumber === '2') activeIcon.classList.add('text-violet-700');
+                if (tabNumber === '3') activeIcon.classList.add('text-teal-700');
+                if (tabNumber === '4') activeIcon.classList.add('text-rose-700');
+
+                // Show/hide visuals
+                featureVisuals.forEach(visual => {
+                    if (visual.dataset.tab === tabNumber) {
+                        visual.classList.remove('hidden');
+                    } else {
+                        visual.classList.add('hidden');
+                    }
+                });
+            });
+        });
+        
+        // --- NEW: FAQ Accordion ---
+        const faqItems = document.querySelectorAll('.faq-item');
+        faqItems.forEach(item => {
+            item.addEventListener('toggle', (event) => {
+                if (item.open) {
+                    // Close other open items
+                    faqItems.forEach(otherItem => {
+                        if (otherItem !== item && otherItem.open) {
+                            otherItem.open = false;
+                        }
+                    });
+                }
+            });
+        });
+
+        // --- NEW: Login Modal ---
+        const loginModal = document.getElementById('login-modal');
+        const modalContent = document.getElementById('modal-content');
+        const closeModalButton = document.getElementById('close-modal-button');
+        const modalOverlay = document.getElementById('modal-overlay');
+        const loginTriggers = document.querySelectorAll('.open-login-modal');
+
+        const openModal = () => {
+            loginModal.classList.remove('hidden');
+            // Small delay for animation
+            setTimeout(() => {
+                modalContent.classList.remove('scale-95', 'opacity-0');
+                modalContent.classList.add('scale-100', 'opacity-100');
+            }, 50);
+        };
+
+        const closeModal = () => {
+            modalContent.classList.add('scale-95', 'opacity-0');
+            modalContent.classList.remove('scale-100', 'opacity-100');
+            // Wait for animation before hiding
+            setTimeout(() => {
+                loginModal.classList.add('hidden');
+            }, 300); // Match CSS transition duration
+        };
+
+        // Event listener for all login triggers
+        loginTriggers.forEach(trigger => {
+            trigger.addEventListener('click', (e) => {
+                e.preventDefault(); // Prevent page jump
+                openModal();
+            });
+        });
+
+        // Close modal listeners
+        closeModalButton.addEventListener('click', closeModal);
+        modalOverlay.addEventListener('click', closeModal);
+
+        // Prevent closing when clicking inside the modal content
+        modalContent.addEventListener('click', (e) => {
+            e.stopPropagation();
+        });
+
+    </script>
+
+</body>
+</html>
+

@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>CommunityHub - Explore</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#17cf54",
+            "background-light": "#f6f8f6",
+            "background-dark": "#112116",
+          },
+          fontFamily: {
+            "display": ["Public Sans", "sans-serif"]
+          },
+          borderRadius: {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings:
+        'FILL' 0,
+        'wght' 400,
+        'GRAD' 0,
+        'opsz' 24
+    }
+    /* Voice Navigation Styles */
+    #voice-mic-btn {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: var(--color-teal-500);
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(var(--color-teal-500-rgb), 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s;
+      z-index: 1000;
+    }
+
+    #voice-mic-btn:hover {
+      transform: scale(1.1);
+      background: var(--color-teal-600);
+    }
+
+    #voice-mic-btn.listening {
+      background: var(--color-green-500);
+      animation: voice-pulse 1s infinite;
+    }
+
+    @keyframes voice-pulse {
+      0%, 100% { box-shadow: 0 4px 12px rgba(34, 197, 94, 0.5); }
+      50% { box-shadow: 0 4px 25px rgba(34, 197, 94, 0.8); }
+    }
+
+    #voice-mic-btn svg {
+      width: 24px;
+      height: 24px;
+      fill: var(--color-white);
+    }
+
+    #voice-status {
+      position: fixed;
+      bottom: 100px;
+      right: 30px;
+      background: var(--color-surface);
+      padding: 15px 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(var(--color-slate-900-rgb), 0.15);
+      border: 1px solid var(--color-card-border);
+      display: none;
+      min-width: 250px;
+      max-width: 350px;
+      z-index: 999;
+      font-size: 14px;
+      color: var(--color-text);
+    }
+
+    #voice-status.show {
+      display: block;
+    }
+     #mic-btn {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: #007bff;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s;
+      z-index: 1000;
+    }
+
+    #mic-btn:hover {
+      transform: scale(1.1);
+    }
+
+    #mic-btn.listening {
+      background: #28a745;
+      animation: pulse 1s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 4px 12px rgba(40, 167, 69, 0.5); }
+      50% { box-shadow: 0 4px 25px rgba(40, 167, 69, 0.8); }
+    }
+
+    #mic-btn svg {
+      width: 24px;
+      height: 24px;
+      fill: white;
+    }
+
+    #status {
+      position: fixed;
+      bottom: 100px;
+      right: 30px;
+      background: white;
+      padding: 15px 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+      display: none;
+      min-width: 250px;
+      max-width: 350px;
+      z-index: 999;
+      font-size: 14px;
+    }
+
+    #status.show {
+      display: block;
+    }
+
+    .command-list {
+      max-width: 800px;
+      margin: 20px auto;
+    }
+
+    .command-section {
+      margin-bottom: 20px;
+      padding: 15px;
+      background: #f8f9fa;
+      border-radius: 8px;
+    }
+
+    .command-section h3 {
+      margin-top: 0;
+      color: #007bff;
+    }
+
+    .command-section ul {
+      margin: 10px 0;
+    }
+
+    .command-section li {
+      margin: 5px 0;
+    }
+  </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-[#111813] dark:text-white/90">
+<div class="relative flex min-h-screen w-full flex-col">
+<!-- TopNavBar -->
+<header class="sticky top-0 z-50 flex items-center justify-center border-b border-gray-200/50 dark:border-white/10 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-sm">
+<nav class="flex w-full max-w-7xl items-center justify-between whitespace-nowrap px-6 py-3">
+<div class="flex items-center gap-8">
+<a class="flex items-center gap-3 text-[#111813] dark:text-white" href="#">
+<svg class="size-6 text-primary" fill="none" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_6_330)">
+<path clip-rule="evenodd" d="M24 0.757355L47.2426 24L24 47.2426L0.757355 24L24 0.757355ZM21 35.7574V12.2426L9.24264 24L21 35.7574Z" fill="currentColor" fill-rule="evenodd"></path>
+</g>
+<defs>
+<clippath id="clip0_6_330"><rect fill="white" height="48" width="48"></rect></clippath>
+</defs>
+</svg>
+<h2 class="text-lg font-bold tracking-[-0.015em]">CommunityHub</h2>
+</a>
+<div class="hidden items-center gap-8 md:flex">
+<a class="text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors" href="{% url 'dashboard' %}">Home</a>
+<a class="text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors" href="{% url 'projects' %}">Projects</a>
+<a class="text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors" href="{% url 'events' %}">Events</a>
+<a class="text-sm font-bold text-primary" href="{% url 'explore' %}">Explore</a>
+<a class="text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors" href="{% url 'resources' %}">Resources</a>
+</div>
+</div>
+<div class="flex flex-1 items-center justify-end gap-3">
+<label class="relative hidden sm:flex min-w-40 max-w-64">
+<div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+<span class="material-symbols-outlined text-gray-500 dark:text-gray-400">search</span>
+</div>
+<input class="form-input h-10 w-full rounded-lg border-none bg-black/5 dark:bg-white/5 pl-10 pr-4 text-sm text-[#111813] dark:text-white/90 placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/50" placeholder="Search..." value=""/>
+</label>
+<button class="flex h-10 w-10 cursor-pointer items-center justify-center overflow-hidden rounded-lg bg-black/5 text-[#111813] dark:bg-white/5 dark:text-white/90">
+<span class="material-symbols-outlined text-2xl">notifications</span>
+</button>
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="User avatar image" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuB5lJ8rPwyNAAPleZWHqEtVQoVkhhyiRn2sFXxy14DtRdoqrxtseQP3pe-547z8zDU9KleRpNtYbdH16_IQMhfGv7YGje-AfN2e-Fns0uKpRX7gGTVooSpe2prxm8aWt2ofbKEF00xJQE2qpLfjswGT-Xx4JlQRPehKmZKV5oQCnRQl-DLPx7zohYJYroc1BDrurADrFiPlYGQhh1suW81Lkc2v0QbK5wYkIYXLLS-GJIxPn-MUYxrDu14vIa2yA9BorLlxHcFNjEg");'></div>
+</div>
+</nav>
+</header>
+<!-- Main Content -->
+<main class="flex flex-1 justify-center py-10 px-6">
+<div class="w-full max-w-7xl">
+<!-- PageHeading -->
+<div class="mb-8">
+<h1 class="text-4xl font-black leading-tight tracking-tight text-[#111813] dark:text-white">Explore Our Community</h1>
+<p class="mt-2 text-base font-normal text-gray-600 dark:text-gray-400">Find and connect with members and local groups to get involved.</p>
+</div>
+<!-- Tabs -->
+<div class="border-b border-gray-200/80 dark:border-white/10">
+<div class="flex gap-8">
+<a class="flex flex-col items-center justify-center border-b-[3px] border-primary pb-3 pt-1" href="#">
+<p class="text-sm font-bold text-primary">Members</p>
+</a>
+<a class="group flex flex-col items-center justify-center border-b-[3px] border-transparent pb-3 pt-1" href="#">
+<p class="text-sm font-bold text-gray-500 dark:text-gray-400 group-hover:text-primary dark:group-hover:text-primary transition-colors">Groups</p>
+</a>
+</div>
+</div>
+<!-- Toolbar -->
+<div class="flex flex-wrap items-center justify-between gap-4 py-4">
+<div class="flex gap-2">
+<button class="flex h-10 items-center gap-2 rounded-lg bg-black/5 px-4 text-sm font-medium text-[#111813] dark:bg-white/5 dark:text-white/90 hover:bg-black/10 dark:hover:bg-white/10 transition-colors">
+<span class="material-symbols-outlined text-xl">sort</span>
+              Sort
+            </button>
+<button class="flex h-10 items-center gap-2 rounded-lg bg-black/5 px-4 text-sm font-medium text-[#111813] dark:bg-white/5 dark:text-white/90 hover:bg-black/10 dark:hover:bg-white/10 transition-colors">
+<span class="material-symbols-outlined text-xl">filter_list</span>
+              Filter
+            </button>
+</div>
+<p class="text-sm text-gray-500 dark:text-gray-400">Showing 12 of 142 members</p>
+</div>
+<!-- ImageGrid (Member Cards) -->
+<div class="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+<div class="group flex cursor-pointer flex-col items-center gap-4 rounded-xl border border-gray-200/80 dark:border-white/10 bg-white dark:bg-background-dark p-6 shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg dark:shadow-black/20">
+<div class="bg-cover bg-center rounded-full size-24" data-alt="Profile picture of Alex Johnson" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBt4Py7t5DWE49NxNB-o1I_OxQ5GMkvfBj3QoR3EZdlyS03Kvnm20iA4c2fLm7dOe3wiZtctettBeIS6FjaVb3uOBI5hz2EonNshuWGDRQnzgBGNszRnwNkmVbz3u25s9mXujlZihQGRyxlk4Wko-369LYIStDdhgv2x6H7ODffjb74az8eJDl_GOGMQSu2lPFokkEAj3uyZWxsTy9NKQMwChbJIyGx7Yfrcgv-dajHL37abWL_NjZ9nEWFXXA1n-7467d525EzIyw");'></div>
+<div class="text-center">
+<p class="text-lg font-bold text-[#111813] dark:text-white">Alex Johnson</p>
+<p class="text-sm text-gray-500 dark:text-gray-400">Joined 2 months ago</p>
+</div>
+<div class="flex flex-wrap justify-center gap-2">
+<span class="rounded-full bg-primary/20 px-3 py-1 text-xs font-medium text-primary-darker dark:text-primary">Gardening</span>
+<span class="rounded-full bg-primary/20 px-3 py-1 text-xs font-medium text-primary-darker dark:text-primary">DIY</span>
+</div>
+</div>
+<div class="group flex cursor-pointer flex-col items-center gap-4 rounded-xl border border-gray-200/80 dark:border-white/10 bg-white dark:bg-background-dark p-6 shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg dark:shadow-black/20">
+<div class="bg-cover bg-center rounded-full size-24" data-alt="Profile picture of Maria Garcia" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCKcBVPzvkC7ocJ3Cel0KMEtrzcWS8q7TvAPw6FoIxVVdfiy7oWOxmYCYv7qW8Lj2h-bAxc2c9tEBTvc1f__ElRjPu8rwikx6z-U3TpCbcQOG9_XjbatyqL6kYEWAuUpjMxspStB2BqVSfBFRE6LaQApkUrfC4HHMfYultWHQlR9zAkKe0ZMVoMzAZJjVNX3dZTsaAzi-o1MJ-6h8macTEZvbAnhhX-QzR9DZQYtC5wdy-gpaPsv8WnrueAVRaCEt52VF6Rg9yFqUY");'></div>
+<div class="text-center">
+<p class="text-lg font-bold text-[#111813] dark:text-white">Maria Garcia</p>
+<p class="text-sm text-gray-500 dark:text-gray-400">Joined 1 year ago</p>
+</div>
+<div class="flex flex-wrap justify-center gap-2">
+<span class="rounded-full bg-primary/20 px-3 py-1 text-xs font-medium text-primary-darker dark:text-primary">Event Planning</span>
+<span class="rounded-full bg-primary/20 px-3 py-1 text-xs font-medium text-primary-darker dark:text-primary">Cooking</span>
+</div>
+</div>
+<div class="group flex cursor-pointer flex-col items-center gap-4 rounded-xl border border-gray-200/80 dark:border-white/10 bg-white dark:bg-background-dark p-6 shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg dark:shadow-black/20">
+<div class="bg-cover bg-center rounded-full size-24" data-alt="Profile picture of David Chen" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAKhvZlFiNkHwYasnt1blpRVyYykIMaKykrkrjtRtFFGia6X2BQWXfyWQpEIRQmJJcdyeuMRathsLE03LvsXYRZw2gSQtf-VO9FtZXQ0-2q67FFNRVdNEH5ULFZzz0I6MNLf7O-0jcKzXKNl5TzDOCvPcyTwu8vs7qQlRUspIvJ8f46xV40L3brF-O5Us0gZdacv4PUpfdcznPDeBoUhCS-M8H7tBZw7o_ESPJN3-hwt468QMadXja4DagAno2HOgZkrHTyxfU8ELc");'></div>
+<div class="text-center">
+<p class="text-lg font-bold text-[#111813] dark:text-white">David Chen</p>
+<p class="text-sm text-gray-500 dark:text-gray-400">Joined 3 weeks ago</p>
+</div>
+<div class="flex flex-wrap justify-center gap-2">
+<span class="rounded-full bg-primary/20 px-3 py-1 text-xs font-medium text-primary-darker dark:text-primary">Tutoring</span>
+<span class="rounded-full bg-primary/20 px-3 py-1 text-xs font-medium text-primary-darker dark:text-primary">Coding</span>
+</div>
+</div>
+<div class="group flex cursor-pointer flex-col items-center gap-4 rounded-xl border border-gray-200/80 dark:border-white/10 bg-white dark:bg-background-dark p-6 shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg dark:shadow-black/20">
+<div class="bg-cover bg-center rounded-full size-24" data-alt="Profile picture of Sarah Lee" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCVWT1fd87GKjl_7LJi1S6ak5fAXl2HlLKAGqxtdgJPmehJAUWvGgqEICPeJ65GP-zPybiNGtl2vuTmusBb30HgWN55Ev7TY_AhJhQGVZluy6Tem3kf0t99JDMXu9IPfuOSskZwXPpL5vSNTi1S_jvXhPF-xJuPJgspk3ykQjWVQ5c5B1tIFq7ky_okHaCGxS_DUt5j3P3nVXnq_q2989a7wdhgzvZiZuuOenKl8exFnWdUdl18yQvuElOoDyBayuQJej1xo-0CYGE");'></div>
+<div class="text-center">
+<p class="text-lg font-bold text-[#111813] dark:text-white">Sarah Lee</p>
+<p class="text-sm text-gray-500 dark:text-gray-400">Joined 6 months ago</p>
+</div>
+<div class="flex flex-wrap justify-center gap-2">
+<span class="rounded-full bg-primary/20 px-3 py-1 text-xs font-medium text-primary-darker dark:text-primary">Graphic Design</span>
+</div>
+</div>
+<div class="group flex cursor-pointer flex-col items-center gap-4 rounded-xl border border-gray-200/80 dark:border-white/10 bg-white dark:bg-background-dark p-6 shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg dark:shadow-black/20">
+<div class="bg-cover bg-center rounded-full size-24" data-alt="Profile picture of Michael Brown" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuD2OLu0FgFPrARKec3D16Im2Vb-K33nvUG12dgDU0YoyTx-2yIvC0GpxBeP_w-5gREtdBTVTb9hxaPOmssuPyfu1N8uly9X8vUWQqapQ-MmdMXGL0afnDJtEEbvV2FhIof7dYziK4SJZt9D_f4fMLCH2Imyw85Epc5yA5nn1zM5uVgFvYDqE7BJFPIXWbmhDCN-6uo-6_9gEvlM12m8Ke6zGfkWdhEDBTbNiM9ZhvCjsuk7eO2PNzzSInlWTfiGQKH_e8PLmmA3u20");'></div>
+<div class="text-center">
+<p class="text-lg font-bold text-[#111813] dark:text-white">Michael Brown</p>
+<p class="text-sm text-gray-500 dark:text-gray-400">Joined 2 years ago</p>
+</div>
+<div class="flex flex-wrap justify-center gap-2">
+<span class="rounded-full bg-primary/20 px-3 py-1 text-xs font-medium text-primary-darker dark:text-primary">Carpentry</span>
+<span class="rounded-full bg-primary/20 px-3 py-1 text-xs font-medium text-primary-darker dark:text-primary">Volunteering</span>
+</div>
+</div>
+<div class="group flex cursor-pointer flex-col items-center gap-4 rounded-xl border border-gray-200/80 dark:border-white/10 bg-white dark:bg-background-dark p-6 shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg dark:shadow-black/20">
+<div class="bg-cover bg-center rounded-full size-24" data-alt="Profile picture of Jessica Williams" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBk783U0bLig30ZYGpvqJye_azUoGDjEDwSu04sr1Ma0ja2_OQc7N8aG9PHr3dMl3Y-c2noE_9EMH5zS8_0VzG68h-tIivgivSFo6Vqdx6wrFiNDpJOaKiL5FcnvMQWVCOvB3ve_1V2NbUwMYyoHhMUkwxskaEQtabKLCVQH6Jcq_88E4O6IPSocbM6ypwQRWg-ATsoHuM1x8OTiAeAV5mj570aatIbRpwRUfXKb3XY74Wn1IWh9YSl1YoIV_7Q9EavWy5q9ISeAI4");'></div>
+<div class="text-center">
+<p class="text-lg font-bold text-[#111813] dark:text-white">Jessica Williams</p>
+<p class="text-sm text-gray-500 dark:text-gray-400">Joined 5 days ago</p>
+</div>
+<div class="flex flex-wrap justify-center gap-2">
+<span class="rounded-full bg-primary/20 px-3 py-1 text-xs font-medium text-primary-darker dark:text-primary">Yoga</span>
+<span class="rounded-full bg-primary/20 px-3 py-1 text-xs font-medium text-primary-darker dark:text-primary">Meditation</span>
+</div>
+</div>
+<div class="group flex cursor-pointer flex-col items-center gap-4 rounded-xl border border-gray-200/80 dark:border-white/10 bg-white dark:bg-background-dark p-6 shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg dark:shadow-black/20">
+<div class="bg-cover bg-center rounded-full size-24" data-alt="Profile picture of Chris Miller" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBMq_3l9BnD4NVVX9ATonjROvOfVMtHc7W8o7HvLWgsoBJTdhniUGLzO8i6FcarNFRBFOMxwW2MVqYtTLjCSZuzl19UmnoXxYzOpWQkinuOLGivdip6u6PYars4sfUJ1KgOvTrtLoYeOA65_SQ6WrW3EZV89JS5fjhjMgSGjJ5gI_MWVr9dIsl0jmeDpVgJrQnusSaytOOfTOHHeDLyIniMsN_O39ax2YoD6yv1Eql_E-8Zn7GzJIj30qk51Y9DV6L7z_zzP5lsaDw");'></div>
+<div class="text-center">
+<p class="text-lg font-bold text-[#111813] dark:text-white">Chris Miller</p>
+<p class="text-sm text-gray-500 dark:text-gray-400">Joined 8 months ago</p>
+</div>
+<div class="flex flex-wrap justify-center gap-2">
+<span class="rounded-full bg-primary/20 px-3 py-1 text-xs font-medium text-primary-darker dark:text-primary">Music</span>
+<span class="rounded-full bg-primary/20 px-3 py-1 text-xs font-medium text-primary-darker dark:text-primary">Fundraising</span>
+</div>
+</div>
+<div class="group flex cursor-pointer flex-col items-center gap-4 rounded-xl border border-gray-200/80 dark:border-white/10 bg-white dark:bg-background-dark p-6 shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg dark:shadow-black/20">
+<div class="bg-cover bg-center rounded-full size-24" data-alt="Profile picture of Emily Davis" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCi55svqIZwLbOr3YyIhOf-gHEeUeMdhPc1W-jIMfKx8ljdOgTb-nyAV48YpoxZBK9TqbVnUNQ8w9xwOgMRmJQQF3Cm2HqTC6tZUZh8ljkX6vn5KhLlVZmIrgZUWLMcRSib_DfN3v2heqfi-kmgQRZdOtX9mRIuIIlJ8TYWrQnVcHBT4vtJYgKeeqpiJ9muu2_h0tM3_2cysUt0mxjWNrzp9jQRWO1XFb2PFSEz9CRBHD5TtdnorXhuHMakGV_xhfI3g5AUFmBF0RA");'></div>
+<div class="text-center">
+<p class="text-lg font-bold text-[#111813] dark:text-white">Emily Davis</p>
+<p class="text-sm text-gray-500 dark:text-gray-400">Joined 4 months ago</p>
+</div>
+<div class="flex flex-wrap justify-center gap-2">
+<span class="rounded-full bg-primary/20 px-3 py-1 text-xs font-medium text-primary-darker dark:text-primary">Writing</span>
+<span class="rounded-full bg-primary/20 px-3 py-1 text-xs font-medium text-primary-darker dark:text-primary">Photography</span>
+</div>
+</div>
+</div>
+<!-- Pagination -->
+<div class="mt-10 flex justify-center">
+<nav class="flex items-center gap-2">
+<a class="flex h-10 w-10 items-center justify-center rounded-lg text-gray-500 dark:text-gray-400 hover:bg-black/5 dark:hover:bg-white/5 transition-colors" href="#">
+<span class="material-symbols-outlined text-2xl">chevron_left</span>
+</a>
+<a class="flex h-10 w-10 items-center justify-center rounded-lg bg-primary text-sm font-bold text-white" href="#">1</a>
+<a class="flex h-10 w-10 items-center justify-center rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-black/5 dark:hover:bg-white/5 transition-colors" href="#">2</a>
+<a class="flex h-10 w-10 items-center justify-center rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-black/5 dark:hover:bg-white/5 transition-colors" href="#">3</a>
+<span class="flex h-10 w-10 items-center justify-center text-sm font-medium text-gray-500 dark:text-gray-400">...</span>
+<a class="flex h-10 w-10 items-center justify-center rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-black/5 dark:hover:bg-white/5 transition-colors" href="#">12</a>
+<a class="flex h-10 w-10 items-center justify-center rounded-lg text-gray-500 dark:text-gray-400 hover:bg-black/5 dark:hover:bg-white/5 transition-colors" href="#">
+<span class="material-symbols-outlined text-2xl">chevron_right</span>
+</a>
+</nav>
+</div>
+</div>
+</main>
+</div>
+<div id="status"></div>
+
+  <button id="mic-btn">
+    <svg viewBox="0 0 24 24">
+      <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/>
+      <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/>
+    </svg>
+  </button>
+
+  <script>
+    const micBtn = document.getElementById('mic-btn');
+    const status = document.getElementById('status');
+
+    // Route configuration with multiple keyword variations
+    const ROUTES = {
+      // Main pages
+      home: {
+        path: '/index',
+        keywords: ['home', 'homepage', 'main page', 'start'],
+        display: 'Home'
+      },
+      dashboard: {
+        path: '/dashboard',
+        keywords: ['dashboard', 'overview', 'main'],
+        display: 'Dashboard'
+      },
+      
+      // Booking
+      booking: {
+        path: '/mybookings',
+        keywords: ['booking', 'book', 'appointment', 'schedule', 'session', 'reserve'],
+        display: 'Booking'
+      },
+      myBookings: {
+        path: '/mybookings',
+        keywords: ['my booking', 'scheduled', 'my session', 'my appointment'],
+        display: 'My Bookings'
+      },
+      
+      // Community & Communication
+      community: {
+        path: '/feed',
+        keywords: ['community', 'community page', 'members', 'network'],
+        display: 'Community'
+      },
+      chat: {
+        path: '/index',
+        keywords: ['chat', 'message', 'inbox', 'conversation', 'dm'],
+        display: 'Chat'
+      },
+      skillSwap: {
+        path: '/swap',
+        keywords: ['skill swap', 'swap', 'exchange', 'trade skill'],
+        display: 'Skill Swap'
+      },
+      
+      // Resources
+      resources: {
+        path: '/resources',
+        keywords: ['resource', 'learning resource', 'material', 'content'],
+        display: 'Resources'
+      },
+      
+      
+      // Skill Credits
+      skillCredits: {
+        path: '/credits',
+        keywords: ['skill credit', 'credit', 'wallet', 'balance', 'my credit'],
+        display: 'Skill Credits'
+      },
+      earnCredits: {
+        path: '/credits',
+        keywords: ['earn credit', 'get credit', 'buy credit', 'purchase credit'],
+        display: 'Earn Credits'
+      },
+      
+      // Profile & Settings
+      myProfile: {
+        path: '{% url 'profile' %}',
+        keywords: ['my profile', 'profile page', 'my account','profile','my account'],
+        display: 'My Profile'
+      },
+     
+      
+      // Auth
+      login: {
+        path: '/index',
+        keywords: ['login', 'sign in', 'log in'],
+        display: 'Login'
+      },
+      signup: {
+        path: '/signup',
+        keywords: ['signup', 'sign up', 'register', 'create account', 'join'],
+        display: 'Sign Up'
+      },
+      
+      map: {
+        path: '/map',
+        keywords: ['map', 'location', 'directions', 'find','nearby'],
+        display: 'Map'
+      },
+
+      logout: {
+        path: '/index',
+        keywords: ['logout', 'log out', 'sign out'],
+        display: 'Logout'
+      }
+    };
+
+    // Profile routes
+    const PROFILES = {
+      rohanGupta: {
+        path: '/profile/rohan-gupta',
+        keywords: ['rohan', 'rohan gupta', 'gupta'],
+        display: 'Rohan Gupta'
+      },
+      kritiSreyash: {
+        path: '/profile/kriti-sreyash',
+        keywords: ['kriti', 'kriti sreyash', 'sreyash'],
+        display: 'Kriti Sreyash'
+      },
+      aditya: {
+        path: '/profile/aditya',
+        keywords: ['aditya'],
+        display: 'Aditya'
+      },
+      soumya: {
+        path: '/profile/soumya',
+        keywords: ['soumya'],
+        display: 'Soumya'
+      }
+    };
+
+    // Check browser support
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const SpeechSynthesis = window.speechSynthesis;
+    
+    if (!SpeechRecognition) {
+      alert('Voice recognition not supported. Use Chrome or Edge browser.');
+    } else {
+      const recognition = new SpeechRecognition();
+      recognition.lang = 'en-US';
+      recognition.interimResults = false;
+
+      // Function to speak text (voice feedback)
+      function speak(text) {
+        if (SpeechSynthesis) {
+          // Cancel any ongoing speech
+          SpeechSynthesis.cancel();
+          
+          const utterance = new SpeechSynthesisUtterance(text);
+          utterance.rate = 1.1;
+          utterance.pitch = 1;
+          utterance.volume = 1;
+          SpeechSynthesis.speak(utterance);
+        }
+      }
+
+      // Function to match command to route
+      function matchCommand(command) {
+        const lowerCommand = command.toLowerCase().trim();
+        
+        // Check profiles first (more specific)
+        for (const [key, profile] of Object.entries(PROFILES)) {
+          for (const keyword of profile.keywords) {
+            if (lowerCommand.includes(keyword)) {
+              return { path: profile.path, display: profile.display, type: 'profile' };
+            }
+          }
+        }
+        
+        // Check general routes
+        for (const [key, route] of Object.entries(ROUTES)) {
+          for (const keyword of route.keywords) {
+            if (lowerCommand.includes(keyword)) {
+              return { path: route.path, display: route.display, type: 'route' };
+            }
+          }
+        }
+        
+        return null;
+      }
+
+      micBtn.addEventListener('click', () => {
+        recognition.start();
+        micBtn.classList.add('listening');
+        status.textContent = '🎤 Listening...';
+        status.classList.add('show');
+      });
+
+      recognition.onresult = (event) => {
+        const command = event.results[0][0].transcript;
+        console.log('Heard:', command);
+        
+        status.textContent = `Heard: "${command}"`;
+        micBtn.classList.remove('listening');
+
+        const match = matchCommand(command);
+
+        if (match) {
+          const message = `Opening ${match.display}`;
+          status.textContent = `✅ ${message}`;
+          
+          // Voice feedback
+          speak(message);
+          
+          setTimeout(() => {
+            window.location.href = match.path;
+          }, 1500);
+        } else {
+          const errorMsg = 'Command not recognized. Please try again.';
+          status.textContent = `❌ ${errorMsg}`;
+          speak(errorMsg);
+          
+          setTimeout(() => {
+            status.classList.remove('show');
+          }, 2500);
+        }
+      };
+
+      recognition.onerror = (event) => {
+        micBtn.classList.remove('listening');
+        let errorMsg = '';
+        
+        if (event.error === 'no-speech') {
+          errorMsg = 'No speech detected. Please try again.';
+        } else if (event.error === 'not-allowed') {
+          errorMsg = 'Microphone access denied. Please allow microphone permissions.';
+        } else {
+          errorMsg = `Error: ${event.error}`;
+        }
+        
+        status.textContent = `❌ ${errorMsg}`;
+        
+        setTimeout(() => {
+          status.classList.remove('show');
+        }, 3000);
+      };
+
+      recognition.onend = () => {
+        micBtn.classList.remove('listening');
+      };
+    }
+  </script>
+</body></html>

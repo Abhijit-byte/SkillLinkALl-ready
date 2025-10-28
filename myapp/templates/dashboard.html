@@ -1,0 +1,1807 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>SkillLink Dashboard</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        // NEW SkillLink Color Palette
+                        "primary": "#0B6FFF", // Electric Blue
+                        "primary-light": "#E6F0FF",
+                        "accent": "#FF6B6B", // Coral Accent (using a vibrant coral)
+                        "accent-light": "#FFF0F0",
+                        "success": "#34D399",
+                        "warning": "#F5A623",
+
+                        // Backgrounds & Text
+                        "background-light": "#F8F9FA",
+                        "background-dark": "#111827", // Darker BG
+                        "text-light": "#1F2937",
+                        "text-dark": "#F3F4F6",
+                        "muted-light": "#6B7280",
+                        "muted-dark": "#9CA3AF",
+                        "card-light": "#FFFFFF",
+                        "card-dark": "#1F2937",
+                        "border-light": "#E5E7EB",
+                        "border-dark": "#374151",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "0.75rem",
+                        "xl": "1rem",
+                        "full": "9999px"
+                    },
+                    boxShadow: {
+                        'card': '0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05)',
+                        'card-hover': '0 10px 15px -3px rgb(0 0 0 / 0.07), 0 4px 6px -4px rgb(0 0 0 / 0.07)'
+                    },
+                },
+            },
+        }
+    </script>
+    <style>
+        /* Base transition for smooth dark mode and background changes */
+        body, .bg-card-light, .bg-card-dark, .bg-background-light, .bg-background-dark, .border-border-light, .border-border-dark {
+             transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings:
+                'FILL' 0,
+                'wght' 400,
+                'GRAD' 0,
+                'opsz' 24;
+            font-size: 20px;
+        }
+
+        /* For Calendar */
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+        }
+        .calendar-day {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 32px;
+            height: 32px;
+            font-size: 0.875rem;
+             /* Add transition */
+            transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+        }
+        .calendar-day:not(.font-bold):hover {
+            background-color: theme('colors.primary-light');
+            color: theme('colors.primary');
+            border-radius: 9999px;
+            transform: scale(1.1);
+        }
+        .dark .calendar-day:not(.font-bold):hover {
+            background-color: theme('colors.primary / 20%');
+        }
+
+        .calendar-day-dot {
+            position: absolute;
+            bottom: 4px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 5px;
+            height: 5px;
+            border-radius: 99px;
+        }
+
+        /* For Tabs */
+        [role="tabpanel"] { display: none; }
+        [role="tabpanel"][aria-hidden="false"] { display: block; }
+
+        /* Accessibility */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+        }
+        :focus-visible {
+            outline: 3px solid #0B6FFF !important;
+            outline-offset: 2px;
+            border-radius: 4px;
+        }
+
+        /* Leaflet Map Height */
+        #skillmap-preview {
+            height: 200px;
+            border-radius: 0.75rem;
+            z-index: 0;
+        }
+
+        /* --- ANIMATION ADDITIONS --- */
+
+        /* Page Load Animations */
+        .animate__animated {
+            --animate-duration: 800ms;
+        }
+        .animate__faster {
+            --animate-duration: 500ms;
+        }
+
+        /* 1. Progress bar fill animation */
+        .progress-bar-inner {
+            width: var(--progress-width, 0%);
+            /* Animate the width, starting after a 300ms delay */
+            transition: width 1s ease-out 0.3s;
+        }
+
+        /* 2. Notification Bell Shake on Hover */
+        @keyframes shake {
+            10%, 90% { transform: translate3d(-1px, 0, 0); }
+            20%, 80% { transform: translate3d(2px, 0, 0); }
+            30%, 50%, 70% { transform: translate3d(-3px, 0, 0); }
+            40%, 60% { transform: translate3d(3px, 0, 0); }
+        }
+        #notification-button:hover .material-symbols-outlined {
+            animation: shake 0.8s cubic-bezier(.36,.07,.19,.97) both;
+        }
+
+        /* 3. Quick Action Icon "Pop" on Hover */
+        #quick-actions-grid button .material-symbols-outlined {
+            transition: transform 0.3s ease;
+        }
+        #quick-actions-grid button:hover .material-symbols-outlined {
+            transform: scale(1.2) rotate(-8deg);
+        }
+
+        /* 4. Button Click Feedback (Active State) */
+        #quick-actions-grid button:active,
+        #upcoming-booking-card button:active,
+        #create-listing-form button:active,
+        .gamification-donate-btn:active {
+            /* Reset hover lift but add scale-down for click */
+            transform: scale(0.96) translateY(0);
+            transition-duration: 0.1s;
+        }
+
+        /* 5. Staggered List Item Entry */
+        .stagger-item {
+            opacity: 0; /* Start hidden, JS will add animation */
+        }
+        /* Voice Navigation Styles */
+    #voice-mic-btn {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: var(--color-teal-500);
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(var(--color-teal-500-rgb), 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s;
+      z-index: 1000;
+    }
+
+    #voice-mic-btn:hover {
+      transform: scale(1.1);
+      background: var(--color-teal-600);
+    }
+
+    #voice-mic-btn.listening {
+      background: var(--color-green-500);
+      animation: voice-pulse 1s infinite;
+    }
+
+    @keyframes voice-pulse {
+      0%, 100% { box-shadow: 0 4px 12px rgba(34, 197, 94, 0.5); }
+      50% { box-shadow: 0 4px 25px rgba(34, 197, 94, 0.8); }
+    }
+
+    #voice-mic-btn svg {
+      width: 24px;
+      height: 24px;
+      fill: var(--color-white);
+    }
+
+    #voice-status {
+      position: fixed;
+      bottom: 100px;
+      right: 30px;
+      background: var(--color-surface);
+      padding: 15px 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(var(--color-slate-900-rgb), 0.15);
+      border: 1px solid var(--color-card-border);
+      display: none;
+      min-width: 250px;
+      max-width: 350px;
+      z-index: 999;
+      font-size: 14px;
+      color: var(--color-text);
+    }
+
+    #voice-status.show {
+      display: block;
+    }
+     #mic-btn {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: #007bff;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s;
+      z-index: 1000;
+    }
+
+    #mic-btn:hover {
+      transform: scale(1.1);
+    }
+
+    #mic-btn.listening {
+      background: #28a745;
+      animation: pulse 1s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 4px 12px rgba(40, 167, 69, 0.5); }
+      50% { box-shadow: 0 4px 25px rgba(40, 167, 69, 0.8); }
+    }
+
+    #mic-btn svg {
+      width: 24px;
+      height: 24px;
+      fill: white;
+    }
+
+    #status {
+      position: fixed;
+      bottom: 100px;
+      right: 30px;
+      background: white;
+      padding: 15px 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+      display: none;
+      min-width: 250px;
+      max-width: 350px;
+      z-index: 999;
+      font-size: 14px;
+    }
+
+    #status.show {
+      display: block;
+    }
+
+    .command-list {
+      max-width: 800px;
+      margin: 20px auto;
+    }
+
+    .command-section {
+      margin-bottom: 20px;
+      padding: 15px;
+      background: #f8f9fa;
+      border-radius: 8px;
+    }
+
+    .command-section h3 {
+      margin-top: 0;
+      color: #007bff;
+    }
+
+    .command-section ul {
+      margin: 10px 0;
+    }
+
+    .command-section li {
+      margin: 5px 0;
+    }
+    </style>
+</head>
+
+<body class="font-display bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark">
+
+    <div class="relative flex h-auto min-h-screen w-full flex-col">
+
+        <header
+            class="sticky top-0 z-30 w-full border-b border-border-light dark:border-border-dark bg-card-light/90 dark:bg-card-dark/90 backdrop-blur-sm animate__animated animate__fadeInDown">
+            <div class="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8 py-3 h-16">
+
+                <div class="flex items-center gap-3">
+                    <img id="header-avatar" alt="User avatar" class="h-9 w-9 rounded-full object-cover hidden sm:block"
+                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuADMoww-ftLIkcxLFS2FLVQ7ylcQRxTJ7dUTGJlDa-czQMv7C6H0xyijgN2VPl8WyxA1NiBCcFLyxx8Ab5AyePQbfp4riIhqyqr2eMiVGALmQX867Qq4kXFyZNNSbXzoOqFckEV1wONjgFUha0mcRufW_r-jgX_oiSywCRtngdMqTMv4HbaYzzV-4OxOtdNzjCQI4Yjx0ln05g_iip2FETSO2W-SOyxxN2dI7_p9gMqVwmUFDZItUEh-SrcbcNHjCoG1nMKGESP4Fc" />
+                    <div>
+                        <h1 class="text-base font-bold text-text-light dark:text-text-dark">Good morning, <span id="header-username">User/span></h1>
+                        <div class="flex items-center gap-1.5">
+                             <div class="h-2 w-2 rounded-full bg-success"></div>
+                             <p class="text-xs font-medium text-muted-light dark:text-muted-dark">Online</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex-1 px-4 hidden md:flex justify-center">
+                    <label class="flex w-full min-w-40 max-w-md">
+                        <div class="flex w-full flex-1 items-stretch rounded-lg h-10">
+                            <div
+                                class="text-muted-light dark:text-muted-dark flex bg-background-light dark:bg-background-dark items-center justify-center pl-4 rounded-l-lg border border-r-0 border-border-light dark:border-border-dark">
+                                <span class="material-symbols-outlined" style="font-size: 20px;">search</span>
+                            </div>
+                            <input
+                                class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-r-lg text-text-light dark:text-text-dark focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-l-0 border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark h-full placeholder:text-muted-light dark:placeholder:text-muted-dark px-4 text-sm font-normal"
+                                placeholder="Find skills, people, projects..." value="" />
+                        </div>
+                    </label>
+                </div>
+
+                <div class="flex items-center gap-3 sm:gap-4">
+                    <a href="#" class="flex items-center gap-1.5 p-2 rounded-lg transition-colors hover:bg-background-light dark:hover:bg-background-dark">
+                        <span class="material-symbols-outlined text-warning" style="font-variation-settings: 'FILL' 1; font-size: 20px;">military_tech</span>
+                        <span id="header-skillpoints" class="text-sm font-bold">1,250</span>
+                        <span class="hidden sm:inline text-sm font-medium text-muted-light dark:text-muted-dark">SkillPoints</span>
+                    </a>
+
+                    <div class="relative">
+                        <button id="notification-button" aria-label="View notifications"
+                            class="relative flex items-center justify-center h-10 w-10 rounded-full transition-colors hover:bg-background-light dark:hover:bg-background-dark text-muted-light dark:text-muted-dark">
+                            <span class="material-symbols-outlined">notifications</span>
+                            <span id="notification-count" class="absolute top-1.5 right-1.5 block h-2.5 w-2.5 rounded-full bg-accent ring-2 ring-card-light dark:ring-card-dark"></span>
+                        </button>
+
+                        <div id="notification-menu"
+                            class="opacity-0 scale-95 -translate-y-2 pointer-events-none absolute top-full right-0 mt-2 w-80 max-w-sm rounded-xl shadow-lg bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark z-50 transition-all duration-200 ease-out transform-origin-top-right">
+                            <div class="p-3 border-b border-border-light dark:border-border-dark">
+                                <h3 class="font-bold text-base">Notifications</h3>
+                            </div>
+                            <div id="notification-menu-list" class="flex flex-col max-h-80 overflow-y-auto p-2">
+                                <!-- Notifications dynamically inserted -->
+                            </div>
+                            <a href="#" class="block p-3 text-center text-sm font-medium text-primary hover:bg-background-light dark:hover:bg-background-dark rounded-b-lg transition-colors">
+                                View all notifications
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="relative">
+                        <button id="profile-button" aria-label="Open user menu"
+                            class="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-10 w-10 border border-border-light dark:border-border-dark transition-transform duration-200 hover:scale-110 focus-visible:scale-110">
+                            <img alt="User avatar" class="h-10 w-10 rounded-full object-cover"
+                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuADMoww-ftLIkcxLFS2FLVQ7ylcQRxTJ7dUTGJlDa-czQMv7C6H0xyijgN2VPl8WyxA1NiBCcFLyxx8Ab5AyePQbfp4riIhqyqr2eMiVGALmQX867Qq4kXFyZNNSbXzoOqFckEV1wONjgFUha0mcRufW_r-jgX_oiSywCRtngdMqTMv4HbaYzzV-4OxOtdNzjCQI4Yjx0ln05g_iip2FETSO2W-SOyxxN2dI7_p9gMqVwmUFDZItUEh-SrcbcNHjCoG1nMKGESP4Fc" />
+                        </button>
+
+                        <div id="profile-menu"
+                            class="opacity-0 scale-95 -translate-y-2 pointer-events-none absolute top-full right-0 mt-2 w-72 rounded-xl shadow-lg bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark z-50 p-2 transition-all duration-200 ease-out transform-origin-top-right">
+
+                            <div class="flex items-center gap-3 p-3 border-b border-border-light dark:border-border-dark">
+                                <img alt="User avatar" class="h-11 w-11 rounded-full object-cover"
+                                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuADMoww-ftLIkcxLFS2FLVQ7ylcQRxTJ7dUTGJlDa-czQMv7C6H0xyijgN2VPl8WyxA1NiBCcFLyxx8Ab5AyePQbfp4riIhqyqr2eMiVGALmQX867Qq4kXFyZNNSbXzoOqFckEV1wONjgFUha0mcRufW_r-jgX_oiSywCRtngdMqTMv4HbaYzzV-4OxOtdNzjCQI4Yjx0ln05g_iip2FETSO2W-SOyxxN2dI7_p9gMqVwmUFDZItUEh-SrcbcNHjCoG1nMKGESP4Fc" />
+                                <div>
+                                    <p id="profile-menu-username" class="font-bold text-base text-text-light dark:text-text-dark">User</p>
+                                    <p id="profile-menu-email" class="text-xs text-muted-light dark:text-muted-dark">user@example.com</p>
+                                </div>
+                            </div>
+
+                            <nav class="flex flex-col py-2">
+                                <a href="{% url 'profile' %}"
+                                    class="flex items-center gap-3 px-3 py-2.5 rounded-md hover:bg-background-light dark:hover:bg-background-dark transition-colors text-muted-light dark:text-muted-dark hover:text-text-light dark:hover:text-text-dark">
+                                    <span class="material-symbols-outlined" style="font-size: 20px;">account_circle</span>
+                                    <span class="text-sm font-medium">My Profile</span>
+                                </a>
+                                <a href="{% url 'mybookings' %}"
+                                    class="flex items-center gap-3 px-3 py-2.5 rounded-md hover:bg-background-light dark:hover:bg-background-dark transition-colors text-muted-light dark:text-muted-dark hover:text-text-light dark:hover:text-text-dark">
+                                    <span class="material-symbols-outlined" style="font-size: 20px;">receipt_long</span>
+                                    <span class="text-sm font-medium">My Bookings</span>
+                                </a>
+                                <a href="#" id="settings-link"
+                                    class="flex items-center gap-3 px-3 py-2.5 rounded-md hover:bg-background-light dark:hover:bg-background-dark transition-colors text-muted-light dark:text-muted-dark hover:text-text-light dark:hover:text-text-dark">
+                                    <span class="material-symbols-outlined" style="font-size: 20px;">settings</span>
+                                    <span class="text-sm font-medium">Settings</span>
+                                </a>
+                                <a href="#"
+                                    class="flex items-center gap-3 px-3 py-2.5 rounded-md hover:bg-background-light dark:hover:bg-background-dark transition-colors text-muted-light dark:text-muted-dark hover:text-text-light dark:hover:text-text-dark">
+                                    <span class="material-symbols-outlined" style="font-size: 20px;">help</span>
+                                    <span class="text-sm font-medium">Help Center</span>
+                                </a>
+                                <a href="#" id="theme-toggle-button"
+                                    class="flex items-center justify-between gap-3 px-3 py-2.5 rounded-md hover:bg-background-light dark:hover:bg-background-dark transition-colors text-muted-light dark:text-muted-dark hover:text-text-light dark:hover:text-text-dark">
+                                    <div class="flex items-center gap-3">
+                                        <span class="material-symbols-outlined" style="font-size: 20px;">brightness_6</span>
+                                        <span class="text-sm font-medium">Appearance</span>
+                                    </div>
+                                    <span class="text-xs font-medium dark:hidden">Light</span>
+                                    <span class="text-xs font-medium hidden dark:block">Dark</span>
+                                </a>
+                                <a href="{% url 'index' %}"
+                                    class="flex items-center gap-3 px-3 py-2.5 rounded-md hover:bg-accent-light dark:hover:bg-accent/20 transition-colors text-accent">
+                                    <span class="material-symbols-outlined" style="font-size: 20px;">logout</span>
+                                    <span class="text-sm font-medium">Sign Out</span>
+                                </a>
+                            </nav>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </header>
+
+        <main class="mx-auto w-full max-w-7xl flex-1 px-4 sm:px-6 lg:px-8 py-8 animate__animated animate__fadeInUp" style="animation-delay: 100ms;">
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
+
+                <div class="lg:col-span-2 flex flex-col gap-6 lg:gap-8">
+
+                    <section id="upcoming-booking-card" class="p-6 flex flex-col items-stretch justify-start rounded-xl shadow-card bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark">
+                        <!-- Upcoming booking dynamically inserted -->
+                    </section>
+
+                    <div class="grid grid-cols-1 @container md:grid-cols-5 gap-6">
+
+                        <section class="md:col-span-2">
+                             <div class="p-4 rounded-xl shadow-card bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark">
+                                 <div class="flex items-center justify-between mb-3">
+                                     <h3 class="text-base font-bold">October 2025</h3>
+                                     <div class="flex gap-1">
+                                         <button class="flex items-center justify-center h-7 w-7 rounded-md hover:bg-background-light dark:hover:bg-background-dark text-muted-light dark:text-muted-dark transition-colors">
+                                             <span class="material-symbols-outlined" style="font-size: 18px;">chevron_left</span>
+                                         </button>
+                                         <button class="flex items-center justify-center h-7 w-7 rounded-md hover:bg-background-light dark:hover:bg-background-dark text-muted-light dark:text-muted-dark transition-colors">
+                                             <span class="material-symbols-outlined" style="font-size: 18px;">chevron_right</span>
+                                         </button>
+                                     </div>
+                                 </div>
+                                 <div class="calendar-grid justify-items-center text-center">
+                                     <div class="calendar-day text-xs font-bold text-muted-light dark:text-muted-dark">Su</div>
+                                     <div class="calendar-day text-xs font-bold text-muted-light dark:text-muted-dark">Mo</div>
+                                     <div class="calendar-day text-xs font-bold text-muted-light dark:text-muted-dark">Tu</div>
+                                     <div class="calendar-day text-xs font-bold text-muted-light dark:text-muted-dark">We</div>
+                                     <div class="calendar-day text-xs font-bold text-muted-light dark:text-muted-dark">Th</div>
+                                     <div class="calendar-day text-xs font-bold text-muted-light dark:text-muted-dark">Fr</div>
+                                     <div class="calendar-day text-xs font-bold text-muted-light dark:text-muted-dark">Sa</div>
+                                     <div class="calendar-day text-muted-light dark:text-muted-dark">28</div>
+                                     <div class="calendar-day text-muted-light dark:text-muted-dark">29</div>
+                                     <div class="calendar-day text-muted-light dark:text-muted-dark">30</div>
+                                     <div class="calendar-day">1</div>
+                                     <div class="calendar-day">2</div>
+                                     <div class="calendar-day">3<span class="calendar-day-dot bg-primary"></span></div>
+                                     <div class="calendar-day">4</div>
+                                     <div class="calendar-day">5</div>
+                                     <div class="calendar-day">6</div>
+                                     <div class="calendar-day">7</div>
+                                     <div class="calendar-day">8<span class="calendar-day-dot bg-accent"></span></div>
+                                     <div class="calendar-day">9</div>
+                                     <div class="calendar-day">10</div>
+                                     <div class="calendar-day">11</div>
+                                     <div class="calendar-day">12</div>
+                                     <div class="calendar-day">13</div>
+                                     <div class="calendar-day">14</div>
+                                     <div class="calendar-day">15</div>
+                                     <div class="calendar-day">16</div>
+                                     <div class="calendar-day">17</div>
+                                     <div class="calendar-day">18<span class="calendar-day-dot bg-primary"></span></div>
+                                     <div class="calendar-day">19</div>
+                                     <div class="calendar-day">20</div>
+                                     <div class="calendar-day">21</div>
+                                     <div class="calendar-day">22</div>
+                                     <div class="calendar-day">23</div>
+                                     <div class="calendar-day">24</div>
+                                     <div class="calendar-day font-bold text-white bg-primary rounded-full">25</div>
+                                     <div class="calendar-day">26</div>
+                                     <div class="calendar-day">27</div>
+                                     <div class="calendar-day">28</div>
+                                     <div class="calendar-day">29</div>
+                                     <div class="calendar-day">30</div>
+                                     <div class="calendar-day">31</div>
+                                 </div>
+                              </div>
+                        </section>
+
+                        <section class="md:col-span-3">
+                            <h2 class="text-lg font-bold mb-4">Recent Activity</h2>
+                            <div id="activity-feed" class="flex flex-col gap-3 max-h-96 overflow-y-auto pr-2">
+                                <!-- Activity feed dynamically inserted -->
+                            </div>
+                        </section>
+                    </div>
+
+                    <section>
+                        <h2 class="text-lg font-bold mb-4">My Projects</h2>
+                        <div id="my-projects-list" class="flex gap-4 overflow-x-auto pb-4 -mb-4">
+                             <!-- Projects dynamically inserted -->
+                        </div>
+                    </section>
+
+                    <section>
+                        <h2 class="text-lg font-bold mb-4">Skills For You</h2>
+                        <div id="recommendations-list" class="grid grid-cols-1 @[300px]:grid-cols-2 @[600px]:grid-cols-3 gap-4">
+                                <!-- Recommendations dynamically inserted -->
+                         </div>
+                    </section>
+
+                </div>
+
+                <aside class="lg:col-span-1 flex flex-col gap-6 lg:gap-8 lg:sticky top-24 h-fit">
+
+                    <section>
+                        <h2 class="text-base font-bold uppercase tracking-wider text-muted-light dark:text-muted-dark mb-3">Quick Actions</h2>
+                        <div id="quick-actions-grid" class="grid grid-cols-2 gap-3">
+                            <a href="{% url 'credits' %}" class="flex flex-col items-center justify-center p-4 rounded-xl bg-primary text-white shadow-lg shadow-primary/20 hover:bg-primary/90 transition-all transform hover:-translate-y-1">
+                                <span class="material-symbols-outlined text-warning" style="font-size: 28px;">payments</span>
+                                <span class="text-sm font-bold mt-1">Credits</span>
+                            </a>
+                             <a href="{% url 'map' %}" class="flex flex-col items-center justify-center p-4 rounded-xl bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark shadow-card hover:shadow-card-hover hover:-translate-y-1 transition-all">
+                                <span class="material-symbols-outlined text-success" style="font-size: 28px;">calendar_add_on</span>
+                                <span class="text-sm font-bold mt-1">Map</span>
+                            </a>
+                             <a href="{% url 'feed' %}" class="flex flex-col items-center justify-center p-4 rounded-xl bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark shadow-card hover:shadow-card-hover hover:-translate-y-1 transition-all">
+                                <span class="material-symbols-outlined text-accent" style="font-size: 28px;">create_new_folder</span>
+                                <span class="text-sm font-bold mt-1">Community</span>
+                            </a>
+                             <a href="{% url 'swap' %}" class="flex flex-col items-center justify-center p-4 rounded-xl bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark shadow-card hover:shadow-card-hover hover:-translate-y-1 transition-all">
+                                <span class="material-symbols-outlined text-primary" style="font-size: 28px;">swap_horiz</span>
+                                <span class="text-sm font-bold mt-1">SkillSwap</span>
+                            </a>
+                        </div>
+                    </section>
+
+                    <section>
+                         <h2 class="text-base font-bold uppercase tracking-wider text-muted-light dark:text-muted-dark mb-3">Local SkillMap</h2>
+                         <a href="{% url 'map' %}" aria-label="View full map" class="block group rounded-xl border border-border-light dark:border-border-dark shadow-card overflow-hidden">
+                             <div id="skillmap-preview" class="transition-transform duration-300 group-hover:scale-105">
+                                 <!-- Map initialized here -->
+                              </div>
+                         </a>
+                    </section>
+
+                    <section>
+                        <h2 class="text-base font-bold uppercase tracking-wider text-muted-light dark:text-muted-dark mb-3">Local Leaderboard</h2>
+                        <div id="leaderboard-list" class="flex flex-col gap-3">
+                            <!-- Leaderboard dynamically inserted -->
+                         </div>
+                    </section>
+
+                    <section class="p-4 rounded-xl shadow-card bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark">
+                        <div class="flex border-b border-border-light dark:border-border-dark mb-4" role="tablist" aria-label="Notifications and Messages">
+                            <button id="tab-notifications" role="tab" aria-selected="true" aria-controls="tabpanel-notifications"
+                                class="flex-1 text-sm font-bold pb-2 border-b-2 border-primary text-primary transition-colors duration-200">
+                                Notifications
+                            </button>
+                            <button id="tab-messages" role="tab" aria-selected="false" aria-controls="tabpanel-messages"
+                                class="flex-1 text-sm font-bold pb-2 border-b-2 border-transparent text-muted-light dark:text-muted-dark hover:text-text-light dark:hover:text-text-dark transition-colors duration-200">
+                                Messages
+                            </button>
+                        </div>
+
+                        <div>
+                            <div id="tabpanel-notifications" role="tabpanel" aria-hidden="false" aria-labelledby="tab-notifications">
+                                <div id="tab-notifications-list" class="flex flex-col gap-3">
+                                    <!-- Tab notifications dynamically inserted -->
+                                 </div>
+                                <a href="#" class="block text-center text-sm font-medium text-primary hover:underline mt-4">
+                                    View all
+                                </a>
+                            </div>
+
+                            <div id="tabpanel-messages" role="tabpanel" aria-hidden="true" aria-labelledby="tab-messages">
+                                <div id="tab-messages-list" class="flex flex-col gap-3">
+                                        <!-- Tab messages dynamically inserted -->
+                                 </div>
+                                <a href="#" class="block text-center text-sm font-medium text-primary hover:underline mt-4">
+                                    View all
+                                </a>
+                            </div>
+                        </div>
+                    </section>
+                </aside>
+            </div>
+
+            <section class="mt-12">
+                <h2 class="text-2xl font-black tracking-tight mb-6">Discover Your Community</h2>
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
+
+                    <div class="lg:col-span-1">
+                        <h3 class="text-lg font-bold mb-4">Trending Local Skills</h3>
+                        <div id="trending-skills-list" class="flex flex-wrap gap-2">
+                             <!-- Skills dynamically inserted -->
+                        </div>
+                    </div>
+
+                    <div class="lg:col-span-2">
+                        <h3 class="text-lg font-bold mb-4">Featured Community Projects</h3>
+                        <div id="featured-projects-list" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                             <!-- Projects dynamically inserted -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="mt-12 p-6 rounded-xl shadow-card bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark">
+                <h2 class="text-2xl font-black tracking-tight mb-6">Your Progress</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+                    <div>
+                        <h3 class="text-lg font-bold mb-4">My Badges</h3>
+                        <div id="badges-list" class="flex items-center gap-3">
+                            <!-- Badges dynamically inserted -->
+                         </div>
+                        <a href="#" class="text-sm font-medium text-primary hover:underline mt-3 inline-block">View all badges</a>
+                    </div>
+
+                    <div class="md:col-span-2">
+                         <h3 class="text-lg font-bold mb-4">Weekly Goals</h3>
+                         <div class="space-y-4">
+                             <div>
+                                 <div class="flex justify-between text-sm font-medium mb-1">
+                                     <span>Earn 500 SkillPoints</span>
+                                     <span class="text-muted-light dark:text-muted-dark">350 / 500</span>
+                                 </div>
+                                 <div class="w-full bg-background-light dark:bg-background-dark rounded-full h-2.5 border border-border-light dark:border-border-dark overflow-hidden" aria-label="Weekly points goal bar">
+                                      <div class="bg-success h-full rounded-full progress-bar-inner"></div>
+                                 </div>
+                             </div>
+                             <div>
+                                 <div class="flex justify-between text-sm font-medium mb-1">
+                                     <span>Complete 3 Sessions</span>
+                                     <span class="text-muted-light dark:text-muted-dark">1 / 3</span>
+                                 </div>
+                                 <div class="w-full bg-background-light dark:bg-background-dark rounded-full h-2.5 border border-border-light dark:border-border-dark overflow-hidden" aria-label="Weekly sessions goal bar">
+                                    <div class="bg-accent h-full rounded-full progress-bar-inner"></div>
+                                 </div>
+                             </div>
+                         </div>
+                    </div>
+                </div>
+
+                 <div class="text-center mt-8 pt-6 border-t border-border-light dark:border-border-dark">
+                     <p class="text-muted-light dark:text-muted-dark mb-3">Have extra SkillPoints?</p>
+                     <button class="gamification-donate-btn flex-none cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-lg h-11 px-6 bg-accent text-white text-base font-bold shadow-lg shadow-accent/20 hover:bg-accent/90 hover:shadow-accent/30 transition-all duration-300 transform hover:-translate-y-0.5">
+                         Donate to a Community Cause
+                     </button>
+                 </div>
+            </section>
+
+        </main>
+
+        <footer class="border-t border-border-light dark:border-border-dark mt-16">
+            <div class="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
+
+                <div class="flex flex-wrap gap-4 justify-center md:justify-start p-4 rounded-lg bg-background-light dark:bg-background-dark border border-border-light dark:border-border-dark mb-6">
+                    <h3 class="text-sm font-bold mr-4">Accessibility Tools:</h3>
+                    <div class="flex flex-wrap gap-4">
+                        <button id="contrast-toggle" class="flex items-center gap-1.5 text-sm font-medium text-primary hover:underline">
+                            <span class="material-symbols-outlined" style="font-size: 18px;">contrast</span>
+                            <span>High Contrast</span>
+                        </button>
+                         <button id="fontsize-increase" class="flex items-center gap-1.5 text-sm font-medium text-primary hover:underline">
+                            <span class="material-symbols-outlined" style="font-size: 18px;">text_increase</span>
+                            <span>Increase Font</span>
+                        </button>
+                         <button id="fontsize-decrease" class="flex items-center gap-1.5 text-sm font-medium text-primary hover:underline">
+                            <span class="material-symbols-outlined" style="font-size: 18px;">text_decrease</span>
+                            <span>Decrease Font</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                     <p class="text-sm text-muted-light dark:text-muted-dark">&copy; 2025 SkillLink. All rights reserved.</p>
+                     <nav class="flex flex-wrap gap-4 justify-center">
+                         <a href="#" class="text-sm text-muted-light dark:text-muted-dark hover:text-primary dark:hover:text-primary transition-colors">Help</a>
+                         <a href="#" class="text-sm text-muted-light dark:text-muted-dark hover:text-primary dark:hover:text-primary transition-colors">Privacy</a>
+                         <a href="#" class="text-sm text-muted-light dark:text-muted-dark hover:text-primary dark:hover:text-primary transition-colors">Terms of Service</a>
+                         <a href="#" class="text-sm text-muted-light dark:text-muted-dark hover:text-primary dark:hover:text-primary transition-colors">Contact</a>
+                     </nav>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+
+    <div id="create-listing-modal"
+        class="modal fixed inset-0 z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-all duration-300 ease-out">
+        <div class="modal-overlay absolute inset-0 bg-black/70 opacity-0 transition-opacity duration-300"></div>
+        <div
+            class="modal-content relative w-full max-w-lg p-6 bg-card-light dark:bg-card-dark rounded-xl shadow-2xl transition-all duration-300 ease-out transform scale-95 opacity-0">
+            <button
+                class="modal-close absolute top-3 right-3 flex items-center justify-center h-8 w-8 rounded-full text-muted-light dark:text-muted-dark hover:bg-background-light dark:hover:bg-background-dark transition-colors">
+                <span class="material-symbols-outlined" style="font-size: 24px;">close</span>
+            </button>
+            <h3 class="text-2xl font-bold text-text-light dark:text-text-dark mb-4">Create a New Listing</h3>
+
+            <form id="create-listing-form" class="space-y-4">
+                <div>
+                    <label for="skill-name"
+                        class="block text-sm font-medium text-muted-light dark:text-muted-dark mb-1">Skill
+                        Name</label>
+                    <input type="text" id="skill-name" placeholder="e.g., Python Development" required
+                        class="form-input w-full rounded-lg text-text-light dark:text-text-dark focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark placeholder:text-muted-light dark:placeholder:text-muted-dark" />
+                </div>
+                <div>
+                    <label for="skill-description"
+                        class="block text-sm font-medium text-muted-light dark:text-muted-dark mb-1">Description</label>
+                    <textarea id="skill-description" rows="4" placeholder="Describe what you're offering..." required
+                        class="form-textarea w-full rounded-lg text-text-light dark:text-text-dark focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark placeholder:text-muted-light dark:placeholder:text-muted-dark"></textarea>
+                </div>
+                <div class="flex justify-end pt-2">
+                    <button type="submit"
+                        class="flex cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-lg h-11 px-6 bg-primary text-white text-base font-bold shadow-lg shadow-primary/20 hover:bg-primary/90 hover:shadow-primary/30 transition-all duration-300 transform hover:-translate-y-0.5">
+                        <span class="truncate">Submit Listing</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="success-toast" class="fixed bottom-5 right-5 z-50 flex items-center gap-3 p-4 rounded-lg bg-success text-white shadow-lg opacity-0 pointer-events-none transition-all duration-300 transform translate-y-5">
+        <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+        <span id="toast-message" class="text-sm font-medium">Success!</span>
+    </div>
+
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // --- MOCK DATA ---
+            // TODO (DJANGO): Replace this object with data loaded from API endpoints
+            const mockData = {
+                user: {
+                    username: "Priyam",
+                    email: "priyam.patel@skill.link",
+                    avatar: "https://lh3.googleusercontent.com/aida-public/AB6AXuADMoww-ftLIkcxLFS2FLVQ7ylcQRxTJ7dUTGJlDa-czQMv7C6H0xyijgN2VPl8WyxA1NiBCcFLyxx8Ab5AyePQbfp4riIhqyqr2eMiVGALmQX867Qq4kXFyZNNSbXzoOqFckEV1wONjgFUha0mcRufW_r-jgX_oiSywCRtngdMqTMv4HbaYzzV-4OxOtdNzjCQI4Yjx0ln05g_iip2FETSO2W-SOyxxN2dI7_p9gMqVwmUFDZItUEh-SrcbcNHjCoG1nMKGESP4Fc",
+                    skillpoints: 1250,
+                    unread_notifications: 3,
+                },
+                upcomingBooking: {
+                    id: 1,
+                    title: "Web Design Mentorship",
+                    mentor: "Alex Johnson",
+                    mentorAvatar: "https://lh3.googleusercontent.com/aida-public/AB6AXuAKY0V73B8btL49ePjshIzx1Eq6DojiXcqbT9CbFIteyh6zVAqku3Z-yDLZ7IfMOs8xqszyrKMyuUrDNbaqHAJBo-mcHcO2a5oiyxh4zNKwfZTP74dKkCxAjsX6fTrqYrZ1IVXkVZrFn_TDBOgE3XEhvdEOzFs30goSU2VHEPjVduhF-Fbw_r6-o81-5_o2QPTj5KX6ruMSHNdZ7Hg8J4DcKQ8vmfsA2NCkY9yhBdBkj5M7foXef9-nssxallXxJTZzemwemdFRB3A",
+                    time: "Today, 4:00 PM - 5:00 PM",
+                    location: "Online via SkillLink Meet",
+                    isOnline: true,
+                },
+                // upcomingBooking: null, // <-- Use this to test the "No upcoming bookings" state
+                activityFeed: [
+                    { id: 1, type: "review", user: "Rohan Gupta", action: "left you a 5-star review for 'Python Basics'.", time: "2h ago" },
+                    { id: 2, type: "booking", user: "Mia Wong", action: "booked your 'SEO Fundamentals' session for Oct 28.", time: "5h ago" },
+                    { id: 3, type: "project", user: "Community Bot", action: "invited you to join the 'Local non-profit Website' project.", time: "1d ago" },
+                    { id: 4, type: "badge", user: "SkillLink", action: "You earned the 'Community Helper' badge!", time: "2d ago" },
+                ],
+                myProjects: [
+                    { id: 1, title: "My Personal Portfolio", progress: 80, url: "#" },
+                    { id: 2, title: "Local Non-Profit Website", progress: 45, url: "#" },
+                    { id: 3, title: "Data Analysis Dashboard", progress: 20, url: "#" },
+                    { id: 4, title: "Mobile App Mockups", progress: 95, url: "#" },
+                ],
+                recommendations: [
+                    { id: 1, title: "Data Visualization (d3.js)", reason: "Based on your 'Web Design' and 'Data Analysis' skills." },
+                    { id: 2, title: "Advanced React Hooks", reason: "Popular in your area and matches your 'Web Design' skill." },
+                    { id: 3, title: "UX/UI Prototyping", reason: "Complements your 'Web Design' projects." },
+                ],
+                leaderboard: [
+                    { id: 1, rank: 1, name: "Ms.Mina Devi", avatar: "https://lh3.googleusercontent.com/aida-public/AB6AXuAKY0V73B8btL49ePjshIzx1Eq6DojiXcqbT9CbFIteyh6zVAqku3Z-yDLZ7IfMOs8xqszyrKMyuUrDNbaqHAJBo-mcHcO2a5oiyxh4zNKwfZTP74dKkCxAjsX6fTrqYrZ1IVXkVZrFn_TDBOgE3XEhvdEOzFs30goSU2VHEPjVduhF-Fbw_r6-o81-5_o2QPTj5KX6ruMSHNdZ7Hg8J4DcKQ8vmfsA2NCkY9yhBdBkj5M7foXef9-nssxallXxJTZzemwemdFRB3A", points: 4800, badge: "mentor" , profile_url: "{% url 'profile3' %}"},
+                    { id: 2, rank: 2, name: "Mr.Ravi Kumar", avatar: "https://lh3.googleusercontent.com/aida-public/AB6AXuArOpKQBpT5T4e63PMImY44e6zwcZVE-CvIHnvzx_srrOuhMi2Rd-Cs5_XeZaEzoHEpVK4WyykIj4Bz5Wsr9PeoxumwMZGpPJMBcArP7YAI4nDsxAYlteVxW--ISnES5PNA1C3fnMkTmcgriv6j7qxHeT2hBZDxr76ZIZbAdVGHK77GgQliT9zg-QqkyUHBN29f7lr3aAnD7gLz109VvA506f3g33WkjFHAcfVB2YjlS2Gp74OmI2uEwomNopKGtWaaC_np13_Xz2c", points: 4520, badge: "rising-star", profile_url: "{% url 'profile3' %}" },
+                    { id: 3, rank: 3, name: "Mia Wong", avatar: "https://lh3.googleusercontent.com/aida-public/AB6AXuBI-Vg7ewWD9wWJ1W84_w3wxcVfjewnOSv__xAu8ukRW6VDW7OklGiPwxubcQh5itXRpPek2o4e3eOeuQ88mymlWsHNnESD2nmQerips3AZPnxAxdCuU6mHvHb4T6yeNUjkMouKKJSYuo4RzqLIp7YMC2VxBF82EuasuSe2CaizzdlrfBMCAaT6fmj0OCBcPHoB-YoTqbYUWuyRAIYAPyf9lHTtci_KIQYvvnfkEbYmwMFF05nu1YPzyzndB7m46TASnVqGcpjWMDU", points: 3900, badge: "community-helper",profile_url: "{% url 'profile3' %}" },
+                    { id: 4, rank: 4, name: "David Lee", avatar: "https://lh3.googleusercontent.com/aida-public/AB6AXuB4IdkQ7yMSawBePXJdEQBq7XJbmCcotGc6ulxc4GOfSgdSF1tQ-NfSkaNYnRO4MpYn2iGyhGaDQLnzZODFStPY4R99MDRLeklqiGGwhisChGi4guB2vZVxbFgg52J95PQ4emHd-VX-sDAxUP36kfnxSRYD-XW4RYtgW0owIML_ypVt8oZ2ogNREa3DBfOqCFO-kg-i_2tqZTecpju8yu1aZEBri857_BxWWsTY-zBQFUTo9MTtJo0ITYbr7LdvEFOHGqtjRJ8lptU", points: 3750, badge: null,profile_url: "{% url 'profile3' %}" },
+                    { id: 5, rank: 5, name: "Ms.Priya Kumari", avatar: "https://lh3.googleusercontent.com/aida-public/AB6AXuB4IdkQ7yMSawBePXJdEQBq7XJbmCcotGc6ulxc4GOfSgdSF1tQ-NfSkaNYnRO4MpYn2iGyhGaDQLnzZODFStPY4R99MDRLeklqiGGwhisChGi4guB2vZVxbFgg52J95PQ4emHd-VX-sDAxUP36kfnxSRYD-XW4RYtgW0owIML_ypVt8oZ2ogNREa3DBfOqCFO-kg-i_2tqZTecpju8yu1aZEBri857_BxWWsTY-zBQFUTo9MTtJo0ITYbr7LdvEFOHGqtjRJ8lptU", points: 3600, badge: "mentor", },
+                ],
+                currentUserRank: { id: 12, rank: 12, name: "Priyam (You)", avatar: "https://lh3.googleusercontent.com/aida-public/AB6AXuADMoww-ftLIkcxLFS2FLVQ7ylcQRxTJ7dUTGJlDa-czQMv7C6H0xyijgN2VPl8WyxA1NiBCcFLyxx8Ab5AyePQbfp4riIhqyqr2eMiVGALmQX867Qq4kXFyZNNSbXzoOqFckEV1wONjgFUha0mcRufW_r-jgX_oiSywCRtngdMqTMv4HbaYzzV-4OxOtdNzjCQI4Yjx0ln05g_iip2FETSO2W-SOyxxN2dI7_p9gMqVwmUFDZItUEh-SrcbcNHjCoG1nMKGESP4Fc", points: 1250, badge: null },
+                notifications: [
+                    { id: 1, read: false, text: "<strong>Rohan Gupta</strong> left you a 5-star review.", time: "2h ago", url: "#" },
+                    { id: 2, read: false, text: "<strong>Mia Wong</strong> sent you a new message.", time: "4h ago", url: "#" },
+                    { id: 3, read: false, text: "Your session with <strong>Alex Johnson</strong> is starting in 15 minutes.", time: "1d ago", url: "#" },
+                    { id: 4, read: true, text: "You earned the 'Community Helper' badge!", time: "2d ago", url: "#" },
+                ],
+                messages: [
+                    { id: 1, read: false, from: "Mia Wong", avatar: "https://lh3.googleusercontent.com/aida-public/AB6AXuBI-Vg7ewWD9wWJ1W84_w3wxcVfjewnOSv__xAu8ukRW6VDW7OklGiPwxubcQh5itXRpPek2o4e3eOeuQ88mymlWsHNnESD2nmQerips3AZPnxAxdCuU6mHvHb4T6yeNUjkMouKKJSYuo4RzqLIp7YMC2VxBF82EuasuSe2CaizzdlrfBMCAaT6fmj0OCBcPHoB-YoTqbYUWuyRAIYAPyf9lHTtci_KIQYvvnfkEbYmwMFF05nu1YPzyzndB7m46TASnVqGcpjWMDU", preview: "Hey Priyam! Just confirming our session for...", time: "4h ago", url: "#" },
+                    { id: 2, read: true, from: "Alex Johnson", avatar: "https://lh3.googleusercontent.com/aida-public/AB6AXuAKY0V73B8btL49ePjshIzx1Eq6DojiXcqbT9CbFIteyh6zVAqku3Z-yDLZ7IfMOs8xqszyrKMyuUrDNbaqHAJBo-mcHcO2a5oiyxh4zNKwfZTP74dKkCxAjsX6fTrqYrZ1IVXkVZrFn_TDBOgE3XEhvdEOzFs30goSU2VHEPjVduhF-Fbw_r6-o81-5_o2QPTj5KX6ruMSHNdZ7Hg8J4DcKQ8vmfsA2NCkY9yhBdBkj5M7foXef9-nssxallXxJTZzemwemdFRB3A", preview: "Great session today! Here are the resources...", time: "3d ago", url: "#" },
+                ],
+                trendingSkills: ["React", "Python", "Data Analysis", "Figma", "Node.js", "SEO", "Copywriting", "Blender 3D"],
+                featuredProjects: [
+                    { id: 1, title: "Community Garden App", desc: "Help design an app for our local community garden.", progress: 60, url: "#" },
+                    { id: 2, title: "Public Art Map", desc: "Volunteer to build a map tracking all public art in the city.", progress: 25, url: "#" },
+                ],
+                badges: [
+                    { id: 1, title: "Trailblazer", icon: "explore", color: "text-primary" },
+                    { id: 2, title: "Mentor", icon: "school", color: "text-success" },
+                    { id: 3, title: "Community Helper", icon: "diversity_3", color: "text-accent" },
+                    { id: 4, title: "Rising Star", icon: "star", color: "text-warning" },
+                ]
+            };
+
+            // --- LOCAL STORAGE HELPERS ---
+            const getFromLS = (key, defaultValue) => {
+                const value = localStorage.getItem(key);
+                return value ? JSON.parse(value) : defaultValue;
+            };
+            const saveToLS = (key, value) => {
+                localStorage.setItem(key, JSON.stringify(value));
+            };
+
+            let dismissedActivities = getFromLS('dismissedActivities', []);
+            let readNotifications = getFromLS('readNotifications', []);
+
+            // --- DROPDOWN/MENU LOGIC ---
+            const setupDropdown = (buttonId, menuId) => {
+                const button = document.getElementById(buttonId);
+                const menu = document.getElementById(menuId);
+                if (!button || !menu) return;
+
+                button.addEventListener('click', (event) => {
+                    event.stopPropagation();
+                    const isHidden = menu.classList.contains('opacity-0');
+                    // Hide all other menus
+                    document.querySelectorAll('[id$="-menu"]').forEach(m => {
+                        if (m.id !== menuId) {
+                            m.classList.add('opacity-0', 'scale-95', '-translate-y-2', 'pointer-events-none');
+                            m.classList.remove('opacity-100', 'scale-100', 'translate-y-0');
+                        }
+                    });
+                    // Toggle current menu
+                    if (isHidden) {
+                        menu.classList.remove('opacity-0', 'scale-95', '-translate-y-2', 'pointer-events-none');
+                        menu.classList.add('opacity-100', 'scale-100', 'translate-y-0');
+                    } else {
+                        menu.classList.remove('opacity-100', 'scale-100', 'translate-y-0');
+                        menu.classList.add('opacity-0', 'scale-95', '-translate-y-2', 'pointer-events-none');
+                    }
+                });
+            };
+
+            setupDropdown('profile-button', 'profile-menu');
+            setupDropdown('notification-button', 'notification-menu');
+
+            // Global click to close menus
+            window.addEventListener('click', (event) => {
+                document.querySelectorAll('[id$="-menu"]').forEach(menu => {
+                    if (!menu.classList.contains('opacity-0') && !menu.contains(event.target)) {
+                        menu.classList.remove('opacity-100', 'scale-100', 'translate-y-0');
+                        menu.classList.add('opacity-0', 'scale-95', '-translate-y-2', 'pointer-events-none');
+                    }
+                });
+            });
+
+            // --- MODAL LOGIC ---
+            const openModal = (modal) => {
+                if (!modal) return;
+                const modalOverlay = modal.querySelector('.modal-overlay');
+                const modalContent = modal.querySelector('.modal-content');
+
+                modal.classList.remove('opacity-0', 'pointer-events-none');
+                modalOverlay.classList.remove('opacity-0');
+                modalContent.classList.remove('opacity-0', 'scale-95');
+                modalOverlay.classList.add('opacity-100');
+                modalContent.classList.add('opacity-100', 'scale-100');
+            };
+
+            const closeModal = (modal) => {
+                if (!modal) return;
+                const modalOverlay = modal.querySelector('.modal-overlay');
+                const modalContent = modal.querySelector('.modal-content');
+
+                modalOverlay.classList.remove('opacity-100');
+                modalContent.classList.remove('opacity-100', 'scale-100');
+                modalOverlay.classList.add('opacity-0');
+                modalContent.classList.add('opacity-0', 'scale-95');
+                setTimeout(() => {
+                    modal.classList.add('opacity-0', 'pointer-events-none');
+                }, 300); // Wait for transition
+            };
+
+            const setupModal = (buttonId, modalId) => {
+                const button = document.getElementById(buttonId);
+                const modal = document.getElementById(modalId);
+                if (button && modal) {
+                    button.addEventListener('click', () => openModal(modal));
+                    modal.querySelector('.modal-overlay').addEventListener('click', () => closeModal(modal));
+                    modal.querySelectorAll('.modal-close').forEach(btn => {
+                        btn.addEventListener('click', () => closeModal(modal));
+                    });
+                }
+            };
+
+            setupModal('create-listing-btn', 'create-listing-modal');
+
+            // --- SUCCESS TOAST LOGIC ---
+            const showToast = (message) => {
+                const toast = document.getElementById('success-toast');
+                const toastMessage = document.getElementById('toast-message');
+                if (!toast || !toastMessage) return;
+
+                toastMessage.textContent = message;
+                toast.classList.remove('opacity-0', 'translate-y-5');
+                toast.classList.add('opacity-100', 'translate-y-0');
+
+                setTimeout(() => {
+                    toast.classList.remove('opacity-100', 'translate-y-0');
+                    toast.classList.add('opacity-0', 'translate-y-5');
+                }, 3000);
+            };
+
+            // --- "CREATE LISTING" FORM SUBMISSION ---
+            const listingForm = document.getElementById('create-listing-form');
+            if(listingForm) {
+                listingForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    // TODO (DJANGO): Send this data to /api/create-listing
+                    const skillName = e.target.elements['skill-name'].value;
+                    console.log("New Skill Submitted:", skillName);
+
+                    // Mock behavior: Add to "My Projects" list
+                    mockData.myProjects.unshift({
+                        id: Date.now(),
+                        title: skillName,
+                        progress: 0,
+                        url: "#"
+                    });
+                    populateMyProjects(); // Re-render projects
+
+                    listingForm.reset();
+                    closeModal(document.getElementById('create-listing-modal'));
+                    showToast("New listing created!");
+
+                    // Mock behavior: Increment SkillPoints
+                    mockData.user.skillpoints += 50;
+                    populateHeader();
+                    // Update leaderboard rank (mock)
+                    mockData.currentUserRank.points += 50;
+                    populateLeaderboard();
+                });
+            }
+
+            // --- TAB LOGIC ---
+            const tabs = document.querySelectorAll('[role="tab"]');
+            const tabPanels = document.querySelectorAll('[role="tabpanel"]');
+
+            tabs.forEach(tab => {
+                tab.addEventListener('click', (e) => {
+                    e.preventDefault();
+
+                    // Deactivate all tabs
+                    tabs.forEach(t => {
+                        t.setAttribute('aria-selected', 'false');
+                        t.classList.remove('border-primary', 'text-primary');
+                        t.classList.add('border-transparent', 'text-muted-light', 'dark:text-muted-dark');
+                    });
+
+                    // Deactivate all panels
+                    tabPanels.forEach(p => {
+                        p.setAttribute('aria-hidden', 'true');
+                    });
+
+                    // Activate clicked tab
+                    tab.setAttribute('aria-selected', 'true');
+                    tab.classList.add('border-primary', 'text-primary');
+                    tab.classList.remove('border-transparent', 'text-muted-light', 'dark:text-muted-dark');
+
+                    // Activate corresponding panel
+                    const panel = document.getElementById(tab.getAttribute('aria-controls'));
+                    if(panel) {
+                        panel.setAttribute('aria-hidden', 'false');
+                    }
+                });
+            });
+
+
+            // --- DATA POPULATION FUNCTIONS ---
+
+            // Helper function to apply staggered animation
+            const applyStaggerAnimation = (element, index, delayIncrement = 80) => {
+                element.classList.add('stagger-item', 'animate__animated', 'animate__fadeInUp', 'animate__faster');
+                element.style.animationDelay = `${index * delayIncrement}ms`;
+            };
+
+            // 1. Populate Header
+            function populateHeader() {
+                document.getElementById('header-username').textContent = mockData.user.username;
+                document.getElementById('profile-menu-username').textContent = mockData.user.username;
+                document.getElementById('profile-menu-email').textContent = mockData.user.email;
+                document.getElementById('header-skillpoints').textContent = mockData.user.skillpoints.toLocaleString();
+                const unreadCount = getUnreadNotificationCount();
+                const notificationCountEl = document.getElementById('notification-count');
+                if (unreadCount > 0) {
+                    // notificationCountEl.textContent = unreadCount; // No text, just the dot
+                    notificationCountEl.classList.remove('hidden');
+                } else {
+                    notificationCountEl.classList.add('hidden');
+                }
+                // Set avatars
+                document.querySelectorAll('img[alt="User avatar"]').forEach(img => {
+                    img.src = mockData.user.avatar;
+                });
+            }
+
+            // 2. Populate Upcoming Booking
+            function populateUpcomingBooking() {
+                const container = document.getElementById('upcoming-booking-card');
+                if (!container) return;
+                const booking = mockData.upcomingBooking;
+                if (booking) {
+                    container.innerHTML = `
+                        <div class="flex flex-col @container sm:flex-row sm:items-center gap-4">
+                            <img alt="${booking.mentor}" class="h-16 w-16 rounded-full object-cover shrink-0" src="${booking.mentorAvatar}" />
+                            <div class="flex-1">
+                                <h3 class="text-lg font-bold flex items-center gap-2 text-text-light dark:text-text-dark">
+                                    ${booking.title}
+                                </h3>
+                                <p class="text-base font-medium text-muted-light dark:text-muted-dark">with ${booking.mentor}</p>
+                                <div class="flex flex-col @[300px]:flex-row gap-x-4 gap-y-1 text-sm mt-2">
+                                    <p class="font-normal flex items-center gap-1.5">
+                                        <span class="material-symbols-outlined text-muted-light dark:text-muted-dark" style="font-size: 18px;">calendar_today</span>
+                                        ${booking.time}
+                                    </p>
+                                    <p class="font-normal flex items-center gap-1.5">
+                                        <span class="material-symbols-outlined text-muted-light dark:text-muted-dark" style="font-size: 18px;">${booking.isOnline ? 'videocam' : 'location_on'}</span>
+                                        ${booking.location}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex flex-wrap gap-2 mt-6">
+                            <a href="{% url 'meet' %}" role="button" class="flex min-w-[84px] flex-1 sm:flex-none cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-lg h-10 px-5 bg-primary text-white text-sm font-bold shadow-lg shadow-primary/20 hover:bg-primary/90 transition-all">
+                                <span class="material-symbols-outlined" style="font-size: 18px;">video_call</span>
+                                <span class="truncate">Join Call</span>
+                            </a>
+                            <button class="flex min-w-[84px] flex-1 sm:flex-none cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-lg h-10 px-5 bg-background-light dark:bg-background-dark border border-border-light dark:border-border-dark text-sm font-bold shadow-sm hover:bg-border-light dark:hover:bg-border-dark transition-colors">
+                                <span class="material-symbols-outlined" style="font-size: 18px;">message</span>
+                                <span class="truncate">Message</span>
+                            </button>
+                            <button class="flex min-w-[84px] sm:flex-none cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-lg h-10 px-5 bg-background-light dark:bg-background-dark border border-border-light dark:border-border-dark text-sm font-bold shadow-sm hover:bg-border-light dark:hover:bg-border-dark transition-colors">
+                                <span class="truncate">Reschedule</span>
+                            </button>
+                            <button class="flex sm:ml-auto min-w-[84px] sm:flex-none cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-lg h-10 px-5 text-sm font-bold text-accent hover:bg-accent-light dark:hover:bg-accent/20 transition-colors">
+                                <span class="truncate">Cancel</span>
+                            </button>
+                        </div>
+                    `;
+                } else {
+                    container.innerHTML = `
+                        <div class="text-center py-8">
+                            <span class="material-symbols-outlined text-4xl text-muted-light dark:text-muted-dark mb-2">event_available</span>
+                            <h3 class="text-lg font-bold text-text-light dark:text-text-dark mb-1">No upcoming sessions</h3>
+                            <p class="text-sm text-muted-light dark:text-muted-dark mb-4">Book a new session to get started.</p>
+                            <button class="flex-none cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-lg h-11 px-6 bg-primary text-white text-base font-bold shadow-lg shadow-primary/20 hover:bg-primary/90 hover:shadow-primary/30 transition-all duration-300 transform hover:-translate-y-0.5">
+                                Book a Session
+                            </button>
+                        </div>
+                    `;
+                }
+            }
+
+            // 3. Populate Activity Feed
+            function populateActivityFeed() {
+                const container = document.getElementById('activity-feed');
+                if (!container) return;
+                container.innerHTML = '';
+                const feed = mockData.activityFeed.filter(item => !dismissedActivities.includes(item.id));
+                if (feed.length === 0) {
+                    container.innerHTML = `<p class="text-sm text-muted-light dark:text-muted-dark text-center py-4">No new activity.</p>`;
+                    return;
+                }
+                feed.forEach((item, index) => {
+                    const iconMap = {
+                        review: { icon: "star", color: "text-warning" },
+                        booking: { icon: "calendar_month", color: "text-success" },
+                        project: { icon: "create_new_folder", color: "text-primary" },
+                        badge: { icon: "military_tech", color: "text-accent" },
+                    };
+                    const icon = iconMap[item.type] || { icon: "info", color: "text-muted-light" };
+                    const itemEl = document.createElement('div');
+                    itemEl.className = "flex items-start gap-3 group"; // Removed stagger here, apply below
+                    itemEl.innerHTML = `
+                        <div class="flex items-center justify-center h-9 w-9 rounded-full ${icon.color} bg-opacity-10 ${icon.color.replace('text-', 'bg-')} shrink-0">
+                            <span class="material-symbols-outlined" style="font-size: 20px;">${icon.icon}</span>
+                        </div>
+                        <div class="flex-1">
+                            <p class="text-sm"><strong>${item.user}</strong> ${item.action}</p>
+                            <p class="text-xs text-muted-light dark:text-muted-dark">${item.time}</p>
+                        </div>
+                        <button data-id="${item.id}" aria-label="Dismiss activity" class="dismiss-activity-btn opacity-0 group-hover:opacity-100 focus-visible:opacity-100 text-muted-light dark:text-muted-dark hover:text-accent transition-opacity">
+                            <span class="material-symbols-outlined" style="font-size: 18px;">close</span>
+                        </button>
+                    `;
+                    applyStaggerAnimation(itemEl, index);
+                    container.appendChild(itemEl);
+                });
+            }
+
+            // 4. Populate My Projects
+            function populateMyProjects() {
+                const container = document.getElementById('my-projects-list');
+                if (!container) return;
+                container.innerHTML = '';
+                if (mockData.myProjects.length === 0) {
+                    container.innerHTML = `<p class="text-sm text-muted-light dark:text-muted-dark">No active projects. Create a listing to get started!</p>`;
+                    return;
+                }
+                mockData.myProjects.forEach((project, index) => {
+                    const projectCard = document.createElement('a');
+                    projectCard.href = project.url;
+                    projectCard.className = "flex-none w-60 p-4 rounded-xl shadow-card hover:shadow-card-hover bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark transition-all transform hover:-translate-y-1"; // Removed stagger here
+                    projectCard.innerHTML = `
+                        <h4 class="font-bold truncate mb-3">${project.title}</h4>
+                        <div class="flex justify-between text-xs font-medium text-muted-light dark:text-muted-dark mb-1">
+                            <span>Progress</span>
+                            <span>${project.progress}%</span>
+                        </div>
+                        <div class="w-full bg-background-light dark:bg-background-dark rounded-full h-2 border border-border-light dark:border-border-dark overflow-hidden">
+                             <div class="bg-primary h-full rounded-full progress-bar-inner" style="--progress-width: ${project.progress}%"></div>
+                        </div>
+                        <button class="mt-4 text-sm w-full text-center h-8 rounded-md font-bold bg-primary-light text-primary dark:bg-primary/20 dark:text-primary transition-colors hover:bg-primary/30 dark:hover:bg-primary/40">
+                            View Project
+                        </button>
+                    `;
+                    applyStaggerAnimation(projectCard, index);
+                    container.appendChild(projectCard);
+                });
+            }
+
+            // 5. Populate Recommendations
+            function populateRecommendations() {
+                const container = document.getElementById('recommendations-list');
+                if (!container) return;
+                container.innerHTML = '';
+                mockData.recommendations.forEach((rec, index) => {
+                    const recCard = document.createElement('div');
+                    recCard.className = "p-4 rounded-xl shadow-card bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark transition-shadow hover:shadow-card-hover"; // Removed stagger
+                    recCard.innerHTML = `
+                        <div class="flex justify-between items-start">
+                             <h4 class="font-bold text-base mb-1">${rec.title}</h4>
+                             <div class="relative group">
+                                 <span class="material-symbols-outlined text-muted-light dark:text-muted-dark cursor-help" style="font-size: 18px;">help_outline</span>
+                                 <div class="absolute bottom-full right-0 mb-2 w-48 p-2 bg-card-dark text-text-dark text-xs font-medium rounded-md shadow-lg opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity z-10">
+                                     ${rec.reason}
+                                     <div class="absolute top-full right-2 w-0 h-0 border-x-4 border-x-transparent border-t-4 border-t-card-dark"></div>
+                                 </div>
+                             </div>
+                        </div>
+                        <p class="text-sm text-muted-light dark:text-muted-dark mb-4">${rec.reason.split('.')[0]}.</p>
+                        <button class="text-sm w-full text-center h-8 rounded-md font-bold bg-background-light dark:bg-background-dark border border-border-light dark:border-border-dark hover:bg-border-light dark:hover:bg-border-dark transition-colors">
+                            Learn More
+                        </button>
+                    `;
+                    applyStaggerAnimation(recCard, index);
+                    container.appendChild(recCard);
+                });
+            }
+
+            // 6. Populate Leaderboard
+            function populateLeaderboard() {
+                const container = document.getElementById('leaderboard-list');
+                if (!container) return;
+                container.innerHTML = '';
+                mockData.leaderboard.forEach((user, index) => {
+                    const userEl = document.createElement('a');
+                        // Build profile href: prefer an explicit profile_url/profileUrl, then slug, then fallback to numeric id route
+                        const profileHref = user.profile_url || user.profileUrl || (user.profile_slug ? `/profile/${user.profile_slug}/` : (user.slug ? `/profile/${user.slug}/` : `/profile/${user.id}/`));
+                        userEl.href = profileHref;
+                    userEl.className = "flex items-center gap-3 p-2.5 rounded-lg hover:bg-background-light dark:hover:bg-background-dark transition-colors"; // Removed stagger
+                    userEl.innerHTML = `
+                        <span class="font-bold text-sm w-5 text-center">${user.rank}</span>
+                        <img alt="${user.name}" src="${user.avatar}" class="h-10 w-10 rounded-full object-cover" />
+                        <div class="flex-1">
+                            <p class="font-bold text-sm">${user.name}</p>
+                            <p class="text-xs text-muted-light dark:text-muted-dark">${user.points.toLocaleString()} points</p>
+                        </div>
+                        ${user.badge ? `<span class="material-symbols-outlined text-warning" style="font-variation-settings: 'FILL' 1;" title="${user.badge}">${user.badge === 'mentor' ? 'school' : 'star'}</span>` : ''}
+                    `;
+                     applyStaggerAnimation(userEl, index);
+                    container.appendChild(userEl);
+                });
+                // Add current user
+                const user = mockData.currentUserRank;
+                const userEl = document.createElement('a');
+                // Current user: allow explicit profile_url or slug, otherwise use id
+                const currentProfileHref = mockData.currentUserRank.profile_url || mockData.currentUserRank.profileUrl || (mockData.currentUserRank.profile_slug ? `/profile/${mockData.currentUserRank.profile_slug}/` : (mockData.currentUserRank.slug ? `/profile/${mockData.currentUserRank.slug}/` : `/profile/${mockData.currentUserRank.id}/`));
+                userEl.href = currentProfileHref;
+                userEl.className = "flex items-center gap-3 p-2.5 rounded-lg bg-primary-light dark:bg-primary/20 border-2 border-primary mt-2"; // Removed stagger
+                userEl.innerHTML = `
+                    <span class="font-bold text-sm w-5 text-center text-primary">${user.rank}</span>
+                    <img alt="${user.name}" src="${user.avatar}" class="h-10 w-10 rounded-full object-cover border-2 border-primary" />
+                    <div class="flex-1">
+                        <p class="font-bold text-sm text-primary">${user.name}</p>
+                        <p class="text-xs font-medium text-primary">${user.points.toLocaleString()} points</p>
+                    </div>
+                `;
+                applyStaggerAnimation(userEl, mockData.leaderboard.length); // Apply after others
+                container.appendChild(userEl);
+            }
+
+            // 7. Populate Notification/Message Tabs & Dropdown
+            function getUnreadNotificationCount() {
+               return mockData.notifications.filter(n => !readNotifications.includes(n.id) && !n.read).length;
+            }
+            function populateNotifications() {
+                const menuList = document.getElementById('notification-menu-list');
+                const tabList = document.getElementById('tab-notifications-list');
+                if (!menuList || !tabList) return;
+                menuList.innerHTML = '';
+                tabList.innerHTML = '';
+                const allNotifs = mockData.notifications;
+                // Populate Dropdown Menu
+                allNotifs.forEach(n => {
+                    const isRead = readNotifications.includes(n.id) || n.read;
+                    const itemEl = document.createElement('a');
+                    itemEl.href = n.url;
+                    itemEl.className = `flex items-start gap-3 p-3 transition-colors hover:bg-background-light dark:hover:bg-background-dark ${isRead ? 'opacity-70' : 'font-medium'}`;
+                    itemEl.dataset.id = n.id;
+                    itemEl.innerHTML = `
+                        ${!isRead ? '<div class="h-2 w-2 rounded-full bg-primary shrink-0 mt-1.5"></div>' : '<div class="w-2 shrink-0"></div>'}
+                        <div class="flex-1">
+                            <p class="text-sm leading-snug">${n.text}</p>
+                            <p class="text-xs text-muted-light dark:text-muted-dark mt-0.5">${n.time}</p>
+                        </div>
+                    `;
+                    menuList.appendChild(itemEl);
+                });
+                // Populate Tab
+                const unreadNotifs = allNotifs.filter(n => !readNotifications.includes(n.id) && !n.read).slice(0, 2);
+                if (unreadNotifs.length === 0) {
+                    tabList.innerHTML = `<p class="text-sm text-muted-light dark:text-muted-dark text-center py-4">No new notifications.</p>`;
+                } else {
+                    unreadNotifs.forEach(n => {
+                        const itemEl = document.createElement('a');
+                        itemEl.href = n.url;
+                        itemEl.dataset.id = n.id;
+                        itemEl.className = "flex items-start gap-2.5 p-2 rounded-lg hover:bg-background-light dark:hover:bg-background-dark transition-colors";
+                        itemEl.innerHTML = `
+                            <div class="h-2 w-2 rounded-full bg-primary shrink-0 mt-1.5"></div>
+                            <div class="flex-1">
+                                <p class="text-sm leading-snug">${n.text}</p>
+                                <p class="text-xs text-muted-light dark:text-muted-dark mt-0.5">${n.time}</p>
+                            </div>
+                        `;
+                        tabList.appendChild(itemEl);
+                    });
+                }
+            }
+            function populateMessages() {
+                const tabList = document.getElementById('tab-messages-list');
+                if (!tabList) return;
+                tabList.innerHTML = '';
+                const messages = mockData.messages.slice(0, 2);
+                if (messages.length === 0) {
+                     tabList.innerHTML = `<p class="text-sm text-muted-light dark:text-muted-dark text-center py-4">No new messages.</p>`;
+                     return;
+                }
+                messages.forEach(msg => {
+                    const isRead = msg.read;
+                    const itemEl = document.createElement('a');
+                    itemEl.href = msg.url;
+                    itemEl.className = "flex items-start gap-3 p-2 rounded-lg hover:bg-background-light dark:hover:bg-background-dark transition-colors";
+                    itemEl.innerHTML = `
+                        <div class="relative shrink-0">
+                            <img alt="${msg.from}" src="${msg.avatar}" class="h-10 w-10 rounded-full object-cover" />
+                            ${!isRead ? '<div class="absolute top-0 right-0 h-2.5 w-2.5 rounded-full bg-primary ring-2 ring-card-light dark:ring-card-dark"></div>' : ''}
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex justify-between items-center">
+                                <p class="text-sm ${isRead ? 'font-medium' : 'font-bold'}">${msg.from}</p>
+                                <p class="text-xs text-muted-light dark:text-muted-dark">${msg.time}</p>
+                            </div>
+                            <p class="text-sm text-muted-light dark:text-muted-dark truncate">${msg.preview}</p>
+                        </div>
+                    `;
+                    tabList.appendChild(itemEl);
+                });
+            }
+
+            // 8. Populate Community Section
+            function populateCommunity() {
+                const skillsContainer = document.getElementById('trending-skills-list');
+                const projectsContainer = document.getElementById('featured-projects-list');
+                if (!skillsContainer || !projectsContainer) return;
+                // Skills
+                skillsContainer.innerHTML = '';
+                mockData.trendingSkills.forEach((skill, index) => {
+                    const skillEl = document.createElement('a');
+                    skillEl.href = "#";
+                    skillEl.className = "px-3 py-1.5 bg-primary-light text-primary dark:bg-primary/20 dark:text-primary rounded-full text-sm font-medium transition-colors hover:bg-primary/30";
+                    skillEl.textContent = skill;
+                    applyStaggerAnimation(skillEl, index, 50); // Faster stagger for tags
+                    skillsContainer.appendChild(skillEl);
+                });
+                // Projects
+                projectsContainer.innerHTML = '';
+                mockData.featuredProjects.forEach((project, index) => {
+                    const projectCard = document.createElement('div');
+                    projectCard.className = "p-4 rounded-xl shadow-card bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark transition-shadow hover:shadow-card-hover"; // Remove stagger here
+                    projectCard.innerHTML = `
+                        <h4 class="font-bold text-base mb-1">${project.title}</h4>
+                        <p class="text-sm text-muted-light dark:text-muted-dark mb-3">${project.desc}</p>
+                        <div class="flex justify-between text-xs font-medium text-muted-light dark:text-muted-dark mb-1">
+                            <span>Progress</span>
+                            <span>${project.progress}%</span>
+                        </div>
+                        <div class="w-full bg-background-light dark:bg-background-dark rounded-full h-2 border border-border-light dark:border-border-dark mb-4 overflow-hidden">
+                             <div class="bg-success h-full rounded-full progress-bar-inner" style="--progress-width: ${project.progress}%"></div>
+                        </div>
+                        <button class="text-sm w-full text-center h-9 rounded-md font-bold bg-success text-white shadow-lg shadow-success/20 hover:bg-success/90 transition-all active:scale-95 transform hover:-translate-y-0.5 active:translate-y-0">
+                            View & Join
+                        </button>
+                    `;
+                    applyStaggerAnimation(projectCard, index);
+                    projectsContainer.appendChild(projectCard);
+                });
+            }
+
+            // 9. Populate Progress Section (Gamification)
+            function populateProgress() {
+                // Badges
+                const badgesContainer = document.getElementById('badges-list');
+                if (badgesContainer) {
+                    badgesContainer.innerHTML = '';
+                    mockData.badges.slice(0, 5).forEach((badge, index) => { // Show first 5
+                        const badgeEl = document.createElement('div');
+                        badgeEl.className = `relative group flex items-center justify-center h-12 w-12 rounded-full ${badge.color} bg-opacity-10 ${badge.color.replace('text-', 'bg-')} border-2 ${badge.color.replace('text-', 'border-')} transition-transform hover:scale-110`; // Removed stagger
+                        badgeEl.title = badge.title;
+                        badgeEl.innerHTML = `
+                            <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1; font-size: 28px;">${badge.icon}</span>
+                            <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-auto whitespace-nowrap p-2 bg-card-dark text-text-dark text-xs font-medium rounded-md shadow-lg opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity z-10">
+                                ${badge.title}
+                                <div class="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0 border-x-4 border-x-transparent border-t-4 border-t-card-dark"></div>
+                            </div>
+                        `;
+                        applyStaggerAnimation(badgeEl, index);
+                        badgesContainer.appendChild(badgeEl);
+                    });
+                }
+                // Weekly Goals (mocked values)
+                 const pointsBar = document.querySelector('[aria-label="Weekly points goal bar"] .progress-bar-inner');
+                 const pointsProgress = (350 / 500) * 100; // 70%
+                 if (pointsBar) {
+                     pointsBar.style.setProperty('--progress-width', `${pointsProgress}%`);
+                 }
+                 const sessionsBar = document.querySelector('[aria-label="Weekly sessions goal bar"] .progress-bar-inner');
+                 const sessionsProgress = (1 / 3) * 100; // 33.3%
+                 if (sessionsBar) {
+                    sessionsBar.style.setProperty('--progress-width', `${sessionsProgress}%`);
+                 }
+            }
+
+            // 10. Initialize Map
+            function initMap() {
+                 const mapEl = document.getElementById('skillmap-preview');
+                 if (mapEl && typeof L !== 'undefined') {
+                     try {
+                         const userLat = 20.2961; // Mock: Bhubaneswar
+                         const userLng = 85.8245;
+                         const map = L.map(mapEl, {
+                             center: [userLat, userLng],
+                             zoom: 13,
+                             zoomControl: false,
+                             attributionControl: false,
+                             scrollWheelZoom: false, // Disable scroll zoom on preview
+                             dragging: !L.Browser.mobile, // Disable dragging on mobile for preview
+                             tap: !L.Browser.mobile // Disable tap on mobile
+                         });
+                         L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+                             attribution: '© OpenStreetMap contributors © CARTO'
+                         }).addTo(map);
+
+                         const userIcon = L.icon({
+                            iconUrl: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iIzBCNkZGRiIgd2lkdGg9IjM2cHgiIGhlaWdodD0iMzZweCI+PHBhdGggZD0iTTEyIDJDOC4xMyAyIDUgNS4xMyA1IDljMCA1LjI1IDcgMTMgNyAxM3M3LTcuNzUgNy0xM2MwLTMuODctMy4xMy03LTctN3ptMCA5LjVjLTEuOTMgMC0zLjUtMS41Ny0zLjUtMy41czEuNTctMy41IDMuNS0zLjUgMy41IDEuNTcgMy41IDMuNS0xLjU3IDMuNS0zLjUgMy41eiIvPjxjaXJjbGUgY3g9IjEyIiBjeT0iOS41IiByPSIzLjUiIGZpbGw9IndoaXRlIiAvPjwvc3ZnPg==',
+                            iconSize: [36, 36],
+                            iconAnchor: [18, 36],
+                            popupAnchor: [0, -36]
+                         });
+
+                         L.marker([userLat, userLng], { title: "Priyam (You)", icon: userIcon }).addTo(map).bindPopup("<b>You are here</b>");
+                         // Mock pins
+                         L.marker([20.3010, 85.8285]).addTo(map).bindPopup("<b>Alex Johnson</b><br>Web Design Mentor");
+                         L.marker([20.2905, 85.8190]).addTo(map).bindPopup("<b>Rohan Gupta</b><br>Python Expert");
+                     } catch (e) {
+                         console.error("Leaflet map initialization failed:", e);
+                         mapEl.innerHTML = `<div class="flex items-center justify-center h-full p-4 text-center bg-background-light dark:bg-background-dark text-muted-light dark:text-muted-dark rounded-lg">Map preview failed to load.</div>`
+                     }
+                 }
+            }
+
+            // --- THEME TOGGLE ---
+            function setupThemeToggle() {
+                const toggleBtn = document.getElementById('theme-toggle-button');
+                const html = document.documentElement;
+                // Check LS or system preference
+                let isDark;
+                const storedTheme = getFromLS('theme');
+                if (storedTheme) {
+                    isDark = storedTheme === 'dark';
+                } else {
+                    isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                }
+
+                if (isDark) html.classList.add('dark');
+
+                if(toggleBtn) {
+                    toggleBtn.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        if (html.classList.contains('dark')) {
+                            html.classList.remove('dark');
+                            saveToLS('theme', 'light');
+                        } else {
+                            html.classList.add('dark');
+                            saveToLS('theme', 'dark');
+                        }
+                    });
+                }
+            }
+
+            // --- ACCESSIBILITY TOGGLES ---
+            function setupAccessibility() {
+                 const root = document.documentElement;
+                 const baseFontSize = 16; // Assuming base is 16px
+                 let currentFontSize = parseFloat(getFromLS('fontSize', baseFontSize)); // Load saved size
+                 root.style.fontSize = `${currentFontSize}px`; // Apply initial size
+
+                 document.getElementById('fontsize-increase')?.addEventListener('click', () => {
+                     currentFontSize = Math.min(20, currentFontSize + 1); // Max 20px
+                     root.style.fontSize = `${currentFontSize}px`;
+                     saveToLS('fontSize', currentFontSize); // Save preference
+                 });
+
+                 document.getElementById('fontsize-decrease')?.addEventListener('click', () => {
+                     currentFontSize = Math.max(13, currentFontSize - 1); // Min 13px
+                     root.style.fontSize = `${currentFontSize}px`;
+                     saveToLS('fontSize', currentFontSize); // Save preference
+                 });
+
+                 // High contrast - this is a basic toggle, requires specific CSS rules
+                 const contrastToggle = document.getElementById('contrast-toggle');
+                 let highContrastEnabled = getFromLS('highContrast', false);
+                 if(highContrastEnabled) document.body.classList.add('high-contrast'); // Apply initial
+
+                 contrastToggle?.addEventListener('click', () => {
+                     highContrastEnabled = !highContrastEnabled;
+                     document.body.classList.toggle('high-contrast');
+                     saveToLS('highContrast', highContrastEnabled);
+                     showToast(`High contrast ${highContrastEnabled ? 'enabled' : 'disabled'}.`);
+                 });
+            }
+
+            // --- DYNAMIC LISTENERS ---
+            function setupDynamicListeners() {
+                // Activity Feed Dismiss
+                const activityFeed = document.getElementById('activity-feed');
+                if (activityFeed) {
+                    activityFeed.addEventListener('click', (e) => {
+                        const dismissBtn = e.target.closest('.dismiss-activity-btn');
+                        if (dismissBtn) {
+                            e.preventDefault();
+                            const id = parseInt(dismissBtn.dataset.id);
+                            if (!dismissedActivities.includes(id)) {
+                                dismissedActivities.push(id);
+                                saveToLS('dismissedActivities', dismissedActivities);
+                                console.log("Dismissed activity:", id);
+                                // Animate out
+                                const itemEl = dismissBtn.closest('.stagger-item');
+                                if (itemEl) {
+                                    itemEl.classList.remove('animate__fadeInUp');
+                                    itemEl.classList.add('animate__fadeOutLeft', 'animate__faster');
+                                    itemEl.addEventListener('animationend', () => {
+                                        populateActivityFeed(); // Re-render without the item
+                                    }, { once: true }); // Important: remove listener after animation
+                                }
+                            }
+                        }
+                    });
+                }
+
+                // Notification Mark as Read
+                 const markNotifAsRead = (e) => {
+                     const link = e.target.closest('a[data-id]');
+                     if (link) {
+                         const id = parseInt(link.dataset.id);
+                         if (!readNotifications.includes(id)) {
+                             readNotifications.push(id);
+                             saveToLS('readNotifications', readNotifications);
+                             console.log("Marked notification as read:", id);
+                             // Re-render immediately
+                             populateHeader();
+                             populateNotifications();
+                         }
+                         // Allow link navigation to proceed *after* marking as read
+                     }
+                 };
+                const notificationMenu = document.getElementById('notification-menu-list');
+                const notificationTab = document.getElementById('tab-notifications-list');
+                if (notificationMenu) notificationMenu.addEventListener('click', markNotifAsRead);
+                if (notificationTab) notificationTab.addEventListener('click', markNotifAsRead);
+            }
+
+
+            // --- INITIALIZE APP ---
+            function initApp() {
+                populateHeader();
+                populateUpcomingBooking();
+                populateActivityFeed();
+                populateMyProjects();
+                populateRecommendations();
+                populateLeaderboard();
+                populateNotifications();
+                populateMessages();
+                populateCommunity();
+                populateProgress(); // Renamed from populateGamification
+                initMap();
+                setupThemeToggle();
+                setupAccessibility();
+                setupDynamicListeners(); // Setup listeners after initial content population
+                console.log("SkillLink Dashboard Initialized.");
+            }
+
+            // --- RUN APP ---
+            initApp();
+
+        });
+    </script>
+    <div id="status"></div>
+
+  <button id="mic-btn">
+    <svg viewBox="0 0 24 24">
+      <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/>
+      <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/>
+    </svg>
+  </button>
+
+  <script>
+    const micBtn = document.getElementById('mic-btn');
+    const status = document.getElementById('status');
+
+    // Route configuration with multiple keyword variations
+    const ROUTES = {
+      // Main pages
+      home: {
+        path: '/index',
+        keywords: ['home', 'homepage', 'main page', 'start'],
+        display: 'Home'
+      },
+      dashboard: {
+        path: '/dashboard',
+        keywords: ['dashboard', 'overview', 'main'],
+        display: 'Dashboard'
+      },
+      
+      // Booking
+      booking: {
+        path: '/mybookings',
+        keywords: ['booking', 'book', 'appointment', 'schedule', 'session', 'reserve'],
+        display: 'Booking'
+      },
+      myBookings: {
+        path: '/mybookings',
+        keywords: ['my booking', 'scheduled', 'my session', 'my appointment'],
+        display: 'My Bookings'
+      },
+      
+      // Community & Communication
+      community: {
+        path: '/feed',
+        keywords: ['community', 'community page', 'members', 'network'],
+        display: 'Community'
+      },
+      chat: {
+        path: '/index',
+        keywords: ['chat', 'message', 'inbox', 'conversation', 'dm'],
+        display: 'Chat'
+      },
+      skillSwap: {
+        path: '/swap',
+        keywords: ['skill swap', 'swap', 'exchange', 'trade skill'],
+        display: 'Skill Swap'
+      },
+      
+      // Resources
+      resources: {
+        path: '/resources',
+        keywords: ['resource', 'learning resource', 'material', 'content'],
+        display: 'Resources'
+      },
+      
+      map: {
+        path: '/map',
+        keywords: ['map', 'location', 'directions', 'find','nearby','open map'],
+        display: 'Map'
+      },
+      // Skill Credits
+      skillCredits: {
+        path: '/credits',
+        keywords: ['skill credit', 'credit', 'wallet', 'balance', 'my credit'],
+        display: 'Skill Credits'
+      },
+      earnCredits: {
+        path: '/credits',
+        keywords: ['earn credit', 'get credit', 'buy credit', 'purchase credit'],
+        display: 'Earn Credits'
+      },
+      
+      // Profile & Settings
+      myProfile: {
+        path: '{% url 'profile' %}',
+        keywords: ['my profile', 'profile page', 'my account','profile','my account'],
+        display: 'My Profile'
+      },
+     
+      
+      // Auth
+      login: {
+        path: '/index',
+        keywords: ['login', 'sign in', 'log in'],
+        display: 'Login'
+      },
+      signup: {
+        path: '/signup',
+        keywords: ['signup', 'sign up', 'register', 'create account', 'join'],
+        display: 'Sign Up'
+      },
+      logout: {
+        path: '/index',
+        keywords: ['logout', 'log out', 'sign out'],
+        display: 'Logout'
+      }
+    };
+
+    // Profile routes
+    const PROFILES = {
+      rohanGupta: {
+        path: '/profile/rohan-gupta',
+        keywords: ['rohan', 'rohan gupta', 'gupta'],
+        display: 'Rohan Gupta'
+      },
+      kritiSreyash: {
+        path: '/profile/kriti-sreyash',
+        keywords: ['kriti', 'kriti sreyash', 'sreyash'],
+        display: 'Kriti Sreyash'
+      },
+      aditya: {
+        path: '/profile/aditya',
+        keywords: ['aditya'],
+        display: 'Aditya'
+      },
+      soumya: {
+        path: '/profile/soumya',
+        keywords: ['soumya'],
+        display: 'Soumya'
+      }
+    };
+
+    // Check browser support
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const SpeechSynthesis = window.speechSynthesis;
+    
+    if (!SpeechRecognition) {
+      alert('Voice recognition not supported. Use Chrome or Edge browser.');
+    } else {
+      const recognition = new SpeechRecognition();
+      recognition.lang = 'en-US';
+      recognition.interimResults = false;
+
+      // Function to speak text (voice feedback)
+      function speak(text) {
+        if (SpeechSynthesis) {
+          // Cancel any ongoing speech
+          SpeechSynthesis.cancel();
+          
+          const utterance = new SpeechSynthesisUtterance(text);
+          utterance.rate = 1.1;
+          utterance.pitch = 1;
+          utterance.volume = 1;
+          SpeechSynthesis.speak(utterance);
+        }
+      }
+
+      // Function to match command to route
+      function matchCommand(command) {
+        const lowerCommand = command.toLowerCase().trim();
+        
+        // Check profiles first (more specific)
+        for (const [key, profile] of Object.entries(PROFILES)) {
+          for (const keyword of profile.keywords) {
+            if (lowerCommand.includes(keyword)) {
+              return { path: profile.path, display: profile.display, type: 'profile' };
+            }
+          }
+        }
+        
+        // Check general routes
+        for (const [key, route] of Object.entries(ROUTES)) {
+          for (const keyword of route.keywords) {
+            if (lowerCommand.includes(keyword)) {
+              return { path: route.path, display: route.display, type: 'route' };
+            }
+          }
+        }
+        
+        return null;
+      }
+
+      micBtn.addEventListener('click', () => {
+        recognition.start();
+        micBtn.classList.add('listening');
+        status.textContent = '🎤 Listening...';
+        status.classList.add('show');
+      });
+
+      recognition.onresult = (event) => {
+        const command = event.results[0][0].transcript;
+        console.log('Heard:', command);
+        
+        status.textContent = `Heard: "${command}"`;
+        micBtn.classList.remove('listening');
+
+        const match = matchCommand(command);
+
+        if (match) {
+          const message = `Opening ${match.display}`;
+          status.textContent = `✅ ${message}`;
+          
+          // Voice feedback
+          speak(message);
+          
+          setTimeout(() => {
+            window.location.href = match.path;
+          }, 1500);
+        } else {
+          const errorMsg = 'Command not recognized. Please try again.';
+          status.textContent = `❌ ${errorMsg}`;
+          speak(errorMsg);
+          
+          setTimeout(() => {
+            status.classList.remove('show');
+          }, 2500);
+        }
+      };
+
+      recognition.onerror = (event) => {
+        micBtn.classList.remove('listening');
+        let errorMsg = '';
+        
+        if (event.error === 'no-speech') {
+          errorMsg = 'No speech detected. Please try again.';
+        } else if (event.error === 'not-allowed') {
+          errorMsg = 'Microphone access denied. Please allow microphone permissions.';
+        } else {
+          errorMsg = `Error: ${event.error}`;
+        }
+        
+        status.textContent = `❌ ${errorMsg}`;
+        
+        setTimeout(() => {
+          status.classList.remove('show');
+        }, 3000);
+      };
+
+      recognition.onend = () => {
+        micBtn.classList.remove('listening');
+      };
+    }
+  </script>
+</body>
+
+</html>

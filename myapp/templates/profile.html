@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>ProFolio - Priyam</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <!-- Load Google Fonts -->
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&amp;display=swap"
+        rel="stylesheet" />
+    <!-- Load Material Symbols -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+    <!-- Configure Tailwind CSS -->
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#4f46e5", // Indigo
+                        "background-light": "#f4f5f7", // Slightly cooler light bg
+                        "background-dark": "#111827",  // Dark blue-gray
+                        "surface-light": "#ffffff",
+                        "surface-dark": "#1f2937",    // Darker surface
+                        "heading-light": "#111827",  // Darker heading
+                        "heading-dark": "#f9fafb",    // Lighter heading
+                        "body-light": "#374151",      // Darker body
+                        "body-dark": "#d1d5db",      // Lighter body
+                        "subtle-light": "#6b7280",
+                        "subtle-dark": "#9ca3af"
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "2xl": "1rem", "full": "9999px" },
+                    // Added box shadow for more depth
+                    boxShadow: {
+                        'lg': '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)',
+                        'xl': '0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)',
+                        'inner-lg': 'inset 0 2px 4px 0 rgb(0 0 0 / 0.05)',
+                    },
+                },
+            },
+        }
+    </script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        /* Voice Navigation Styles */
+    #voice-mic-btn {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: var(--color-teal-500);
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(var(--color-teal-500-rgb), 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s;
+      z-index: 1000;
+    }
+
+    #voice-mic-btn:hover {
+      transform: scale(1.1);
+      background: var(--color-teal-600);
+    }
+
+    #voice-mic-btn.listening {
+      background: var(--color-green-500);
+      animation: voice-pulse 1s infinite;
+    }
+
+    @keyframes voice-pulse {
+      0%, 100% { box-shadow: 0 4px 12px rgba(34, 197, 94, 0.5); }
+      50% { box-shadow: 0 4px 25px rgba(34, 197, 94, 0.8); }
+    }
+
+    #voice-mic-btn svg {
+      width: 24px;
+      height: 24px;
+      fill: var(--color-white);
+    }
+
+    #voice-status {
+      position: fixed;
+      bottom: 100px;
+      right: 30px;
+      background: var(--color-surface);
+      padding: 15px 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(var(--color-slate-900-rgb), 0.15);
+      border: 1px solid var(--color-card-border);
+      display: none;
+      min-width: 250px;
+      max-width: 350px;
+      z-index: 999;
+      font-size: 14px;
+      color: var(--color-text);
+    }
+
+    #voice-status.show {
+      display: block;
+    }
+     #mic-btn {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: #007bff;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s;
+      z-index: 1000;
+    }
+
+    #mic-btn:hover {
+      transform: scale(1.1);
+    }
+
+    #mic-btn.listening {
+      background: #28a745;
+      animation: pulse 1s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 4px 12px rgba(40, 167, 69, 0.5); }
+      50% { box-shadow: 0 4px 25px rgba(40, 167, 69, 0.8); }
+    }
+
+    #mic-btn svg {
+      width: 24px;
+      height: 24px;
+      fill: white;
+    }
+
+    #status {
+      position: fixed;
+      bottom: 100px;
+      right: 30px;
+      background: white;
+      padding: 15px 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+      display: none;
+      min-width: 250px;
+      max-width: 350px;
+      z-index: 999;
+      font-size: 14px;
+    }
+
+    #status.show {
+      display: block;
+    }
+
+    .command-list {
+      max-width: 800px;
+      margin: 20px auto;
+    }
+
+    .command-section {
+      margin-bottom: 20px;
+      padding: 15px;
+      background: #f8f9fa;
+      border-radius: 8px;
+    }
+
+    .command-section h3 {
+      margin-top: 0;
+      color: #007bff;
+    }
+
+    .command-section ul {
+      margin: 10px 0;
+    }
+
+    .command-section li {
+      margin: 5px 0;
+    }
+    </style>
+</head>
+<!-- Added leading-relaxed for better text readability and antialiasing -->
+
+<body
+    class="bg-background-light dark:bg-background-dark font-display text-body-light dark:text-body-dark leading-relaxed antialiased">
+    <div class="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden">
+        <div class="layout-container flex h-full grow flex-col">
+            <!-- Header with backdrop blur and subtle shadow -->
+            <header
+                class="sticky top-0 z-50 w-full bg-surface-light/90 dark:bg-surface-dark/90 backdrop-blur-lg border-b border-gray-200/80 dark:border-gray-700/80 shadow-sm">
+                <div class="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+                    <div class="flex items-center justify-between whitespace-nowrap h-16">
+                        <div class="flex items-center gap-4 text-heading-light dark:text-heading-dark">
+                            <!-- Updated logo color -->
+                            <div class="size-6 text-indigo-600 dark:text-indigo-500">
+                                <svg fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                        d="M13.8261 17.4264C16.7203 18.1174 20.2244 18.5217 24 18.5217C27.7756 18.5217 31.2797 18.1174 34.1739 17.4264C36.9144 16.7722 39.9967 15.2331 41.3563 14.1648L24.8486 40.6391C24.4571 41.267 23.5429 41.267 23.1514 40.6391L6.64374 14.1648C8.00331 15.2331 11.0856 16.7722 13.8261 17.4264Z"
+                                        fill="currentColor"></path>
+                                    <path clip-rule="evenodd"
+                                        d="M39.998 12.236C39.9944 12.2537 39.9875 12.2845 39.9748 12.3294C39.9436 12.4399 39.8949 12.5741 39.8346 12.7175C39.8168 12.7597 39.7989 12.8007 39.7813 12.8398C38.5103 13.7113 35.9788 14.9393 33.7095 15.4811C30.9875 16.131 27.6413 16.5217 24 16.5217C20.3587 16.5217 17.0125 16.131 14.2905 15.4811C12.0012 14.9346 9.44505 13.6897 8.18538 12.8168C8.17384 12.7925 8.16216 12.767 8.15052 12.7408C8.09919 12.6249 8.05721 12.5114 8.02977 12.411C8.00356 12.3152 8.00039 12.2667 8.00004 12.2612C8.00004 12.261 8 12.2607 8.00004 12.2612C8.00004 12.2359 8.0104 11.9233 8.68485 11.3686C9.34546 10.8254 10.4222 10.2469 11.9291 9.72276C14.9242 8.68098 19.1919 8 24 8C28.8081 8 33.0758 8.68098 36.0709 9.72276C37.5778 10.2469 38.6545 10.8254 39.3151 11.3686C39.9006 11.8501 39.9857 12.1489 39.998 12.236ZM4.95178 15.2312L21.4543 41.6973C22.6288 43.5809 25.3712 43.5809 26.5457 41.6973L43.0534 15.223C43.0709 15.1948 43.0878 15.1662 43.104 15.1371L41.3563 14.1648C43.104 15.1371 43.1038 15.1374 43.104 15.1371L43.1051 15.135L43.1065 15.1325L43.1101 15.1261L43.1199 15.1082C43.1276 15.094 43.1377 15.0754 43.1497 15.0527C43.1738 15.0075 43.2062 14.9455 43.244 14.8701C43.319 14.7208 43.4196 14.511 43.5217 14.2683C43.6901 13.8679 44 13.0689 44 12.2609C44 10.5573 43.003 9.22254 41.8558 8.2791C40.6947 7.32427 39.1354 6.55361 37.385 5.94477C33.8654 4.72057 29.133 4 24 4C18.867 4 14.1346 4.72057 10.615 5.94478C8.86463 6.55361 7.30529 7.32428 6.14419 8.27911C4.99695 9.22255 3.99999 10.5573 3.99999 12.2609C3.99999 13.1275 4.29264 13.9078 4.49321 14.3607C4.60375 14.6102 4.71348 14.8196 4.79687 14.9689C4.83898 15.0444 4.87547 15.1065 4.9035 15.1529C4.91754 15.1762 4.92954 15.1957 4.93916 15.2111L4.94662 15.223L4.95178 15.2312ZM35.9868 18.996L24 38.22L12.0131 18.996C12.4661 19.1391 12.9179 19.2658 13.3617 19.3718C16.4281 20.1039 20.0901 20.5217 24 20.5217C27.9099 20.5217 31.5719 20.1039 34.6383 19.3718C35.082 19.2658 35.5339 19.1391 35.9868 18.996Z"
+                                        fill="currentColor" fill-rule="evenodd"></path>
+                                </svg>
+                            </div>
+                            <h2 class="text-xl font-bold leading-tight tracking-[-0.015em]">SkillLink</h2>
+                        </div>
+                        <div class="flex flex-1 justify-end items-center gap-4">
+                            <!-- Navigation links (Fixed typo here) -->
+                            <div class="hidden sm:flex items-center gap-8">
+                                <a class="text-sm font-medium text-subtle-light dark:text-subtle-dark hover:text-indigo-600 dark:hover:text-indigo-500 transition-colors"
+                                    href="{% url 'dashboard' %}">Home</a>
+                                <a class="text-sm font-medium text-subtle-light dark:text-subtle-dark hover:text-indigo-600 dark:hover:text-indigo-500 transition-colors"
+                                    href="#">Network</a>
+                                <a class="text-sm font-medium text-subtle-light dark:text-subtle-dark hover:text-indigo-600 dark:hover:text-indigo-500 transition-colors"
+                                    href="#">Jobs</a>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <!-- Notification button -->
+                                <button
+                                    class="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 w-10 bg-transparent text-subtle-light dark:text-subtle-dark hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                                    aria-label="Notifications">
+                                    <span class="material-symbols-outlined">notifications</span>
+                                </button>
+                                <!-- User profile picture -->
+                                <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10"
+                                    data-alt="User profile picture"
+                                    style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuB-qhXBjtmRE31kRtv1WW8A4ioqA2hlCKEN21IDbtiZStFjEeY6rW5jBBgnnAGmfwsENXAfIOcVXwZYQBEme4tEKWIb2LeyXjIlvusgkLeuLzlwD997oUSJ3379ORpzo6Z6qt5Tpywymw7I8X1HSjoYWevOjg4w2wSRVGQ4aAkGj1vAETBcQPxq-qG_GDz297HIG6f6yY7DRmW7m81cwvLHor27eTyYq9SULfSj0xvvZJbO2A59bHXMJmcZXSuPYAi5pGVywRBvrx6q");'>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+            <!-- Main content with increased padding and max-width -->
+            <main class="flex-1 px-4 sm:px-6 lg:px-8 py-12 md:py-16">
+                <div class="max-w-7xl mx-auto flex flex-col gap-8">
+                    <!-- Profile Header Card: Increased shadow, radius, and border -->
+                    <div
+                        class="bg-surface-light dark:bg-surface-dark rounded-2xl shadow-lg overflow-hidden border border-gray-200/50 dark:border-gray-700/50">
+                        <div class="w-full bg-center bg-no-repeat bg-cover flex flex-col justify-end min-h-[250px]"
+                            data-alt="Abstract blue and purple gradient banner"
+                            style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAWWm6t7cHlmxZXn48tgCDhwOF61GlJ6BaXjtSZJ1xYY_bWQ9IS5P3b2Kj7s9jMS0LwntyAPDLsnDlQ64dHxwNBN4-q4jlsEdo4hZiJr-AAAf3Uy9vYztZg8d2bYMY25n1-L42UVsVu7U8129SKyReyxRWyJbuzebdi-mgYL1q-nUlYhT8Lhw8VoFTO6EaXx_aFR2Eru1XVkv5NJ95p9_KSNmxjIdvz0eV5e3NLVNIDfHbZfqT61PhswH5dkHkL4bEIN9mY0_IN_L9W");'>
+                        </div>
+                        <div class="p-6">
+                            <!-- Increased negative margin and profile pic size -->
+                            <div class="flex flex-col sm:flex-row gap-6 -mt-28 items-start">
+                                <div class="relative">
+                                    <!-- Profile Picture: Larger, added prominent shadow (Fixed https typo) -->
+                                    <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full h-36 w-36 border-4 border-surface-light dark:border-surface-dark shadow-xl"
+                                        data-alt="Profile picture of Priyam"
+                                        style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCcg4TM-XThCZV5-iu8y7b8KKMxkBX8VGS94OzQxVweuZT0A21bspI8YXsIy0vQ6Grv9EDhpKqp9-oxPzS7fCmAt10cf_Q1LNWJ8xnUXceVOGEis4XonqQdv_IQTbF_40LlGFtzV1OYYH9O9hEujXAZ75g72bZdIfam-00awSNVTYCmxERJHeogEoabnBos-ZLWTynn3v9CxcZp9TKkIQexeSpJer9pfzGkCiwZ67N-GVdAVJT2Ongd5AnlWOP9RBNKjzFSho5lC5vX");'>
+                                    </div>
+                                    <!-- Online status indicator -->
+                                    <div
+                                        class="absolute bottom-3 right-3 size-7 bg-green-500 rounded-full border-4 border-surface-light dark:border-surface-dark flex items-center justify-center text-white text-xs font-bold">
+                                    </div>
+                                </div>
+                                <div class="flex-1 pt-16 sm:pt-4">
+                                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                                        <div>
+                                            <p
+                                                class="text-heading-light dark:text-heading-dark text-3xl font-bold leading-tight tracking-[-0.015em]">
+                                                Priyam</p>
+                                            <p
+                                                class="text-subtle-light dark:text-subtle-dark text-lg font-normal leading-normal">
+                                                Senior Product Designer at TechCorp</p>
+                                            <p
+                                                class="text-subtle-light dark:text-subtle-dark text-sm font-normal leading-normal mt-1">
+                                                San Francisco, CA</p>
+                                        </div>
+                                        <div class="flex w-full sm:w-auto gap-3">
+                                            <!-- Primary Button: Updated colors and shadow, larger padding -->
+                                            <a href="{% url 'dashboard' %}"
+                                                class="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-5 bg-indigo-600 dark:bg-indigo-500 text-white hover:bg-indigo-700 dark:hover:bg-indigo-600 transition-colors shadow-md hover:shadow-lg text-sm font-bold leading-normal tracking-[0.015em] flex-1 sm:flex-auto">
+                                                <span class="truncate">Dashboard</span>
+                                            </a>
+                                            <!-- Secondary/Outline Button: larger padding -->
+                                            <button
+                                                class="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-5 bg-surface-light dark:bg-surface-dark border border-gray-300 dark:border-gray-600 text-heading-light dark:text-heading-dark hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-sm font-bold leading-normal tracking-[0.015em] flex-1 sm:flex-auto">
+                                                <span class="truncate">Contact Me</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- NEW: Stats Card (Softer rounding) -->
+                    <div
+                        class="bg-surface-light dark:bg-surface-dark rounded-2xl shadow-lg p-6 border border-gray-200/50 dark:border-gray-700/50">
+                        <h2
+                            class="text-heading-light dark:text-heading-dark text-xl font-bold leading-tight tracking-[-0.015em] pb-4">
+                            Key Stats</h2>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                            <div
+                                class="flex flex-col items-center justify-center p-4 bg-indigo-50 dark:bg-indigo-900/40 rounded-2xl hover:shadow-lg transition-shadow">
+                                <span class="text-3xl font-bold text-indigo-600 dark:text-indigo-400">12</span>
+                                <p class="text-sm font-medium text-subtle-light dark:text-subtle-dark mt-1">Projects</p>
+                            </div>
+                            <div
+                                class="flex flex-col items-center justify-center p-4 bg-indigo-50 dark:bg-indigo-900/40 rounded-2xl hover:shadow-lg transition-shadow">
+                                <span class="text-3xl font-bold text-indigo-600 dark:text-indigo-400">7+</span>
+                                <p class="text-sm font-medium text-subtle-light dark:text-subtle-dark mt-1">Years of Exp
+                                </p>
+                            </div>
+                            <div
+                                class="flex flex-col items-center justify-center p-4 bg-indigo-50 dark:bg-indigo-900/40 rounded-2xl hover:shadow-lg transition-shadow">
+                                <span class="text-3xl font-bold text-indigo-600 dark:text-indigo-400">500+</span>
+                                <p class="text-sm font-medium text-subtle-light dark:text-subtle-dark mt-1">Connections
+                                </p>
+                            </div>
+                            <div
+                                class="flex flex-col items-center justify-center p-4 bg-indigo-50 dark:bg-indigo-900/40 rounded-2xl hover:shadow-lg transition-shadow">
+                                <span class="text-3xl font-bold text-indigo-600 dark:text-indigo-400">2.4K</span>
+                                <p class="text-sm font-medium text-subtle-light dark:text-subtle-dark mt-1">Followers
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- NEW: Two-Column Layout Wrapper -->
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                        <!-- Main Content Column -->
+                        <div class="lg:col-span-2 flex flex-col gap-8">
+                            <!-- About Card -->
+                            <div
+                                class="bg-surface-light dark:bg-surface-dark rounded-2xl shadow-lg p-6 border border-gray-200/50 dark:border-gray-700/50">
+                                <h2
+                                    class="text-heading-light dark:text-heading-dark text-xl font-bold leading-tight tracking-[-0.015em] pb-3">
+                                    About</h2>
+                                <p class="text-base font-normal leading-relaxed">
+                                    Experienced Music Producer and Composer with a demonstrated history of working in the studio and media industry. Skilled in Audio Engineering, Sound Design, and Arrangement. Strong technical and creative professional with a degree focused in Music Production from NIM. Passionate about creating immersive and beautiful soundscapes that solve creative challenges and resonate with listeners. I thrive in collaborative environments and am always looking for new challenges to grow my skills and make a meaningful impact.
+                                </p>
+                            </div>
+
+                            <!-- Experience Card -->
+                            <div
+                                class="bg-surface-light dark:bg-surface-dark rounded-2xl shadow-lg p-6 border border-gray-200/50 dark:border-gray-700/50">
+                                <h2
+                                    class="text-heading-light dark:text-heading-dark text-xl font-bold leading-tight tracking-[-0.015em] pb-4">
+                                    Experience</h2>
+                                <div class="flex flex-col gap-6">
+                                    <div class="flex gap-4">
+                                        <div
+                                            class="flex-shrink-0 size-12 rounded-lg bg-indigo-100 dark:bg-indigo-900/40 flex items-center justify-center">
+                                            <span
+                                                class="material-symbols-outlined text-indigo-600 dark:text-indigo-400">business_center</span>
+                                        </div>
+                                        <div>
+                                            <h3 class="font-bold text-heading-light dark:text-heading-dark">Senior
+                                                Product Designer</h3>
+                                            <p class="font-medium">TechCorp</p>
+                                            <p class="text-sm text-subtle-light dark:text-subtle-dark">Jan 2020 -
+                                                Present · 4 yrs 7 mos</p>
+                                            <p class="mt-2 text-base">Leading design on core product features, mentoring
+                                                junior designers, and collaborating with cross-functional teams to
+                                                deliver high-quality user experiences.</p>
+                                        </div>
+                                    </div>
+                                    <div class="border-t border-gray-200 dark:border-gray-700"></div>
+                                    <div class="flex gap-4">
+                                        <div
+                                            class="flex-shrink-0 size-12 rounded-lg bg-indigo-100 dark:bg-indigo-900/40 flex items-center justify-center">
+                                            <span
+                                                class="material-symbols-outlined text-indigo-600 dark:text-indigo-400">corporate_fare</span>
+                                        </div>
+                                        <div>
+                                            <h3 class="font-bold text-heading-light dark:text-heading-dark">Musician </h3>
+                                            <p class="font-medium">Baba sangit academy</p>
+                                            <p class="text-sm text-subtle-light dark:text-subtle-dark">Jun 2017 - Dec
+                                                2019 · 2 yrs 7 mos</p>
+                                            <p class="mt-2 text-base">Plays music as a passion loves musical noise.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Portfolio Card -->
+                            <div
+                                class="bg-surface-light dark:bg-surface-dark rounded-2xl shadow-lg p-6 border border-gray-200/50 dark:border-gray-700/50">
+                                <h2
+                                    class="text-heading-light dark:text-heading-dark text-xl font-bold leading-tight tracking-[-0.015em] pb-4">
+                                    Portfolio</h2>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <!-- Portfolio Item 1 -->
+                                    <div
+                                        class="group border border-gray-200/80 dark:border-gray-700/80 rounded-xl overflow-hidden transition-all duration-300 ease-in-out hover:shadow-xl hover:-translate-y-1">
+                                        <div class="w-full bg-center bg-no-repeat aspect-video bg-cover"
+                                            data-alt="Thumbnail for Project Alpha showing a dashboard UI"
+                                            style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDJArVcOe7ZR77poLUqIpv9W1BXQyb-fTrjClzrYL24YGHAaaKD97wy92asyJsOwFiJCcBWDvZ0ii-Ex19cnscwncSz29gmeACWulsF0PGCnpT4YCUUJc6CkAK80PmJ9DcaosrQBxomMIPwJnM_5p1m3wwIn14HYZCBkTrHdnEV2wW-CNma353sNnm5veJC59QlhlB841e2UcqsuGX1MD1oBuVaz8jSI_npM9ZD7OQnktjWi_XtJ0ro28KsgYzJ4Dlp3P02xBmqtfiN");'>
+                                        </div>
+                                        <div class="p-4">
+                                            <h3 class="font-bold text-heading-light dark:text-heading-dark">Project
+                                                Alpha</h3>
+                                            <p class="text-sm mt-1">A comprehensive redesign of an analytics dashboard
+                                                for a SaaS platform.</p>
+                                            <a class="inline-flex items-center gap-1 text-indigo-600 dark:text-indigo-500 text-sm font-medium mt-3 group-hover:underline"
+                                                href="#">View Project <span
+                                                    class="material-symbols-outlined text-base transition-transform group-hover:translate-x-1">arrow_forward</span></a>
+                                        </div>
+                                    </div>
+                                    <!-- Portfolio Item 2 -->
+                                    <div
+                                        class="group border border-gray-200/80 dark:border-gray-700/80 rounded-xl overflow-hidden transition-all duration-300 ease-in-out hover:shadow-xl hover:-translate-y-1">
+                                        <div class="w-full bg-center bg-no-repeat aspect-video bg-cover"
+                                            data-alt="Thumbnail for Project Beta showing a mobile app interface"
+                                            style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuD3aAH4AM3MeEK4vJXvMMKB80upfMDlCXjxFj82UPUkh10foOzMMpqLJhGALCMEjZFfTr-5C4HFgOnWmAz0tSwVvu-gipoUsfZWmcqzAg151GPLWiL2X9_xSbCzgO59ixeuW7fTzHlNJSP_YibZ4T-yNZTnMbmsz3il-qrP7m5GbC0joZ6PTZlvS9wdMepKJxJXpR5eT2-sg-ydQDpmyll0kEj5PSZr9TGr8976ofd8HCBOn5dX0hcB-O-OF8r_y28StI8Gvbo3XFID");'>
+                                        </div>
+                                        <div class="p-4">
+                                            <h3 class="font-bold text-heading-light dark:text-heading-dark">Project Beta
+                                            </h3>
+                                            <p class="text-sm mt-1">Mobile application design for a new-age fintech
+                                                startup.</p>
+                                            <a class="inline-flex items-center gap-1 text-indigo-600 dark:text-indigo-500 text-sm font-medium mt-3 group-hover:underline"
+                                                href="#">View Project <span
+                                                    class="material-symbols-outlined text-base transition-transform group-hover:translate-x-1">arrow_forward</span></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- NEW: Sidebar Column -->
+                        <div class="lg:col-span-1 flex flex-col gap-8">
+                            <!-- Skills Card -->
+                            <div
+                                class="bg-surface-light dark:bg-surface-dark rounded-2xl shadow-lg p-6 border border-gray-200/50 dark:border-gray-700/50">
+                                <h2
+                                    class="text-heading-light dark:text-heading-dark text-xl font-bold leading-tight tracking-[-0.015em] pb-4">
+                                    Skills</h2>
+                                <div class="flex flex-wrap gap-2">
+                                    <span
+                                        class="bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 font-medium px-3 py-1.5 rounded-full text-sm hover:bg-indigo-200 dark:hover:bg-indigo-800/70 transition-colors cursor-default">UX
+                                        Design</span>
+                                    <span
+                                        class="bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 font-medium px-3 py-1.5 rounded-full text-sm hover:bg-indigo-200 dark:hover:bg-indigo-800/70 transition-colors cursor-default">UI
+                                        Design</span>
+                                    <span
+                                        class="bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 font-medium px-3 py-1.5 rounded-full text-sm hover:bg-indigo-200 dark:hover:bg-indigo-800/70 transition-colors cursor-default">Resume Maker</span>
+                                    <span
+                                        class="bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 font-medium px-3 py-1.5 rounded-full text-sm hover:bg-indigo-200 dark:hover:bg-indigo-800/70 transition-colors cursor-default">Prototyping</span>
+                                    <span
+                                        class="bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 font-medium px-3 py-1.5 rounded-full text-sm hover:bg-indigo-200 dark:hover:bg-indigo-800/70 transition-colors cursor-default">Musician</span>
+                                    <span
+                                        class="bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 font-medium px-3 py-1.5 rounded-full text-sm hover:bg-indigo-200 dark:hover:bg-indigo-800/70 transition-colors cursor-default">Gardening</span>
+                                    <span
+                                        class="bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 font-medium px-3 py-1.5 rounded-full text-sm hover:bg-indigo-200 dark:hover:bg-indigo-800/70 transition-colors cursor-default">HTML/CSS</span>
+                                </div>
+                            </div>
+
+                            <!-- NEW: Activity Card (Replaces Education Card) -->
+                            <div
+                                class="bg-surface-light dark:bg-surface-dark rounded-2xl shadow-lg p-6 border border-gray-200/50 dark:border-gray-700/50">
+                                <h2
+                                    class="text-heading-light dark:text-heading-dark text-xl font-bold leading-tight tracking-[-0.015em] pb-4">
+                                    Activity</h2>
+
+                                <!-- Share update input -->
+                                <div class="flex items-center gap-3">
+                                    <!-- (Fixed https typo) -->
+                                    <div class="flex-shrink-0 bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10"
+                                        data-alt="Profile picture of Priyam"
+                                        style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCcg4TM-XThCZV5-iu8y7b8KKMxkBX8VGS94OzQxVweuZT0A21bspI8YXsIy0vQ6Grv9EDhpKqp9-oxPzS7fCmAt10cf_Q1LNWJ8xnUXceVOGEis4XonqQdv_IQTbF_40LlGFtzV1OYYH9O9hEujXAZ75g72bZdIfam-00awSNVTYCmxERJHeogEoabnBos-ZLWTynn3v9CxcZp9TKkIQexeSpJer9pfzGkCiwZ67N-GVdAVJT2Ongd5AnlWOP9RBNKjzFSho5lC5vX");'>
+                                    </div>
+                                    <input type="text" placeholder="Share an update or article..."
+                                        class="w-full rounded-full bg-background-light dark:bg-background-dark border-gray-300 dark:border-gray-700 px-4 py-2 text-sm focus:ring-indigo-500 focus:border-indigo-500" />
+                                </div>
+
+                                <!-- Divider -->
+                                <div class="border-t border-gray-200 dark:border-gray-700 my-5"></div>
+
+                                <!-- Activity Feed -->
+                                <div class="flex flex-col gap-5">
+
+                                    <!-- Post 1 -->
+                                    <div class="flex gap-3">
+                                        <!-- (Fixed https typo) -->
+                                        <div class="flex-shrink-0 bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10"
+                                            data-alt="Profile picture of Priyam"
+                                            style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCcg4TM-XThCZV5-iu8y7b8KKMxkBX8VGS94OzQxVweuZT0A21bspI8YXsIy0vQ6Grv9EDhpKqp9-oxPzS7fCmAt10cf_Q1LNWJ8xnUXceVOGEis4XonqQdv_IQTbF_40LlGFtzV1OYYH9O9hEujXAZ75g72bZdIfam-00awSNVTYCmxERJHeogEoabnBos-ZLWTynn3v9CxcZp9TKkIQexeSpJer9pfzGkCiwZ67N-GVdAVJT2Ongd5AnlWOP9RBNKjzFSho5lC5vX");'>
+                                        </div>
+                                        <div>
+                                            <p class="text-sm font-medium text-heading-light dark:text-heading-dark">
+                                                Priya <span
+                                                    class="text-subtle-light dark:text-subtle-dark font-normal">shared
+                                                    an article</span>
+                                            </p>
+                                            <p class="text-xs text-subtle-light dark:text-subtle-dark">1d ago</p>
+                                            <p class="text-sm mt-2">
+                                                Excited to share my latest article on "The Future of Design Systems". A
+                                                deep dive into how component libraries are evolving.
+                                            </p>
+                                            <!-- Interaction Bar -->
+                                            <div class="flex items-center gap-4 mt-3">
+                                                <button
+                                                    class="flex items-center gap-1 text-sm text-subtle-light dark:text-subtle-dark hover:text-indigo-600 dark:hover:text-indigo-500 transition-colors">
+                                                    <span class="material-symbols-outlined text-base">thumb_up</span>
+                                                    <span>Like</span>
+                                                </button>
+                                                <button
+                                                    class="flex items-center gap-1 text-sm text-subtle-light dark:text-subtle-dark hover:text-indigo-600 dark:hover:text-indigo-500 transition-colors">
+                                                    <span class="material-symbols-outlined text-base">chat_bubble</span>
+                                                    <span>Comment</span>
+                                                </button>
+                                                <button
+                                                    class="flex items-center gap-1 text-sm text-subtle-light dark:text-subtle-dark hover:text-indigo-600 dark:hover:text-indigo-500 transition-colors">
+                                                    <span class="material-symbols-outlined text-base">share</span>
+                                                    <span>Share</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Divider -->
+                                    <div class="border-t border-gray-200 dark:border-gray-700"></div>
+
+                                    <!-- Post 2 -->
+                                    <div class="flex gap-3">
+                                        <!-- (Fixed https typo) -->
+                                        <div class="flex-shrink-0 bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10"
+                                            data-alt="Profile picture of Priya"
+                                            style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCcg4TM-XThCZV5-iu8y7b8KKMxkBX8VGS94OzQxVweuZT0A21bspI8YXsIy0vQ6Grv9EDhpKqp9-oxPzS7fCmAt10cf_Q1LNWJ8xnUXceVOGEis4XonqQdv_IQTbF_40LlGFtzV1OYYH9O9hEujXAZ75g72bZdIfam-00awSNVTYCmxERJHeogEoabnBos-ZLWTynn3v9CxcZp9TKkIQexeSpJer9pfzGkCiwZ67N-GVdAVJT2Ongd5AnlWOP9RBNKjzFSho5lC5vX");'>
+                                        </div>
+                                        <div>
+                                            <p class="text-sm font-medium text-heading-light dark:text-heading-dark">
+                                                Priya <span
+                                                    class="text-subtle-light dark:text-subtle-dark font-normal">commented
+                                                    on a post</span>
+                                            </p>
+                                            <p class="text-xs text-subtle-light dark:text-subtle-dark">3d ago</p>
+                                            <p class="text-sm mt-2">
+                                                "Great insights on accessible design. This is something our team at
+                                                TechCorp is heavily focused on right now."
+                                                </A>
+                                                <!-- Interaction Bar -->
+                                            <div class="flex items-center gap-4 mt-3">
+                                                <button
+                                                    class="flex items-center gap-1 text-sm text-subtle-light dark:text-subtle-dark hover:text-indigo-600 dark:hover:text-indigo-500 transition-colors">
+                                                    <span class="material-symbols-outlined text-base">thumb_up</span>
+                                                    <span>Like</span>
+                                                </button>
+                                                <button
+                                                    class="flex items-center gap-1 text-sm text-subtle-light dark:text-subtle-dark hover:text-indigo-600 dark:hover:text-indigo-500 transition-colors">
+                                                    <span class="material-symbols-outlined text-base">chat_bubble</span>
+                                                    <span>Comment</span>
+                                                </button>
+                                                <button
+                                                    class="flex items-center gap-1 text-sm text-subtle-light dark:text-subtle-dark hover:text-indigo-600 dark:hover:text-indigo-500 transition-colors">
+                                                    <span class="material-symbols-outlined text-base">share</span>
+                                                    <span>Share</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+
+                            <!-- Find me on Card -->
+                            <div
+                                class="bg-surface-light dark:bg-surface-dark rounded-2xl shadow-lg p-6 border border-gray-200/50 dark:border-gray-700/50">
+                                <h2
+                                    class="text-heading-light dark:text-heading-dark text-xl font-bold leading-tight tracking-[-0.015em] pb-4">
+                                    Find me on</h2>
+                                <div class="flex items-center gap-5">
+                                    <!-- Social Links: Added hover scale effect -->
+                                    <a class="text-subtle-light dark:text-subtle-dark hover:text-indigo-600 dark:hover:text-indigo-500 transition-all hover:scale-110"
+                                        href="#" aria-label="LinkedIn Profile">
+                                        <svg aria-hidden="true" class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                            <path clip-rule="evenodd"
+                                                d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"
+                                                fill-rule="evenodd"></path>
+                                        </svg>
+                                    </a>
+                                    <a class="text-subtle-light dark:text-subtle-dark hover:text-indigo-600 dark:hover:text-indigo-500 transition-all hover:scale-110"
+                                        href="#" aria-label="GitHub Profile">
+                                        <svg aria-hidden="true" class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                            <path
+                                                d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z">
+                                            </path>
+                                        </svg>
+                                    </a>
+                                    <a class="text-subtle-light dark:text-subtle-dark hover:text-indigo-600 dark:hover:text-indigo-500 transition-all hover:scale-110"
+                                        href="#" aria-label="Pinterest Profile">
+                                        <svg aria-hidden="true" class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                            <path
+                                                d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm-2.433 17.337c-.333.15-.755-.166-.628-.529.21-1.078 1.488-5.839 1.488-5.839s-.37-.741-.37-1.833c0-1.722 1-3.003 2.251-3.003 1.065 0 1.562.795 1.562 1.748 0 1.066-.684 2.658-1.034 4.128-.288 1.222.613 2.221 1.832 2.221 2.19 0 3.842-2.313 3.842-5.688 0-2.985-2.14-5.111-5.263-5.111-3.627 0-5.733 2.71-5.733 5.367 0 .991.383 2.061.884 2.657.103.123.118.232.083.371-.101.42-.333 1.378-.372 1.542-.05.155-.18.204-.325.077-1.252-.56-2.035-2.023-2.035-3.595 0-2.731 2.016-5.228 5.928-5.228 3.12 0 5.488 2.223 5.488 5.011 0 3.082-1.968 5.451-4.722 5.451-1.523 0-2.95-.776-3.447-1.652z">
+                                            </path>
+                                        </svg>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+            <!-- NEW: Footer Section -->
+            <footer class="bg-surface-light dark:bg-surface-dark border-t border-gray-200/80 dark:border-gray-700/80">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+                        <!-- Column 1 -->
+                        <div>
+                            <h3
+                                class="text-sm font-semibold text-heading-light dark:text-heading-dark tracking-wider uppercase">
+                                Product</h3>
+                            <ul class="mt-4 space-y-3">
+                                <li><a href="#"
+                                        class="text-base text-subtle-light dark:text-subtle-dark hover:text-indigo-600 dark:hover:text-indigo-500 transition-colors">Features</a>
+                                </li>
+                                <li><a href="#"
+                                        class="text-base text-subtle-light dark:text-subtle-dark hover:text-indigo-600 dark:hover:text-indigo-500 transition-colors">Pricing</a>
+                                </li>
+                                <li><a href="#"
+                                        class="text-base text-subtle-light dark:text-subtle-dark hover:text-indigo-600 dark:hover:text-indigo-500 transition-colors">Showcase</a>
+                                </li>
+                                <li><a href="#"
+                                        class="text-base text-subtle-light dark:text-subtle-dark hover:text-indigo-600 dark:hover:text-indigo-500 transition-colors">Integrations</a>
+                                </li>
+                            </ul>
+                        </div>
+                        <!-- Column 2 -->
+                        <div>
+                            <h3
+                                class="text-sm font-semibold text-heading-light dark:text-heading-dark tracking-wider uppercase">
+                                Company</h3>
+                            <ul class="mt-4 space-y-3">
+                                <li><a href="#"
+                                        class="text-base text-subtle-light dark:text-subtle-dark hover:text-indigo-600 dark:hover:text-indigo-500 transition-colors">About
+                                        Us</a></li>
+                                <li><a href="#"
+                                        class="text-base text-subtle-light dark:text-subtle-dark hover:text-indigo-600 dark:hover:text-indigo-500 transition-colors">Careers</a>
+                                </li>
+                                <li><a href="#"
+                                        class="text-base text-subtle-light dark:text-subtle-dark hover:text-indigo-600 dark:hover:text-indigo-500 transition-colors">Press</a>
+                                </li>
+                                <li><a href="#"
+                                        class="text-base text-subtle-light dark:text-subtle-dark hover:text-indigo-600 dark:hover:text-indigo-500 transition-colors">Blog</a>
+                                </li>
+                            </ul>
+                        </div>
+                        <!-- Column 3 -->
+                        <div>
+                            <h3
+                                class="text-sm font-semibold text-heading-light dark:text-heading-dark tracking-wider uppercase">
+                                Resources</h3>
+                            <ul class="mt-4 space-y-3">
+                                <li><a href="#"
+                                        class="text-base text-subtle-light dark:text-subtle-dark hover:text-indigo-600 dark:hover:text-indigo-500 transition-colors">Support</a>
+                                </li>
+                                <li><a href="#"
+                                        class="text-base text-subtle-light dark:text-subtle-dark hover:text-indigo-600 dark:hover:text-indigo-500 transition-colors">Help
+                                        Center</a></li>
+                                <li><a href="#"
+                                        class="text-base text-subtle-light dark:text-subtle-dark hover:text-indigo-600 dark:hover:text-indigo-500 transition-colors">API
+                                        Docs</a></li>
+                                <li><a href="#"
+                                        class="text-base text-subtle-light dark:text-subtle-dark hover:text-indigo-600 dark:hover:text-indigo-500 transition-colors">System
+                                        Status</a></li>
+                            </ul>
+                        </div>
+                        <!-- Column 4 -->
+                        <div>
+                            <h3
+                                class="text-sm font-semibold text-heading-light dark:text-heading-dark tracking-wider uppercase">
+                                Legal</h3>
+                            <ul class="mt-4 space-y-3">
+                                <li><a href="#"
+                                        class="text-base text-subtle-light dark:text-subtle-dark hover:text-indigo-600 dark:hover:text-indigo-500 transition-colors">Privacy
+                                        Policy</a></li>
+                                <li><a href="#"
+                                        class="text-base text-subtle-light dark:text-subtle-dark hover:text-indigo-600 dark:hover:text-indigo-500 transition-colors">Terms
+                                        of Service</a></li>
+                                <li><a href="#"
+                                        class="text-base text-subtle-light dark:text-subtle-dark hover:text-indigo-600 dark:hover:text-indigo-500 transition-colors">Cookie
+                                        Policy</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <!-- Bottom Footer -->
+                    <div
+                        class="mt-12 border-t border-gray-200/80 dark:border-gray-700/80 pt-8 flex flex-col md:flex-row items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div class="size-6 text-indigo-600 dark:text-indigo-500">
+                                <svg fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                        d="M13.8261 17.4264C16.7203 18.1174 20.2244 18.5217 24 18.5217C27.7756 18.5217 31.2797 18.1174 34.1739 17.4264C36.9144 16.7722 39.9967 15.2331 41.3563 14.1648L24.8486 40.6391C24.4571 41.267 23.5429 41.267 23.1514 40.6391L6.64374 14.1648C8.00331 15.2331 11.0856 16.7722 13.8261 17.4264Z"
+                                        fill="currentColor"></path>
+                                    <path clip-rule="evenodd"
+                                        d="M39.998 12.236C39.9944 12.2537 39.9875 12.2845 39.9748 12.3294C39.9436 12.4399 39.8949 12.5741 39.8346 12.7175C39.8168 12.7597 39.7989 12.8007 39.7813 12.8398C38.5103 13.7113 35.9788 14.9393 33.7095 15.4811C30.9875 16.131 27.6413 16.5217 24 16.5217C20.3587 16.5217 17.0125 16.131 14.2905 15.4811C12.0012 14.9346 9.44505 13.6897 8.18538 12.8168C8.17384 12.7925 8.16216 12.767 8.15052 12.7408C8.09919 12.6249 8.05721 12.5114 8.02977 12.411C8.00356 12.3152 8.00039 12.2667 8.00004 12.2612C8.00004 12.261 8 12.2607 8.00004 12.2612C8.00004 12.2359 8.0104 11.9233 8.68485 11.3686C9.34546 10.8254 10.4222 10.2469 11.9291 9.72276C14.9242 8.68098 19.1919 8 24 8C28.8081 8 33.0758 8.68098 36.0709 9.72276C37.5778 10.2469 38.6545 10.8254 39.3151 11.3686C39.9006 11.8501 39.9857 12.1489 39.998 12.236ZM4.95178 15.2312L21.4543 41.6973C22.6288 43.5809 25.3712 43.5809 26.5457 41.6973L43.0534 15.223C43.0709 15.1948 43.0878 15.1662 43.104 15.1371L41.3563 14.1648C43.104 15.1371 43.1038 15.1374 43.104 15.1371L43.1051 15.135L43.1065 15.1325L43.1101 15.1261L43.1199 15.1082C43.1276 15.094 43.1377 15.0754 43.1497 15.0527C43.1738 15.0075 43.2062 14.9455 43.244 14.8701C43.319 14.7208 43.4196 14.511 43.5217 14.2683C43.6901 13.8679 44 13.0689 44 12.2609C44 10.5573 43.003 9.22254 41.8558 8.2791C40.6947 7.32427 39.1354 6.55361 37.385 5.94477C33.8654 4.72057 29.133 4 24 4C18.867 4 14.1346 4.72057 10.615 5.94478C8.86463 6.55361 7.30529 7.32428 6.14419 8.27911C4.99695 9.22255 3.99999 10.5573 3.99999 12.2609C3.99999 13.1275 4.29264 13.9078 4.49321 14.3607C4.60375 14.6102 4.71348 14.8196 4.79687 14.9689C4.83898 15.0444 4.87547 15.1065 4.9035 15.1529C4.91754 15.1762 4.92954 15.1957 4.93916 15.2111L4.94662 15.223L4.95178 15.2312ZM35.9868 18.996L24 38.22L12.0131 18.996C12.4661 19.1391 12.9179 19.2658 13.3617 19.3718C16.4281 20.1039 20.0901 20.5217 24 20.5217C27.9099 20.5217 31.5719 20.1039 34.6383 19.3718C35.082 19.2658 35.5339 19.1391 35.9868 18.996Z"
+                                        fill="currentColor" fill-rule="evenodd"></path>
+                                </svg>
+                            </div>
+                            <span class="text-sm text-subtle-light dark:text-subtle-dark">&copy; 2025 ProFolio, Inc. All
+                                rights reserved.</span>
+                        </div>
+                        <div class="flex items-center gap-5 mt-4 md:mt-0">
+                            <a class="text-subtle-light dark:text-subtle-dark hover:text-indigo-600 dark:hover:text-indigo-500 transition-all hover:scale-110"
+                                href="#" aria-label="LinkedIn Profile">
+                                <svg aria-hidden="true" class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                    <path clip-rule="evenodd"
+                                        d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"
+                                        fill-rule="evenodd"></path>
+                                </svg>
+                            </a>
+                            <a class="text-subtle-light dark:text-subtle-dark hover:text-indigo-600 dark:hover:text-indigo-500 transition-all hover:scale-110"
+                                href="#" aria-label="GitHub Profile">
+                                <svg aria-hidden="true" class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                    <path
+                                        d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z">
+                                    </path>
+                                </svg>
+                            </a>
+                            <a class="text-subtle-light dark:text-subtle-dark hover:text-indigo-600 dark:hover:text-indigo-500 transition-all hover:scale-110"
+                                href="#" aria-label="Pinterest Profile">
+                                <svg aria-hidden="true" class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                    <path
+                                        d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm-2.433 17.337c-.333.15-.755-.166-.628-.529.21-1.078 1.488-5.839 1.488-5.839s-.37-.741-.37-1.833c0-1.722 1-3.003 2.251-3.003 1.065 0 1.562.795 1.562 1.748 0 1.066-.684 2.658-1.034 4.128-.288 1.222.613 2.221 1.832 2.221 2.19 0 3.842-2.313 3.842-5.688 0-2.985-2.14-5.111-5.263-5.111-3.627 0-5.733 2.71-5.733 5.367 0 .991.383 2.061.884 2.657.103.123.118.232.083.371-.101.42-.333 1.378-.372 1.542-.05.155-.18.204-.325.077-1.252-.56-2.035-2.023-2.035-3.595 0-2.731 2.016-5.228 5.928-5.228 3.12 0 5.488 2.223 5.488 5.011 0 3.082-1.968 5.451-4.722 5.451-1.523 0-2.95-.776-3.447-1.652z">
+                                    </path>
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </div>
+    <div id="status"></div>
+
+  <button id="mic-btn">
+    <svg viewBox="0 0 24 24">
+      <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/>
+      <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/>
+    </svg>
+  </button>
+
+  <script>
+    const micBtn = document.getElementById('mic-btn');
+    const status = document.getElementById('status');
+
+    // Route configuration with multiple keyword variations
+    const ROUTES = {
+      // Main pages
+      home: {
+        path: '/index',
+        keywords: ['home', 'homepage', 'main page', 'start'],
+        display: 'Home'
+      },
+      dashboard: {
+        path: '/dashboard',
+        keywords: ['dashboard', 'overview', 'main'],
+        display: 'Dashboard'
+      },
+      
+      // Booking
+      booking: {
+        path: '/mybookings',
+        keywords: ['booking', 'book', 'appointment', 'schedule', 'session', 'reserve'],
+        display: 'Booking'
+      },
+      myBookings: {
+        path: '/mybookings',
+        keywords: ['my booking', 'scheduled', 'my session', 'my appointment'],
+        display: 'My Bookings'
+      },
+       map: {
+        path: '/map',
+        keywords: ['map', 'location', 'directions', 'find','nearby'],
+        display: 'Map'
+      },
+      // Community & Communication
+      community: {
+        path: '/feed',
+        keywords: ['community', 'community page', 'members', 'network'],
+        display: 'Community'
+      },
+      chat: {
+        path: '/index',
+        keywords: ['chat', 'message', 'inbox', 'conversation', 'dm'],
+        display: 'Chat'
+      },
+      skillSwap: {
+        path: '/swap',
+        keywords: ['skill swap', 'swap', 'exchange', 'trade skill'],
+        display: 'Skill Swap'
+      },
+      
+      // Resources
+      resources: {
+        path: '/resources',
+        keywords: ['resource', 'learning resource', 'material', 'content'],
+        display: 'Resources'
+      },
+      
+      
+      // Skill Credits
+      skillCredits: {
+        path: '/credits',
+        keywords: ['skill credit', 'credit', 'wallet', 'balance', 'my credit'],
+        display: 'Skill Credits'
+      },
+      earnCredits: {
+        path: '/credits',
+        keywords: ['earn credit', 'get credit', 'buy credit', 'purchase credit'],
+        display: 'Earn Credits'
+      },
+      
+      // Profile & Settings
+      myProfile: {
+        path: '{% url 'profile' %}',
+        keywords: ['my profile', 'profile page', 'my account','profile','my account'],
+        display: 'My Profile'
+      },
+     
+      
+      // Auth
+      login: {
+        path: '/index',
+        keywords: ['login', 'sign in', 'log in'],
+        display: 'Login'
+      },
+      signup: {
+        path: '/signup',
+        keywords: ['signup', 'sign up', 'register', 'create account', 'join'],
+        display: 'Sign Up'
+      },
+      logout: {
+        path: '/index',
+        keywords: ['logout', 'log out', 'sign out'],
+        display: 'Logout'
+      }
+    };
+
+    // Profile routes
+    const PROFILES = {
+      rohanGupta: {
+        path: '/profile/rohan-gupta',
+        keywords: ['rohan', 'rohan gupta', 'gupta'],
+        display: 'Rohan Gupta'
+      },
+      kritiSreyash: {
+        path: '/profile/kriti-sreyash',
+        keywords: ['kriti', 'kriti sreyash', 'sreyash'],
+        display: 'Kriti Sreyash'
+      },
+      aditya: {
+        path: '/profile/aditya',
+        keywords: ['aditya'],
+        display: 'Aditya'
+      },
+      soumya: {
+        path: '/profile/soumya',
+        keywords: ['soumya'],
+        display: 'Soumya'
+      }
+    };
+
+    // Check browser support
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const SpeechSynthesis = window.speechSynthesis;
+    
+    if (!SpeechRecognition) {
+      alert('Voice recognition not supported. Use Chrome or Edge browser.');
+    } else {
+      const recognition = new SpeechRecognition();
+      recognition.lang = 'en-US';
+      recognition.interimResults = false;
+
+      // Function to speak text (voice feedback)
+      function speak(text) {
+        if (SpeechSynthesis) {
+          // Cancel any ongoing speech
+          SpeechSynthesis.cancel();
+          
+          const utterance = new SpeechSynthesisUtterance(text);
+          utterance.rate = 1.1;
+          utterance.pitch = 1;
+          utterance.volume = 1;
+          SpeechSynthesis.speak(utterance);
+        }
+      }
+
+      // Function to match command to route
+      function matchCommand(command) {
+        const lowerCommand = command.toLowerCase().trim();
+        
+        // Check profiles first (more specific)
+        for (const [key, profile] of Object.entries(PROFILES)) {
+          for (const keyword of profile.keywords) {
+            if (lowerCommand.includes(keyword)) {
+              return { path: profile.path, display: profile.display, type: 'profile' };
+            }
+          }
+        }
+        
+        // Check general routes
+        for (const [key, route] of Object.entries(ROUTES)) {
+          for (const keyword of route.keywords) {
+            if (lowerCommand.includes(keyword)) {
+              return { path: route.path, display: route.display, type: 'route' };
+            }
+          }
+        }
+        
+        return null;
+      }
+
+      micBtn.addEventListener('click', () => {
+        recognition.start();
+        micBtn.classList.add('listening');
+        status.textContent = '🎤 Listening...';
+        status.classList.add('show');
+      });
+
+      recognition.onresult = (event) => {
+        const command = event.results[0][0].transcript;
+        console.log('Heard:', command);
+        
+        status.textContent = `Heard: "${command}"`;
+        micBtn.classList.remove('listening');
+
+        const match = matchCommand(command);
+
+        if (match) {
+          const message = `Opening ${match.display}`;
+          status.textContent = `✅ ${message}`;
+          
+          // Voice feedback
+          speak(message);
+          
+          setTimeout(() => {
+            window.location.href = match.path;
+          }, 1500);
+        } else {
+          const errorMsg = 'Command not recognized. Please try again.';
+          status.textContent = `❌ ${errorMsg}`;
+          speak(errorMsg);
+          
+          setTimeout(() => {
+            status.classList.remove('show');
+          }, 2500);
+        }
+      };
+
+      recognition.onerror = (event) => {
+        micBtn.classList.remove('listening');
+        let errorMsg = '';
+        
+        if (event.error === 'no-speech') {
+          errorMsg = 'No speech detected. Please try again.';
+        } else if (event.error === 'not-allowed') {
+          errorMsg = 'Microphone access denied. Please allow microphone permissions.';
+        } else {
+          errorMsg = `Error: ${event.error}`;
+        }
+        
+        status.textContent = `❌ ${errorMsg}`;
+        
+        setTimeout(() => {
+          status.classList.remove('show');
+        }, 3000);
+      };
+
+      recognition.onend = () => {
+        micBtn.classList.remove('listening');
+      };
+    }
+  </script>
+</body>
+
+</html>

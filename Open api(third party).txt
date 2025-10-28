@@ -1,0 +1,19 @@
+url-https://vwuyllbaoizedfvdmbfg.supabase.co
+
+Api key1=sb_publishable_k9pVqctlmp5WQNK6IhiD8A_yOoezydD
+
+# POST request to RPC endpoint
+POST https://your-project.supabase.co/rest/v1/rpc/nearby_workers
+Headers:
+  apikey: your-anon-key
+  Authorization: Bearer your-anon-key
+  Content-Type: application/json
+
+Body:
+{
+  "search_lat": 20.2961,
+  "search_lng": 85.8245,
+  "radius_km": 25
+}
+
+here it searches for nearby workers in 25km more filters can be added
