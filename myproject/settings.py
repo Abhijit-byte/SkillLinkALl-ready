@@ -5,9 +5,11 @@ Django settings for myproject project.
 from pathlib import Path
 import os
 import dj_database_url
-from decouple import config
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
+# -------------------------------------------------------------------
+# 📂 PATHS
+# -------------------------------------------------------------------
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
@@ -19,13 +21,12 @@ SECRET_KEY = os.environ.get(
     'SECRET_KEY', 'django-insecure-+x#+u=y-$=gny9o6m!!@_9grwnj^cz$#3h9kmh)uk=8!-!owk+'
 )
 
-# Detect if running on Render
-RENDER = os.environ.get('RENDER', None)
+# Detect if running on Railway
+RAILWAY_ENV = os.environ.get('RAILWAY_ENVIRONMENT', None)
 
-if RENDER:
+if RAILWAY_ENV:
     DEBUG = False
-    ALLOWED_HOSTS = ['skilllinkall-ready.onrender.com']
-
+    ALLOWED_HOSTS = ['railway.app', '.up.railway.app']
 else:
     DEBUG = True
     ALLOWED_HOSTS = []
@@ -45,12 +46,12 @@ INSTALLED_APPS = [
 
     # Third-party
     'rest_framework',
+    'corsheaders',
 
     # Local apps
     'myapp',
 ]
 
-# Django REST Framework config
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
@@ -64,8 +65,9 @@ REST_FRAMEWORK = {
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',  # for static files on Render
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # For static files
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',        # Allow frontend access
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -103,11 +105,14 @@ WSGI_APPLICATION = 'myproject.wsgi.application'
 # 🗄️ DATABASE CONFIG
 # -------------------------------------------------------------------
 
+# Your Railway PostgreSQL database URL
+DATABASE_URL = os.environ.get(
+    "DATABASE_URL",
+    "postgresql://postgres:PGqnDugiHkCSYyWEBLlPSLpZwvurvfVm@postgres.railway.internal:5432/railway"
+)
+
 DATABASES = {
-    'default': dj_database_url.config(
-        default='postgresql://skilllink_thho_user:Hw3RzjRwtkGuFMxzD16b9HQgvZ2SYqsO@dpg-d40fq7m3jp1c73eepnhg-a/skilllink_thho',
-        conn_max_age=600,
-    )
+    'default': dj_database_url.parse(DATABASE_URL, conn_max_age=600)
 }
 
 
@@ -134,7 +139,7 @@ USE_TZ = True
 
 
 # -------------------------------------------------------------------
-# 🖼️ STATIC FILES (CSS, JS, Images)
+# 🖼️ STATIC FILES
 # -------------------------------------------------------------------
 
 STATIC_URL = '/static/'
@@ -147,3 +152,10 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 # -------------------------------------------------------------------
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+# -------------------------------------------------------------------
+# 🌐 CORS (Frontend access)
+# -------------------------------------------------------------------
+
+CORS_ALLOW_ALL_ORIGINS = True
